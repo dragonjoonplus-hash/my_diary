@@ -1,4 +1,4 @@
-const CACHE = "my-diary-v3";
+const CACHE = "my-diary-v4";
 
 const ASSETS = [
   "./",
@@ -10,7 +10,9 @@ const ASSETS = [
 
 self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open(CACHE).then(cache => cache.addAll(ASSETS))
+    caches.open(CACHE).then(cache => {
+      return cache.addAll(ASSETS);
+    })
   );
 
   self.skipWaiting();
@@ -18,13 +20,13 @@ self.addEventListener("install", event => {
 
 self.addEventListener("activate", event => {
   event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
+    caches.keys().then(keys => {
+      return Promise.all(
         keys
           .filter(key => key !== CACHE)
           .map(key => caches.delete(key))
-      )
-    )
+      );
+    })
   );
 
   self.clients.claim();
@@ -41,7 +43,9 @@ self.addEventListener("fetch", event => {
     url.pathname.endsWith("/my_diary/")
   ) {
     event.respondWith(
-      fetch(event.request, { cache: "no-store" })
+      fetch(event.request, {
+        cache: "no-store"
+      })
         .then(response => {
           const copy = response.clone();
 
@@ -51,7 +55,9 @@ self.addEventListener("fetch", event => {
 
           return response;
         })
-        .catch(() => caches.match("./index.html"))
+        .catch(() => {
+          return caches.match("./index.html");
+        })
     );
 
     return;
@@ -60,10 +66,14 @@ self.addEventListener("fetch", event => {
   // 나머지 파일은 캐시 우선
   event.respondWith(
     caches.match(event.request).then(cached => {
-      if (cached) return cached;
+
+      if (cached) {
+        return cached;
+      }
 
       return fetch(event.request)
         .then(response => {
+
           const copy = response.clone();
 
           caches.open(CACHE).then(cache => {
@@ -72,7 +82,10 @@ self.addEventListener("fetch", event => {
 
           return response;
         })
-        .catch(() => caches.match("./index.html"));
+        .catch(() => {
+          return caches.match("./index.html");
+        });
+
     })
   );
 });
