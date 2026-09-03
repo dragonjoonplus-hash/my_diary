@@ -48,7 +48,7 @@ h1{font-size:24px}.top{align-items:flex-start}.streak{font-size:14px}.mobileNav{
 <button class="btn" onclick="returnToday()">오늘</button>
 <button class="btn light" onclick="changeDate(1)">다음 날짜 →</button>
 </div></div><div class="streak">🔥 <span id="streak">0</span>일 연속</div></div>
-<div id="pastNotice" class="lock" style="display:none">🔒 오늘이 아닌 날짜는 읽기 전용입니다.</div>
+<div id="pastNotice" class="lock" style="display:none">🔒 지난 날짜의 기록은 읽기 전용입니다. 오늘과 내일은 수정할 수 있습니다.</div>
 <div class="card">
  <div class="row between"><h2>📋 오늘의 할 일</h2><button id="addTodoBtn" class="btn light" onclick="addTodo()">＋ 할 일</button></div>
  <div id="todoList"></div>
@@ -87,6 +87,12 @@ function key(d){
 }
 function korean(d){return d.toLocaleDateString("ko-KR",{year:"numeric",month:"long",day:"numeric",weekday:"long"})}
 function isToday(){return key(viewDate)===key(new Date())}
+function isPast(){
+  const today=new Date();
+  today.setHours(0,0,0,0);
+  return viewDate < today;
+}
+function canEdit(){return !isPast()}
 function day(){return data.days[key(viewDate)]||{todos:[],schedule:{},text:""}}
 function saveDay(d){data.days[key(viewDate)]=d;save()}
 function changeDate(amount){
@@ -101,8 +107,8 @@ function escape(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt
 function renderToday(){
  let d=day();
  document.getElementById("todayDate").textContent=korean(viewDate);
- document.getElementById("todayHeading").textContent=isToday()?"오늘":(key(viewDate)<key(new Date())?"어제의 기록":"내일의 기록");
- const locked=!isToday();
+ document.getElementById("todayHeading").textContent=isToday()?"오늘":(isPast()?"지난 기록":"미래 기록");
+ const locked=isPast();
  document.getElementById("pastNotice").style.display=locked?"block":"none";
  document.getElementById("addTodoBtn").disabled=locked;document.getElementById("diaryText").disabled=locked;document.getElementById("saveDiaryBtn").disabled=locked;
  document.getElementById("diaryText").classList.toggle("readonly",locked);document.getElementById("diaryText").value=d.text||"";
@@ -110,11 +116,11 @@ function renderToday(){
  let html="";for(let h=0;h<24;h++){let t=String(h).padStart(2,"0")+":00";html+=`<div class="hour"><div class="hour-time">${t}</div><input ${locked?"disabled":""} value="${escape(d.schedule?.[t]||"")}" placeholder="계획 입력" onchange="saveSchedule('${t}',this.value)"></div>`}
  document.getElementById("schedule").innerHTML=html;updateStreak();
 }
-function addTodo(){if(!isToday())return;let time=prompt("시간을 입력하세요. 예: 09:00");if(time===null)return;let text=prompt("할 일을 입력하세요.");if(!text)return;let d=day();d.todos.push({id:Date.now()+Math.random(),time,text,status:"pending"});saveDay(d);renderToday()}
-function cycleTodo(i){if(!isToday())return;let d=day(),t=d.todos[i];t.status=t.status==="pending"?"half":t.status==="half"?"done":"pending";saveDay(d);renderToday()}
-function deleteTodo(i){if(!isToday())return;let d=day();d.todos.splice(i,1);saveDay(d);renderToday()}
-function saveSchedule(t,v){if(!isToday())return;let d=day();d.schedule=d.schedule||{};if(v.trim())d.schedule[t]=v.trim();else delete d.schedule[t];saveDay(d)}
-function saveDiary(){if(!isToday())return;let d=day();d.text=document.getElementById("diaryText").value;saveDay(d);document.getElementById("diaryStatus").textContent="✓ 저장되었습니다";updateStreak();setTimeout(()=>document.getElementById("diaryStatus").textContent="",1800)}
+function addTodo(){if(!canEdit())return;let time=prompt("시간을 입력하세요. 예: 09:00");if(time===null)return;let text=prompt("할 일을 입력하세요.");if(!text)return;let d=day();d.todos.push({id:Date.now()+Math.random(),time,text,status:"pending"});saveDay(d);renderToday()}
+function cycleTodo(i){if(!canEdit())return;let d=day(),t=d.todos[i];t.status=t.status==="pending"?"half":t.status==="half"?"done":"pending";saveDay(d);renderToday()}
+function deleteTodo(i){if(!canEdit())return;let d=day();d.todos.splice(i,1);saveDay(d);renderToday()}
+function saveSchedule(t,v){if(!canEdit())return;let d=day();d.schedule=d.schedule||{};if(v.trim())d.schedule[t]=v.trim();else delete d.schedule[t];saveDay(d)}
+function saveDiary(){if(!canEdit())return;let d=day();d.text=document.getElementById("diaryText").value;saveDay(d);document.getElementById("diaryStatus").textContent="✓ 저장되었습니다";updateStreak();setTimeout(()=>document.getElementById("diaryStatus").textContent="",1800)}
 function showYesterday(){let y=new Date();y.setHours(0,0,0,0);y.setDate(y.getDate()-1);viewDate=y;showPage("today");}
 function returnToday(){viewDate=new Date();viewDate.setHours(0,0,0,0);renderToday();}
 function carryHalf(){
