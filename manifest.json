@@ -1,0 +1,24 @@
+{
+  "name": "나의 다이어리",
+  "short_name": "나의 다이어리",
+  "description": "오늘의 계획, 1년 계획, 정리노트, 목표를 관리하는 다이어리",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f5f6fa",
+  "theme_color": "#ffffff",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

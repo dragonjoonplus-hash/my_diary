@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>나의 다이어리</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;background:#f5f6fa;color:#202124}
+button,input,textarea{font:inherit}
+button{cursor:pointer;border:0}
+.app{display:flex;min-height:100vh}
+.sidebar{width:230px;background:#fff;border-right:1px solid #e5e7eb;padding:24px 16px;position:fixed;top:0;bottom:0}
+.logo{font-size:22px;font-weight:800;padding:8px 12px 24px}
+.nav button{width:100%;text-align:left;background:transparent;padding:13px 14px;border-radius:12px;margin:3px 0;color:#555}
+.nav button.active,.nav button:hover{background:#f0f2f8;color:#111;font-weight:700}
+.main{margin-left:230px;width:calc(100% - 230px);padding:30px;max-width:1250px}
+.page{display:none}.page.active{display:block}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+h1{margin:0;font-size:28px}h2{margin-top:0}
+.card{background:#fff;border:1px solid #e8e9ee;border-radius:18px;padding:22px;margin-bottom:18px;box-shadow:0 3px 12px rgba(0,0,0,.03)}
+.date{font-size:16px;color:#777;margin-top:7px}
+.streak{font-size:18px;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.subject{padding:24px 12px;background:#fff;border:1px solid #e6e7ec;border-radius:16px;text-align:center;font-weight:700}
+.subject:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.06)}
+table{width:100%;border-collapse:collapse}
+th,td{border-bottom:1px solid #eee;padding:13px 8px;text-align:left}
+th{color:#777;font-size:14px}
+input,textarea,select{width:100%;padding:11px 12px;border:1px solid #d9dce3;border-radius:10px;background:#fff}
+textarea{min-height:180px;resize:vertical}
+.btn{background:#222;color:#fff;padding:11px 15px;border-radius:10px}
+.btn.light{background:#f0f1f5;color:#333}.btn.danger{background:#fff0f0;color:#c33}
+.row{display:flex;gap:10px;align-items:center}.between{justify-content:space-between}
+.todo{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #eee}
+.todo:last-child{border-bottom:0}.status{font-size:20px;min-width:32px}
+.todo.done .text{text-decoration:line-through;color:#999}
+.actions{display:flex;gap:7px;margin-top:14px;flex-wrap:wrap}
+.note{padding:16px 0;border-bottom:1px solid #eee}.note:last-child{border:0}
+.preview{color:#777;margin:7px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.small{font-size:13px;color:#888}
+.empty{text-align:center;color:#999;padding:35px 10px}
+.mobileNav{display:none}
+@media(max-width:760px){
+.sidebar{display:none}.main{margin:0;width:100%;padding:18px 14px 85px}
+.grid{grid-template-columns:repeat(2,1fr)}
+.mobileNav{display:flex;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;z-index:10}
+.mobileNav button{flex:1;background:#fff;padding:11px 3px;font-size:12px}
+.top{align-items:flex-start}.top .streak{font-size:14px}
+}
+</style>
+
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#ffffff">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="logo">📔 나의 다이어리</div>
+  <nav class="nav">
+    <button data-page="today" class="active">📔 오늘</button>
+    <button data-page="year">📅 1년 계획</button>
+    <button data-page="notes">📚 정리노트</button>
+    <button data-page="goals">🎯 목표</button>
+  </nav>
+</aside>
+
+<main class="main">
+<section id="today" class="page active">
+ <div class="top">
+  <div><h1>오늘</h1><div id="todayDate" class="date"></div></div>
+  <div class="streak">🔥 <span id="streak">0</span>일 연속</div>
+ </div>
+ <div class="card">
+  <div class="row between"><h2>오늘의 계획</h2><button class="btn light" onclick="addTodo()">＋ 할 일</button></div>
+  <div id="todoList"></div>
+ </div>
+</section>
+
+<section id="year" class="page">
+ <div class="top"><h1>1년 계획</h1></div>
+ <div class="card">
+  <h2>올해의 큰 계획</h2>
+  <textarea id="yearPlan" placeholder="올해 이루고 싶은 일, 공부 계획, 생활 계획 등을 적어보세요."></textarea>
+  <div class="actions"><button class="btn" onclick="saveYearPlan()">저장</button></div>
+ </div>
+ <div class="card"><h2>월별 계획</h2><div id="months"></div></div>
+</section>
+
+<section id="notes" class="page">
+ <div id="subjectList">
+  <div class="top"><h1>정리노트</h1></div>
+  <div class="grid" id="subjects"></div>
+ </div>
+ <div id="subjectView" style="display:none">
+  <div class="top"><h1 id="subjectTitle"></h1><button class="btn light" onclick="closeSubject()">← 과목 목록</button></div>
+  <div id="savedNotes"></div>
+ </div>
+ <div id="writer" style="display:none">
+  <div class="top"><h1 id="writerTitle">노트 작성</h1><button class="btn light" onclick="closeWriter()">← 노트 목록</button></div>
+  <div class="card">
+   <label>대단원</label><input id="major" placeholder="예: 함수">
+   <br><br><label>소단원</label><input id="minor" placeholder="예: 일차함수">
+   <br><br><label>정리 내용</label><textarea id="content" placeholder="배운 내용을 자유롭게 정리하세요."></textarea>
+   <div class="actions"><button id="saveNoteBtn" class="btn" onclick="saveNote()">💾 저장</button><button class="btn light" onclick="closeWriter()">취소</button></div>
+  </div>
+ </div>
+ <div id="fullNote" style="display:none">
+  <div class="top"><h1>노트 내용</h1><button class="btn light" onclick="closeFullNote()">← 노트 목록</button></div>
+  <div class="card"><div id="fullTitle"></div><div id="fullDate" class="small"></div><hr><div id="fullContent" style="white-space:pre-wrap;line-height:1.8"></div></div>
+ </div>
+</section>
+
+<section id="goals" class="page">
+ <div class="top"><h1>목표</h1></div>
+ <div class="card">
+  <div class="row"><input id="goalInput" placeholder="새로운 목표를 입력하세요"><button class="btn" onclick="addGoal()">추가</button></div>
+ </div>
+ <div class="card"><div id="goalList"></div></div>
+</section>
+</main>
+</div>
+<div class="mobileNav">
+ <button data-page="today">📔<br>오늘</button><button data-page="year">📅<br>1년 계획</button><button data-page="notes">📚<br>정리노트</button><button data-page="goals">🎯<br>목표</button>
+</div>
+
+<script>
+const KEY="myDiaryIntegrated";
+let data=JSON.parse(localStorage.getItem(KEY)||"{}");
+data.todos=data.todos||{}; data.notes=data.notes||{}; data.goals=data.goals||[]; data.months=data.months||{};
+let currentSubject="", editingId=null;
+
+function save(){localStorage.setItem(KEY,JSON.stringify(data))}
+function dateKey(d=new Date()){return d.toISOString().slice(0,10)}
+function koreanDate(d=new Date()){return d.toLocaleDateString("ko-KR",{year:"numeric",month:"long",day:"numeric",weekday:"long"})}
+
+function showPage(id){
+ document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ document.querySelectorAll(".nav button,.mobileNav button").forEach(x=>x.classList.toggle("active",x.dataset.page===id));
+ if(id==="today")renderToday(); if(id==="year")renderYear(); if(id==="notes")renderSubjects(); if(id==="goals")renderGoals();
+}
+document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+
+function automaticallyCarry(){
+ let today=dateKey(), y=new Date(); y.setDate(y.getDate()-1); let prev=dateKey(y);
+ if(data.lastCarry!==today){
+  const old=data.todos[prev]||[];
+  const half=old.filter(x=>x.status==="half").map(x=>({id:Date.now()+Math.random(),time:x.time,text:x.text,status:"pending"}));
+  if(half.length)data.todos[today]=[...(data.todos[today]||[]),...half];
+  data.lastCarry=today; save();
+ }
+}
+function renderToday(){
+ automaticallyCarry();
+ document.getElementById("todayDate").textContent=koreanDate();
+ let list=data.todos[dateKey()]||[];
+ list.sort((a,b)=>a.time.localeCompare(b.time));
+ document.getElementById("todoList").innerHTML=list.length?list.map((t,i)=>`
+ <div class="todo ${t.status==="done"?"done":""}">
+  <button class="status" onclick="cycleTodo(${i})">${t.status==="done"?"☑️":t.status==="half"?"🔺":"☐"}</button>
+  <div style="flex:1"><b>${escapeHtml(t.time)}</b>　<span class="text">${escapeHtml(t.text)}</span></div>
+  <button class="btn light" onclick="deleteTodo(${i})">삭제</button>
+ </div>`).join(""):`<div class="empty">오늘의 계획을 추가해보세요.</div>`;
+ updateStreak();
+}
+function addTodo(){
+ let time=prompt("시간을 입력하세요. 예: 09:00"); if(time===null)return;
+ let text=prompt("할 일을 입력하세요."); if(!text)return;
+ const k=dateKey(); data.todos[k]=data.todos[k]||[];
+ data.todos[k].push({id:Date.now(),time,text,status:"pending"});save();renderToday();
+}
+function cycleTodo(i){let a=data.todos[dateKey()];a[i].status=a[i].status==="pending"?"half":a[i].status==="half"?"done":"pending";save();renderToday()}
+function deleteTodo(i){data.todos[dateKey()].splice(i,1);save();renderToday()}
+function updateStreak(){
+ let s=0,d=new Date();
+ while(true){let k=dateKey(d), a=data.todos[k]||[]; if(a.length&&a.every(x=>x.status==="done")){s++;d.setDate(d.getDate()-1)}else break}
+ document.getElementById("streak").textContent=s;
+}
+
+function saveYearPlan(){data.yearPlan=document.getElementById("yearPlan").value;save();alert("저장했습니다.")}
+function renderYear(){
+ document.getElementById("yearPlan").value=data.yearPlan||"";
+ let y=new Date().getFullYear();
+ document.getElementById("months").innerHTML=Array.from({length:12},(_,i)=>`<div style="margin:10px 0"><b>${i+1}월</b><input data-month="${i+1}" value="${escapeAttr(data.months[i+1]||"")}" placeholder="${i+1}월 계획"></div>`).join("");
+ document.querySelectorAll("[data-month]").forEach(x=>x.onchange=()=>{data.months[x.dataset.month]=x.value;save()});
+}
+
+const subjects=["🇰🇷 국어노트","🔢 수학노트","🔤 영어노트","🔬 과학노트","🌏 사회노트"];
+function renderSubjects(){
+ document.getElementById("subjectList").style.display="block";document.getElementById("subjectView").style.display="none";document.getElementById("writer").style.display="none";document.getElementById("fullNote").style.display="none";
+ document.getElementById("subjects").innerHTML=subjects.map(s=>`<button class="subject" onclick="openSubject('${s}')">${s}</button>`).join("");
+}
+function openSubject(s){currentSubject=s;document.getElementById("subjectList").style.display="none";document.getElementById("subjectView").style.display="block";document.getElementById("subjectTitle").textContent=s;renderNotes()}
+function closeSubject(){currentSubject="";renderSubjects()}
+function renderNotes(){
+ let notes=data.notes[currentSubject]||[];
+ document.getElementById("savedNotes").innerHTML=`<div class="card"><button class="btn" onclick="openWriter()">✏️ 작성하기</button></div>`+
+ (notes.length?notes.map(n=>`<div class="card note"><b>${escapeHtml(n.major)} · ${escapeHtml(n.minor)}</b><div class="small">${n.createdAt}</div><div class="preview">${escapeHtml(n.content.replace(/\\s+/g," "))}</div><div class="actions"><button class="btn light" onclick='openFull(${JSON.stringify(n)})'>내용 보기</button><button class="btn light" onclick='editNote(${JSON.stringify(n)})'>✏️ 수정</button><button class="btn danger" onclick="deleteNote(${n.id})">삭제</button></div></div>`).join(""):`<div class="card empty">아직 작성한 노트가 없습니다.</div>`);
+}
+function openWriter(){
+ document.getElementById("subjectView").style.display="none";document.getElementById("writer").style.display="block";document.getElementById("writerTitle").textContent=currentSubject+" 작성";editingId=null;clearWriter();
+}
+function clearWriter(){major.value="";minor.value="";content.value="";saveNoteBtn.textContent="💾 저장"}
+function closeWriter(){document.getElementById("writer").style.display="none";document.getElementById("subjectView").style.display="block";renderNotes()}
+function saveNote(){
+ if(!major.value.trim()||!minor.value.trim()||!content.value.trim()){alert("대단원, 소단원, 정리 내용을 모두 입력해주세요.");return}
+ data.notes[currentSubject]=data.notes[currentSubject]||[];
+ if(editingId){let n=data.notes[currentSubject].find(x=>x.id===editingId);Object.assign(n,{major:major.value.trim(),minor:minor.value.trim(),content:content.value.trim()});}
+ else data.notes[currentSubject].push({id:Date.now(),major:major.value.trim(),minor:minor.value.trim(),content:content.value.trim(),createdAt:koreanDate()});
+ save();editingId=null;closeWriter();
+}
+function editNote(n){openWriter();editingId=n.id;major.value=n.major;minor.value=n.minor;content.value=n.content;saveNoteBtn.textContent="💾 수정 저장"}
+function deleteNote(id){if(!confirm("이 노트를 삭제할까요?"))return;data.notes[currentSubject]=(data.notes[currentSubject]||[]).filter(n=>n.id!==id);save();renderNotes()}
+function openFull(n){document.getElementById("subjectView").style.display="none";document.getElementById("fullNote").style.display="block";document.getElementById("fullTitle").innerHTML="<h2>"+escapeHtml(n.major)+" · "+escapeHtml(n.minor)+"</h2>";document.getElementById("fullDate").textContent=n.createdAt;document.getElementById("fullContent").textContent=n.content}
+function closeFullNote(){document.getElementById("fullNote").style.display="none";document.getElementById("subjectView").style.display="block";renderNotes()}
+
+function addGoal(){let x=goalInput.value.trim();if(!x)return;data.goals.push({id:Date.now(),text:x,done:false});goalInput.value="";save();renderGoals()}
+function renderGoals(){goalList.innerHTML=data.goals.length?data.goals.map((g,i)=>`<div class="todo ${g.done?"done":""}"><button class="status" onclick="toggleGoal(${i})">${g.done?"☑️":"☐"}</button><span class="text" style="flex:1">${escapeHtml(g.text)}</span><button class="btn light" onclick="deleteGoal(${i})">삭제</button></div>`).join(""):`<div class="empty">목표를 추가해보세요.</div>`}
+function toggleGoal(i){data.goals[i].done=!data.goals[i].done;save();renderGoals()}
+function deleteGoal(i){data.goals.splice(i,1);save();renderGoals()}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function escapeAttr(s){return escapeHtml(s)}
+function init(){renderToday();renderYear();renderGoals();renderSubjects()}
+init();
+setInterval(()=>{let k=dateKey();if(window.lastDate!==k){window.lastDate=k;renderToday()}},1000);
+window.lastDate=dateKey();
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(err => console.log("PWA service worker:", err));
+  });
+}
+</script>
+
+</body>
+</html>
