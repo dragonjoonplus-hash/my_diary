@@ -17,7 +17,7 @@ button,input,textarea{font:inherit}button{cursor:pointer;border:0}
 .nav button.active,.nav button:hover{background:#f0f2f8;color:#111;font-weight:700}.main{margin-left:230px;width:calc(100% - 230px);padding:30px;max-width:1250px}
 .page{display:none}.page.active{display:block}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}h1{margin:0;font-size:28px}h2{margin-top:0}
 .card{background:#fff;border:1px solid #e8e9ee;border-radius:18px;padding:22px;margin-bottom:18px;box-shadow:0 3px 12px rgba(0,0,0,.03)}
-.date{font-size:16px;color:#777;margin-top:7px}.streak{font-size:18px;font-weight:700}.row{display:flex;gap:10px;align-items:center}.between{justify-content:space-between}
+.date{font-size:16px;color:#777;margin-top:7px}.dateNav{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.streak{font-size:18px;font-weight:700}.row{display:flex;gap:10px;align-items:center}.between{justify-content:space-between}
 .btn{background:#222;color:#fff;padding:11px 15px;border-radius:10px}.btn.light{background:#f0f1f5;color:#333}.btn.danger{background:#fff0f0;color:#c33}
 input,textarea,select{width:100%;padding:11px 12px;border:1px solid #d9dce3;border-radius:10px;background:#fff}textarea{min-height:180px;resize:vertical}
 .schedule{border:1px solid #eee;border-radius:14px;overflow:hidden}.hour{display:grid;grid-template-columns:85px 1fr;min-height:56px;border-bottom:1px solid #eee}.hour:last-child{border-bottom:0}
@@ -43,8 +43,12 @@ h1{font-size:24px}.top{align-items:flex-start}.streak{font-size:14px}.mobileNav{
 </nav></aside>
 <main class="main">
 <section id="today" class="page active">
-<div class="top"><div><h1>오늘</h1><div id="todayDate" class="date"></div></div><div class="streak">🔥 <span id="streak">0</span>일 연속</div></div>
-<div id="pastNotice" class="lock" style="display:none">🔒 이전 날짜의 기록은 읽기 전용입니다.</div>
+<div class="top"><div><h1 id="todayHeading">오늘</h1><div id="todayDate" class="date"></div><div class="dateNav">
+<button class="btn light" onclick="changeDate(-1)">← 이전 날짜</button>
+<button class="btn" onclick="returnToday()">오늘</button>
+<button class="btn light" onclick="changeDate(1)">다음 날짜 →</button>
+</div></div><div class="streak">🔥 <span id="streak">0</span>일 연속</div></div>
+<div id="pastNotice" class="lock" style="display:none">🔒 오늘이 아닌 날짜는 읽기 전용입니다.</div>
 <div class="card">
  <div class="row between"><h2>📋 오늘의 할 일</h2><button id="addTodoBtn" class="btn light" onclick="addTodo()">＋ 할 일</button></div>
  <div id="todoList"></div>
@@ -77,16 +81,29 @@ data.days=data.days||{};data.notes=data.notes||{};data.goals=data.goals||[];data
 let viewDate=new Date();viewDate.setHours(0,0,0,0),currentSubject="",editingId=null;
 
 function save(){localStorage.setItem(KEY,JSON.stringify(data))}
-function key(d){return d.toISOString().slice(0,10)}
+function key(d){
+  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
 function korean(d){return d.toLocaleDateString("ko-KR",{year:"numeric",month:"long",day:"numeric",weekday:"long"})}
 function isToday(){return key(viewDate)===key(new Date())}
 function day(){return data.days[key(viewDate)]||{todos:[],schedule:{},text:""}}
 function saveDay(d){data.days[key(viewDate)]=d;save()}
+function changeDate(amount){
+  const d=new Date(viewDate);
+  d.setDate(d.getDate()+amount);
+  d.setHours(0,0,0,0);
+  viewDate=d;
+  renderToday();
+}
 function escape(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
 
 function renderToday(){
- let d=day();document.getElementById("todayDate").textContent=korean(viewDate);
- const locked=!isToday();document.getElementById("pastNotice").style.display=locked?"block":"none";
+ let d=day();
+ document.getElementById("todayDate").textContent=korean(viewDate);
+ document.getElementById("todayHeading").textContent=isToday()?"오늘":(key(viewDate)<key(new Date())?"어제의 기록":"내일의 기록");
+ const locked=!isToday();
+ document.getElementById("pastNotice").style.display=locked?"block":"none";
  document.getElementById("addTodoBtn").disabled=locked;document.getElementById("diaryText").disabled=locked;document.getElementById("saveDiaryBtn").disabled=locked;
  document.getElementById("diaryText").classList.toggle("readonly",locked);document.getElementById("diaryText").value=d.text||"";
  let todos=d.todos||[];document.getElementById("todoList").innerHTML=todos.length?todos.map((t,i)=>`<div class="todo ${t.status==="done"?"done":""}"><button class="status" ${locked?"disabled":""} onclick="cycleTodo(${i})">${t.status==="done"?"☑️":t.status==="half"?"🔺":"☐"}</button><div style="flex:1"><b>${escape(t.time)}</b>　<span class="text">${escape(t.text)}</span></div>${locked?"":`<button class="btn light" onclick="deleteTodo(${i})">삭제</button>`}</div>`).join(""):`<div class="empty">오늘의 할 일을 추가해보세요.</div>`;
@@ -99,7 +116,7 @@ function deleteTodo(i){if(!isToday())return;let d=day();d.todos.splice(i,1);save
 function saveSchedule(t,v){if(!isToday())return;let d=day();d.schedule=d.schedule||{};if(v.trim())d.schedule[t]=v.trim();else delete d.schedule[t];saveDay(d)}
 function saveDiary(){if(!isToday())return;let d=day();d.text=document.getElementById("diaryText").value;saveDay(d);document.getElementById("diaryStatus").textContent="✓ 저장되었습니다";updateStreak();setTimeout(()=>document.getElementById("diaryStatus").textContent="",1800)}
 function showYesterday(){let y=new Date();y.setHours(0,0,0,0);y.setDate(y.getDate()-1);viewDate=y;showPage("today");}
-function returnToday(){viewDate=new Date();viewDate.setHours(0,0,0,0);renderToday()}
+function returnToday(){viewDate=new Date();viewDate.setHours(0,0,0,0);renderToday();}
 function carryHalf(){
  let today=new Date();today.setHours(0,0,0,0),k=key(today),stamp=localStorage.getItem("myDiaryCarryV2");
  if(stamp===k)return;let p=new Date(today);p.setDate(p.getDate()-1);let old=data.days[key(p)];if(old?.todos?.length){let half=old.todos.filter(x=>x.status==="half").map(x=>({id:Date.now()+Math.random(),time:x.time,text:x.text,status:"pending"}));if(half.length){data.days[k]=data.days[k]||{todos:[],schedule:{},text:""};data.days[k].todos=[...(data.days[k].todos||[]),...half]}}localStorage.setItem("myDiaryCarryV2",k);save()}
