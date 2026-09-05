@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#ff7eb6">
+<meta name="theme-color" content="#4da6e8">
 <link rel="manifest" href="./manifest.json">
 <title>나의 다이어리</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#fff7fb;color:#222}
+body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(135deg,#f3fbff 0%,#e8f5ff 55%,#dff1ff 100%);color:#222}
 button,input,textarea{font:inherit}
 button{cursor:pointer;border:0}
 .app{display:flex;min-height:100vh}
-.sidebar{width:230px;background:#ffe0ee;padding:18px 12px;position:fixed;left:0;top:0;bottom:0}
+.sidebar{width:230px;background:#dff1ff;padding:18px 12px;position:fixed;left:0;top:0;bottom:0}
 .logo{font-size:20px;font-weight:800;margin:8px 8px 22px}
 .nav button{display:block;width:100%;padding:14px 12px;margin:7px 0;text-align:left;border-radius:12px;background:transparent}
 .nav button.active{background:#fff;font-weight:800;box-shadow:0 2px 8px #0001}
@@ -22,8 +22,8 @@ button{cursor:pointer;border:0}
 h1{margin:0;font-size:28px}h2{margin:5px 0 14px}
 .card{background:#fff;border:1px solid #eee;border-radius:18px;padding:18px;margin-bottom:16px;box-shadow:0 3px 14px #00000008}
 .row{display:flex;align-items:center;gap:10px}.between{justify-content:space-between}
-.btn{background:#ff6fae;color:#fff;padding:10px 14px;border-radius:10px;font-weight:700}
-.btn.light{background:#f2f2f5;color:#222}.btn.danger{background:#ffe0e0;color:#a00}
+.btn{background:#4da6e8;color:#fff;padding:10px 14px;border-radius:10px;font-weight:700}
+.btn.light{background:#f2f2f5;color:#222}.btn.danger{background:#ffe0e0;color:#1769aa}
 .streak{font-size:17px;font-weight:800}
 .dateNav{display:flex;justify-content:center;align-items:center;gap:7px;margin:0 0 16px;flex-wrap:wrap}
 .dateNav button{background:#f2f2f5;padding:9px 12px;border-radius:10px}
@@ -52,13 +52,13 @@ input{min-width:0}
 .modal-bg{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:15px;z-index:50}
 .modal{background:#fff;border-radius:18px;padding:20px;width:min(540px,100%);max-height:90vh;overflow:auto}
 .modal h2{margin-top:0}
-.auth-tabs{display:flex;gap:7px;margin-bottom:14px}.auth-tabs button{flex:1;padding:10px;border-radius:9px;background:#eee}.auth-tabs .active{background:#ff6fae;color:#fff}
-.auth-msg{display:none;padding:10px;border-radius:10px;background:#fff1b8;margin:10px 0}
+.auth-tabs{display:flex;gap:7px;margin-bottom:14px}.auth-tabs button{flex:1;padding:10px;border-radius:9px;background:#eee}.auth-tabs .active{background:#4da6e8;color:#fff}
+.auth-msg{display:none;padding:10px;border-radius:10px;background:#e8f5ff;margin:10px 0}
 .backup{border:1px solid #eee;border-radius:10px;padding:10px;margin:8px 0}
 .mobileNav{display:none}
 @media(max-width:760px){
 .sidebar{display:none}.main{margin:0;width:100%;padding:15px 10px 80px}
-.mobileNav{display:flex;position:fixed;bottom:0;left:0;right:0;background:#ffe0ee;z-index:20;padding:5px}
+.mobileNav{display:flex;position:fixed;bottom:0;left:0;right:0;background:#dff1ff;z-index:20;padding:5px}
 .mobileNav button{flex:1;background:transparent;border-radius:10px;padding:6px 2px;font-size:12px}.mobileNav button.active{background:#fff;font-weight:800}
 .top{align-items:flex-start}h1{font-size:23px}
 .grid{grid-template-columns:1fr}.month-grid{grid-template-columns:1fr 1fr}
