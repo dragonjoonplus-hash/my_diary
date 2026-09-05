@@ -187,6 +187,27 @@ const APP_VERSION="6.1.0";
 let data=loadData();
 let viewDate=new Date();viewDate.setHours(0,0,0,0);
 let currentSubject="",editingId=null,currentUser=null,cloudTimer=null;
+const subjectListEl=document.getElementById("subjectList");
+const subjectViewEl=document.getElementById("subjectView");
+const writerEl=document.getElementById("writer");
+const fullNoteEl=document.getElementById("fullNote");
+const subjectTitleEl=document.getElementById("subjectTitle");
+const writerTitleEl=document.getElementById("writerTitle");
+const savedNotesEl=document.getElementById("savedNotes");
+const majorEl=document.getElementById("major");
+const minorEl=document.getElementById("minor");
+const contentEl=document.getElementById("content");
+const saveNoteBtnEl=document.getElementById("saveNoteBtn");
+const fullTitleEl=document.getElementById("fullTitle");
+const fullDateEl=document.getElementById("fullDate");
+const fullContentEl=document.getElementById("fullContent");
+const goalListEl=document.getElementById("goalList");
+const goalInputEl=document.getElementById("goalInput");
+const modalEl=document.getElementById("modal");
+const modalBgEl=document.getElementById("modalBg");
+const accountBtnEl=document.getElementById("accountBtn");
+const cloudDotEl=document.getElementById("cloudDot");
+const cloudTextEl=document.getElementById("cloudText");
 
 function blankData(){return{days:{},notes:{},goals:[],months:{},yearPlan:""}}
 function loadData(){
@@ -288,7 +309,7 @@ function updateStreak(){
   let x=data.days[key(d)],has=x&&(x.text?.trim()||Object.keys(x.schedule||{}).length||(x.todos||[]).some(t=>t.status==="done"));
   if(!has)break;s++;d.setDate(d.getDate()-1);
  }
- document.getElementById("streak")?.textContent=s;
+ const streakEl=document.getElementById("streak"); if(streakEl) streakEl.textContent=s;
 }
 
 function renderYear(){
@@ -300,36 +321,36 @@ function saveYearPlan(){data.yearPlan=document.getElementById("yearPlan").value;
 
 const subjects=["🇰🇷 국어노트","🔢 수학노트","🔤 영어노트","🔬 과학노트","🌏 사회노트"];
 function renderSubjects(){
- subjectList.style.display="block";subjectView.style.display="none";writer.style.display="none";fullNote.style.display="none";
+ subjectListEl.style.display="block";subjectViewEl.style.display="none";writerEl.style.display="none";fullNoteEl.style.display="none";
  subjectsEl=document.getElementById("subjects");
  subjectsEl.innerHTML=subjects.map(s=>`<button class="subject" onclick="openSubject('${s}')">${s}</button>`).join("");
 }
-function openSubject(s){currentSubject=s;subjectList.style.display="none";subjectView.style.display="block";subjectTitle.textContent=s;renderNotes()}
+function openSubject(s){currentSubject=s;subjectListEl.style.display="none";subjectViewEl.style.display="block";subjectTitleEl.textContent=s;renderNotes()}
 function closeSubject(){currentSubject="";renderSubjects()}
 function renderNotes(){
  let ns=data.notes[currentSubject]||[];
- savedNotes.innerHTML=`<div class="card"><button class="btn" onclick="openWriter()">✏️ 작성하기</button></div>`+
+ savedNotesEl.innerHTML=`<div class="card"><button class="btn" onclick="openWriter()">✏️ 작성하기</button></div>`+
  (ns.length?ns.map(n=>`<div class="card note"><b>${escape(n.major)} · ${escape(n.minor)}</b><div class="small">${escape(n.createdAt)}</div><div class="preview">${escape((n.content||"").replace(/\s+/g," "))}</div><div class="actions"><button class="btn light" onclick='openFull(${JSON.stringify(n)})'>내용 보기</button><button class="btn light" onclick='editNote(${JSON.stringify(n)})'>✏️ 수정</button><button class="btn danger" onclick="deleteNote(${n.id})">삭제</button></div></div>`).join(""):`<div class="card empty">아직 작성한 노트가 없습니다.</div>`);
 }
-function openWriter(){subjectView.style.display="none";writer.style.display="block";writerTitle.textContent=currentSubject+" 작성";editingId=null;clearWriter()}
-function clearWriter(){major.value="";minor.value="";content.value="";saveNoteBtn.textContent="💾 저장"}
-function closeWriter(){writer.style.display="none";subjectView.style.display="block";renderNotes()}
+function openWriter(){subjectViewEl.style.display="none";writerEl.style.display="block";writerTitleEl.textContent=currentSubject+" 작성";editingId=null;clearWriter()}
+function clearWriter(){majorEl.value="";minorEl.value="";contentEl.value="";saveNoteBtnEl.textContent="💾 저장"}
+function closeWriter(){writerEl.style.display="none";subjectViewEl.style.display="block";renderNotes()}
 function saveNote(){
- if(!major.value.trim()||!minor.value.trim()||!content.value.trim()){alert("모든 항목을 입력해주세요.");return}
+ if(!majorEl.value.trim()||!minorEl.value.trim()||!contentEl.value.trim()){alert("모든 항목을 입력해주세요.");return}
  data.notes[currentSubject]=data.notes[currentSubject]||[];
- if(editingId){let n=data.notes[currentSubject].find(x=>x.id===editingId);Object.assign(n,{major:major.value.trim(),minor:minor.value.trim(),content:content.value.trim()})}
- else data.notes[currentSubject].push({id:Date.now(),major:major.value.trim(),minor:minor.value.trim(),content:content.value.trim(),createdAt:korean(new Date())});
+ if(editingId){let n=data.notes[currentSubject].find(x=>x.id===editingId);Object.assign(n,{major:majorEl.value.trim(),minor:minorEl.value.trim(),content:contentEl.value.trim()})}
+ else data.notes[currentSubject].push({id:Date.now(),major:majorEl.value.trim(),minor:minorEl.value.trim(),content:contentEl.value.trim(),createdAt:korean(new Date())});
  save();editingId=null;closeWriter();
 }
-function editNote(n){openWriter();editingId=n.id;major.value=n.major;minor.value=n.minor;content.value=n.content;saveNoteBtn.textContent="💾 수정 저장"}
+function editNote(n){openWriter();editingId=n.id;majorEl.value=n.major;minorEl.value=n.minor;contentEl.value=n.content;saveNoteBtnEl.textContent="💾 수정 저장"}
 function deleteNote(id){if(confirm("이 노트를 삭제할까요?")){data.notes[currentSubject]=(data.notes[currentSubject]||[]).filter(n=>n.id!==id);save();renderNotes()}}
-function openFull(n){subjectView.style.display="none";fullNote.style.display="block";fullTitle.textContent=n.major+" · "+n.minor;fullDate.textContent=n.createdAt;fullContent.textContent=n.content}
-function closeFullNote(){fullNote.style.display="none";subjectView.style.display="block";renderNotes()}
+function openFull(n){subjectViewEl.style.display="none";fullNoteEl.style.display="block";fullTitleEl.textContent=n.major+" · "+n.minor;fullDateEl.textContent=n.createdAt;fullContentEl.textContent=n.content}
+function closeFullNote(){fullNoteEl.style.display="none";subjectViewEl.style.display="block";renderNotes()}
 
 function renderGoals(){
- goalList.innerHTML=data.goals.length?data.goals.map((g,i)=>`<div class="todo ${g.done?"done":""}"><button class="status" onclick="toggleGoal(${i})">${g.done?"☑️":"☐"}</button><span class="text" style="flex:1">${escape(g.text)}</span><button class="btn light" onclick="deleteGoal(${i})">삭제</button></div>`).join(""):`<div class="empty">목표를 추가해보세요.</div>`;
+ goalListEl.innerHTML=data.goals.length?data.goals.map((g,i)=>`<div class="todo ${g.done?"done":""}"><button class="status" onclick="toggleGoal(${i})">${g.done?"☑️":"☐"}</button><span class="text" style="flex:1">${escape(g.text)}</span><button class="btn light" onclick="deleteGoal(${i})">삭제</button></div>`).join(""):`<div class="empty">목표를 추가해보세요.</div>`;
 }
-function addGoal(){let v=goalInput.value.trim();if(!v)return;data.goals.push({id:Date.now(),text:v,done:false});goalInput.value="";save();renderGoals()}
+function addGoal(){let v=goalInputEl.value.trim();if(!v)return;data.goals.push({id:Date.now(),text:v,done:false});goalInputEl.value="";save();renderGoals()}
 function toggleGoal(i){data.goals[i].done=!data.goals[i].done;save();renderGoals()}
 function deleteGoal(i){data.goals.splice(i,1);save();renderGoals()}
 
@@ -344,8 +365,8 @@ document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>showPage(b.dat
 
 /* 클라우드 */
 function setCloud(on,text){
- document.getElementById("cloudDot").className="cloud-dot"+(on?" on":"");
- document.getElementById("cloudText").textContent=text;
+ document.getElementById("cloudDotEl.className="cloud-dot"+(on?" on":"");
+ document.getElementById("cloudTextEl.textContent=text;
 }
 function scheduleCloudSave(){
  if(!currentUser)return;
@@ -378,22 +399,22 @@ async function loadCloud(){
  }
 }
 function openAuth(){
- modal.innerHTML=`<h2>🔐 로그인 / 회원가입</h2>
+ modalEl.innerHTML=`<h2>🔐 로그인 / 회원가입</h2>
  <div class="auth-tabs"><button id="loginTab" class="active">로그인</button><button id="signupTab">회원가입</button></div>
  <div id="authMsg" class="auth-msg"></div>
  <label>이메일</label><input id="authEmail" type="email" placeholder="이메일"><br><br>
  <label>비밀번호</label><input id="authPw" type="password" placeholder="6자 이상"><br><br>
  <button class="btn" id="authGo">로그인</button> <button class="btn light" onclick="closeModal()">닫기</button>`;
  let mode="login";
- const msg=t=>{authMsg.textContent=t;authMsg.style.display="block"};
- loginTab.onclick=()=>{mode="login";loginTab.classList.add("active");signupTab.classList.remove("active");authGo.textContent="로그인"};
- signupTab.onclick=()=>{mode="signup";signupTab.classList.add("active");loginTab.classList.remove("active");authGo.textContent="회원가입"};
+ const msg=t=>{document.getElementById("authMsg").textContent=t;document.getElementById("authMsg").style.display="block"};
+ document.getElementById("loginTab").onclick=()=>{mode="login";loginTab.classList.add("active");signupTab.classList.remove("active");document.getElementById("authGo").textContent="로그인"};
+ document.getElementById("signupTab").onclick=()=>{mode="signup";signupTab.classList.add("active");loginTab.classList.remove("active");document.getElementById("authGo").textContent="회원가입"};
  authGo.onclick=async()=>{
-  let email=authEmail.value.trim(),password=authPw.value;
+  let email=document.getElementById("authEmail").value.trim(),password=document.getElementById("authPw").value;
   if(!email||password.length<6){msg("이메일과 6자 이상의 비밀번호를 입력해주세요.");return}
-  authGo.disabled=true;
+  document.getElementById("authGo").disabled=true;
   let r=mode==="login"?await sb.auth.signInWithPassword({email,password}):await sb.auth.signUp({email,password});
-  authGo.disabled=false;
+  document.getElementById("authGo").disabled=false;
   if(r.error){msg(r.error.message);return}
   if(mode==="signup"){msg("회원가입이 완료되었습니다. 이메일 확인이 필요한 경우 메일을 확인한 뒤 로그인해주세요.");return}
   closeModal();currentUser=r.data.user;await loadCloud();renderAll();
@@ -402,7 +423,7 @@ function openAuth(){
 }
 function openAccount(){
  if(!currentUser){openAuth();return}
- modal.innerHTML=`<h2>☁️ 내 계정</h2><p>${escape(currentUser.email||"")}</p>
+ modalEl.innerHTML=`<h2>☁️ 내 계정</h2><p>${escape(currentUser.email||"")}</p>
  <button class="btn" onclick="cloudSave().then(()=>alert('저장했습니다.'))">☁️ 지금 저장</button>
  <button class="btn light" onclick="openBackups()">💾 백업 보기</button>
  <button class="btn danger" onclick="logout()">로그아웃</button>
@@ -412,11 +433,11 @@ function openAccount(){
 async function logout(){await sb.auth.signOut();currentUser=null;setCloud(false,"오프라인");closeModal();renderAll()}
 async function openBackups(){
  if(!currentUser)return;
- modal.innerHTML=`<h2>💾 백업</h2><p class="small">백업을 선택하면 현재 기록을 먼저 백업한 뒤 복구합니다.</p><div id="backupList">불러오는 중...</div><button class="btn light" onclick="closeModal()">닫기</button>`;
+ modalEl.innerHTML=`<h2>💾 백업</h2><p class="small">백업을 선택하면 현재 기록을 먼저 백업한 뒤 복구합니다.</p><div id="backupList">불러오는 중...</div><button class="btn light" onclick="closeModal()">닫기</button>`;
  const {data:rows,error}=await sb.from("diary_backups").select("id,app_version,reason,created_at").eq("user_id",currentUser.id).order("created_at",{ascending:false}).limit(20);
- if(error){backupList.textContent="백업을 불러오지 못했습니다.";return}
- if(!rows.length){backupList.innerHTML='<div class="empty">아직 백업이 없습니다.</div>';return}
- backupList.innerHTML=rows.map(x=>`<div class="backup"><b>${new Date(x.created_at).toLocaleString("ko-KR")}</b><br><span class="small">${escape(x.reason)} · 앱 ${escape(x.app_version)}</span><button class="btn light" style="float:right" onclick="restoreBackup('${x.id}')">복구</button><div style="clear:both"></div></div>`).join("");
+ if(error){document.getElementById("backupList").textContent="백업을 불러오지 못했습니다.";return}
+ if(!rows.length){document.getElementById("backupList").innerHTML='<div class="empty">아직 백업이 없습니다.</div>';return}
+ document.getElementById("backupList").innerHTML=rows.map(x=>`<div class="backup"><b>${new Date(x.created_at).toLocaleString("ko-KR")}</b><br><span class="small">${escape(x.reason)} · 앱 ${escape(x.app_version)}</span><button class="btn light" style="float:right" onclick="restoreBackup('${x.id}')">복구</button><div style="clear:both"></div></div>`).join("");
 }
 async function restoreBackup(id){
  if(!confirm("현재 기록을 먼저 백업하고 이 백업으로 복구할까요?"))return;
@@ -427,10 +448,10 @@ async function restoreBackup(id){
  data.days=data.days||{};data.notes=data.notes||{};data.goals=data.goals||[];data.months=data.months||{};data.yearPlan=data.yearPlan||"";
  saveLocal();await cloudSave();closeModal();renderAll();alert("복구했습니다.");
 }
-function openModal(){modalBg.style.display="flex"}
-function closeModal(){modalBg.style.display="none"}
-modalBg.onclick=e=>{if(e.target===modalBg)closeModal()}
-accountBtn.onclick=openAccount;
+function openModal(){modalBgEl.style.display="flex"}
+function closeModal(){modalBgEl.style.display="none"}
+modalBgEl.onclick=e=>{if(e.target===modalBg)closeModal()}
+accountBtnEl.onclick=openAccount;
 
 function migrateOld(){
  const old=localStorage.getItem("local_diaryData");
