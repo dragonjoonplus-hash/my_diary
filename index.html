@@ -33,6 +33,9 @@ h1{margin:0;font-size:28px}h2{margin:5px 0 14px}
 .todo:last-child{border-bottom:0}
 .todo .status{background:#f4f4f5;border-radius:9px;padding:7px 9px;font-size:17px}
 .todo.done .text{text-decoration:line-through;color:#999}
+.todo-input-row{display:flex;gap:8px;margin-top:12px}
+.todo-input-row input{flex:1;min-width:0;padding:11px 12px;border:1px solid #ddd;border-radius:10px;outline:none}
+.todo-input-row input:focus{border-color:#4da6e8;box-shadow:0 0 0 3px #4da6e822}
 .empty{text-align:center;color:#888;padding:22px}
 .small{font-size:13px;color:#777}
 .schedule .hour{display:grid;grid-template-columns:75px 1fr;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #eee}
@@ -100,11 +103,12 @@ input{min-width:0}
   <div id="pastNotice" class="lock" style="display:none">🔒 이전 날짜의 기록은 읽기 전용입니다.</div>
 
   <div class="card">
-   <div class="row between">
-    <h2>📋 오늘의 할 일</h2>
-    <button type="button" id="addTodoBtn" class="btn light" onclick="addTodo()">＋ 할 일</button>
-   </div>
+   <h2>📋 오늘의 할 일</h2>
    <div id="todoList"></div>
+   <div class="todo-input-row">
+    <input id="todoInput" type="text" placeholder="할 일을 입력하세요." autocomplete="off">
+    <button type="button" id="todoAddInlineBtn" class="btn light" onclick="addTodoFromInput()">추가</button>
+   </div>
   </div>
 
   <div class="card">
@@ -235,7 +239,8 @@ function renderToday(){
  let d=day(),locked=!canEdit();
  document.getElementById("todayDate").textContent=korean(viewDate)+(locked?" 🔒":"");
  document.getElementById("pastNotice").style.display=locked?"block":"none";
- document.getElementById("addTodoBtn").disabled=locked;
+ document.getElementById("todoInput").disabled=locked;
+ document.getElementById("todoAddInlineBtn").disabled=locked;
  document.getElementById("diaryText").disabled=locked;
  document.getElementById("saveDiaryBtn").disabled=locked;
  document.getElementById("diaryText").value=d.text||"";
@@ -256,11 +261,25 @@ function renderToday(){
  document.getElementById("schedule").innerHTML=html;
  updateStreak();
 }
-function addTodo(){
+function addTodoFromInput(){
  if(!canEdit())return;
- let text=prompt("할 일을 입력하세요.");if(text===null||!text.trim())return;
- let d=day();d.todos=d.todos||[];d.todos.push({id:Date.now()+Math.random(),time:"",text:text.trim(),status:"pending"});saveDay(d);renderToday();
+ const input=document.getElementById("todoInput");
+ const text=input.value.trim();
+ if(!text)return;
+ let d=day();
+ d.todos=d.todos||[];
+ d.todos.push({id:Date.now()+Math.random(),time:"",text:text,status:"pending"});
+ saveDay(d);
+ input.value="";
+ renderToday();
+ setTimeout(()=>document.getElementById("todoInput")?.focus(),0);
 }
+document.addEventListener("keydown",e=>{
+ if(e.key==="Enter" && document.activeElement?.id==="todoInput"){
+  e.preventDefault();
+  addTodoFromInput();
+ }
+});
 function cycleTodo(i){
  if(!canEdit())return;
  let d=day(),t=d.todos[i];t.status=t.status==="pending"?"half":t.status==="half"?"done":"pending";saveDay(d);renderToday();
