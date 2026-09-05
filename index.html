@@ -254,7 +254,7 @@ function renderToday(){
   </div>`).join(""):`<div class="empty">오늘의 할 일을 추가해보세요.</div>`;
 
  let html="";
- for(let h=0;h<24;h++){
+ for(let h=6;h<24;h++){
   let t=String(h).padStart(2,"0")+":00";
   html+=`<div class="hour"><div class="hour-time">${t}</div><input ${locked?"disabled":""} value="${escape(d.schedule?.[t]||"")}" placeholder="계획 입력" onchange="saveSchedule('${t}',this.value)"></div>`;
  }
