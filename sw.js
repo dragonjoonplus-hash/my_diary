@@ -1,8 +1,7 @@
-const CACHE = "my-diary-v4";
+const CACHE = "my-diary-v5";
 
-const ASSETS = [
+const STATIC_ASSETS = [
   "./",
-  "./index.html",
   "./manifest.json",
   "./icon-192.png",
   "./icon-512.png"
@@ -10,26 +9,24 @@ const ASSETS = [
 
 self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open(CACHE).then(cache => {
-      return cache.addAll(ASSETS);
-    })
+    caches.open(CACHE)
+      .then(cache => cache.addAll(STATIC_ASSETS))
+      .then(() => self.skipWaiting())
   );
-
-  self.skipWaiting();
 });
 
 self.addEventListener("activate", event => {
   event.waitUntil(
-    caches.keys().then(keys => {
-      return Promise.all(
-        keys
-          .filter(key => key !== CACHE)
-          .map(key => caches.delete(key))
-      );
-    })
+    caches.keys()
+      .then(keys =>
+        Promise.all(
+          keys
+            .filter(key => key !== CACHE)
+            .map(key => caches.delete(key))
+        )
+      )
+      .then(() => self.clients.claim())
   );
-
-  self.clients.claim();
 });
 
 self.addEventListener("fetch", event => {
@@ -37,55 +34,42 @@ self.addEventListener("fetch", event => {
 
   const url = new URL(event.request.url);
 
-  // index.html은 항상 최신 버전을 먼저 가져오기
+  // index.html은 항상 최신 파일을 먼저 사용
   if (
-    url.pathname.endsWith("/index.html") ||
-    url.pathname.endsWith("/my_diary/")
+    url.pathname.endsWith("/") ||
+    url.pathname.endsWith("/index.html")
   ) {
     event.respondWith(
-      fetch(event.request, {
-        cache: "no-store"
-      })
+      fetch(event.request, { cache: "no-store" })
         .then(response => {
           const copy = response.clone();
-
           caches.open(CACHE).then(cache => {
-            cache.put("./index.html", copy);
+            cache.put(event.request, copy);
           });
-
           return response;
         })
-        .catch(() => {
-          return caches.match("./index.html");
-        })
+        .catch(() => caches.match(event.request))
     );
-
     return;
   }
 
   // 나머지 파일은 캐시 우선
   event.respondWith(
     caches.match(event.request).then(cached => {
+      if (cached) return cached;
 
-      if (cached) {
-        return cached;
-      }
-
-      return fetch(event.request)
-        .then(response => {
-
-          const copy = response.clone();
-
-          caches.open(CACHE).then(cache => {
-            cache.put(event.request, copy);
-          });
-
+      return fetch(event.request).then(response => {
+        if (!response || response.status !== 200) {
           return response;
-        })
-        .catch(() => {
-          return caches.match("./index.html");
+        }
+
+        const copy = response.clone();
+        caches.open(CACHE).then(cache => {
+          cache.put(event.request, copy);
         });
 
+        return response;
+      });
     })
   );
 });
