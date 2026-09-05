@@ -126,7 +126,6 @@ input{min-width:0}
  </section>
 
  <section id="year" class="page">
-  <div class="top"><h1>📅 1년 계획</h1></div>
   <div class="card">
    <h2>올해의 큰 계획</h2>
    <textarea id="yearPlan" placeholder="올해 이루고 싶은 일과 계획을 적어보세요."></textarea>
@@ -137,7 +136,6 @@ input{min-width:0}
 
  <section id="notes" class="page">
   <div id="subjectList">
-   <div class="top"><h1>📚 정리노트</h1></div>
    <div class="grid" id="subjects"></div>
   </div>
   <div id="subjectView" style="display:none">
@@ -160,7 +158,6 @@ input{min-width:0}
  </section>
 
  <section id="goals" class="page">
-  <div class="top"><h1>🎯 목표</h1></div>
   <div class="card"><div class="row"><input id="goalInput" placeholder="새로운 목표를 입력하세요"><button type="button" class="btn" onclick="addGoal()">추가</button></div></div>
   <div class="card"><div id="goalList"></div></div>
  </section>
@@ -398,6 +395,7 @@ async function loadCloud(){
   await cloudSave();
  }
 }
+function updateAccountButton(){accountBtnEl.textContent=currentUser?(currentUser.email||"계정"):"로그인"}
 function openAuth(){
  modalEl.innerHTML=`<h2>🔐 로그인 / 회원가입</h2>
  <div class="auth-tabs"><button type="button" id="loginTab" class="active">로그인</button><button type="button" id="signupTab">회원가입</button></div>
@@ -417,7 +415,7 @@ function openAuth(){
   document.getElementById("authGo").disabled=false;
   if(r.error){msg(r.error.message);return}
   if(mode==="signup"){msg("회원가입이 완료되었습니다. 이메일 확인이 필요한 경우 메일을 확인한 뒤 로그인해주세요.");return}
-  closeModal();currentUser=r.data.user;await loadCloud();renderAll();
+  closeModal();currentUser=r.data.user;updateAccountButton();await loadCloud();renderAll();
  };
  openModal();
 }
@@ -430,7 +428,7 @@ function openAccount(){
  <button type="button" class="btn light" onclick="closeModal()">닫기</button>`;
  openModal();
 }
-async function logout(){await sb.auth.signOut();currentUser=null;setCloud(false,"오프라인");closeModal();renderAll()}
+async function logout(){await sb.auth.signOut();currentUser=null;updateAccountButton();setCloud(false,"오프라인");closeModal();renderAll()}
 async function openBackups(){
  if(!currentUser)return;
  modalEl.innerHTML=`<h2>💾 백업</h2><p class="small">백업을 선택하면 현재 기록을 먼저 백업한 뒤 복구합니다.</p><div id="backupList">불러오는 중...</div><button type="button" class="btn light" onclick="closeModal()">닫기</button>`;
@@ -475,13 +473,14 @@ renderAll();
  const {data:sessionData}=await sb.auth.getSession();
  if(sessionData.session){
   currentUser=sessionData.session.user;
+  updateAccountButton();
   setCloud(true,"로그인됨");
   await loadCloud();
   renderAll();
  }
  sb.auth.onAuthStateChange(async(event,session)=>{
-  if(session&&!currentUser){currentUser=session.user;await loadCloud();renderAll()}
-  if(!session){currentUser=null;setCloud(false,"오프라인");renderAll()}
+  if(session&&!currentUser){currentUser=session.user;updateAccountButton();await loadCloud();renderAll()}
+  if(!session){currentUser=null;updateAccountButton();setCloud(false,"오프라인");renderAll()}
  });
 })();
 
