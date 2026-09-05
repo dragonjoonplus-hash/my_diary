@@ -66,6 +66,13 @@ input{min-width:0}
 .account .small{display:none}
 }
 </style>
+
+<script>
+window.addEventListener("error", function(e) {
+  console.error("다이어리 오류:", e.error || e.message);
+});
+</script>
+
 </head>
 <body>
 
@@ -73,10 +80,10 @@ input{min-width:0}
 <aside class="sidebar">
  <div class="logo">📔 나의 다이어리</div>
  <nav class="nav">
-  <button data-page="today" class="active">📔 오늘</button>
-  <button data-page="year">📅 1년 계획</button>
-  <button data-page="notes">📚 정리노트</button>
-  <button data-page="goals">🎯 목표</button>
+  <button type="button" data-page="today" class="active">📔 오늘</button>
+  <button type="button" data-page="year">📅 1년 계획</button>
+  <button type="button" data-page="notes">📚 정리노트</button>
+  <button type="button" data-page="goals">🎯 목표</button>
  </nav>
 </aside>
 
@@ -86,23 +93,23 @@ input{min-width:0}
   <div class="account">
    <span id="cloudDot" class="cloud-dot"></span>
    <span id="cloudText" class="small">오프라인</span>
-   <button id="accountBtn" class="btn light">로그인</button>
+   <button type="button" id="accountBtn" class="btn light">로그인</button>
   </div>
  </div>
 
  <section id="today" class="page active">
   <div class="dateNav">
-   <button onclick="previousDate()">← 이전 날짜</button>
-   <button onclick="returnToday()">오늘</button>
+   <button type="button" onclick="previousDate()">← 이전 날짜</button>
+   <button type="button" onclick="returnToday()">오늘</button>
    <div id="todayDate" class="dateMain"></div>
-   <button onclick="nextDate()">다음 날짜 →</button>
+   <button type="button" onclick="nextDate()">다음 날짜 →</button>
   </div>
   <div id="pastNotice" class="lock" style="display:none">🔒 이전 날짜의 기록은 읽기 전용입니다.</div>
 
   <div class="card">
    <div class="row between">
     <h2>📋 오늘의 할 일</h2>
-    <button id="addTodoBtn" class="btn light" onclick="addTodo()">＋ 할 일</button>
+    <button type="button" id="addTodoBtn" class="btn light" onclick="addTodo()">＋ 할 일</button>
    </div>
    <div id="todoList"></div>
   </div>
@@ -116,12 +123,12 @@ input{min-width:0}
   <div class="card">
    <h2>✍️ 오늘의 기록</h2>
    <textarea id="diaryText" placeholder="오늘 하루를 기록해보세요."></textarea>
-   <div class="actions"><button id="saveDiaryBtn" class="btn" onclick="saveDiary()">💾 기록 저장</button></div>
+   <div class="actions"><button type="button" id="saveDiaryBtn" class="btn" onclick="saveDiary()">💾 기록 저장</button></div>
    <div id="diaryStatus" class="small"></div>
   </div>
 
   <div class="card">
-   <button class="btn light" onclick="showYesterday()">📖 어제 기록 보기</button>
+   <button type="button" class="btn light" onclick="showYesterday()">📖 어제 기록 보기</button>
   </div>
  </section>
 
@@ -130,7 +137,7 @@ input{min-width:0}
   <div class="card">
    <h2>올해의 큰 계획</h2>
    <textarea id="yearPlan" placeholder="올해 이루고 싶은 일과 계획을 적어보세요."></textarea>
-   <div class="actions"><button class="btn" onclick="saveYearPlan()">저장</button></div>
+   <div class="actions"><button type="button" class="btn" onclick="saveYearPlan()">저장</button></div>
   </div>
   <div class="card"><h2>월별 계획</h2><div id="months" class="month-grid"></div></div>
  </section>
@@ -141,37 +148,37 @@ input{min-width:0}
    <div class="grid" id="subjects"></div>
   </div>
   <div id="subjectView" style="display:none">
-   <div class="top"><h1 id="subjectTitle"></h1><button class="btn light" onclick="closeSubject()">← 과목 목록</button></div>
+   <div class="top"><h1 id="subjectTitle"></h1><button type="button" class="btn light" onclick="closeSubject()">← 과목 목록</button></div>
    <div id="savedNotes"></div>
   </div>
   <div id="writer" style="display:none">
-   <div class="top"><h1 id="writerTitle">노트 작성</h1><button class="btn light" onclick="closeWriter()">← 노트 목록</button></div>
+   <div class="top"><h1 id="writerTitle">노트 작성</h1><button type="button" class="btn light" onclick="closeWriter()">← 노트 목록</button></div>
    <div class="card">
     <label>대단원</label><input id="major" placeholder="예: 함수"><br><br>
     <label>소단원</label><input id="minor" placeholder="예: 일차함수"><br><br>
     <label>정리 내용</label><textarea id="content" placeholder="배운 내용을 자유롭게 정리하세요."></textarea>
-    <div class="actions"><button id="saveNoteBtn" class="btn" onclick="saveNote()">💾 저장</button><button class="btn light" onclick="closeWriter()">취소</button></div>
+    <div class="actions"><button type="button" id="saveNoteBtn" class="btn" onclick="saveNote()">💾 저장</button><button type="button" class="btn light" onclick="closeWriter()">취소</button></div>
    </div>
   </div>
   <div id="fullNote" style="display:none">
-   <div class="top"><h1>노트 내용</h1><button class="btn light" onclick="closeFullNote()">← 노트 목록</button></div>
+   <div class="top"><h1>노트 내용</h1><button type="button" class="btn light" onclick="closeFullNote()">← 노트 목록</button></div>
    <div class="card"><h2 id="fullTitle"></h2><div id="fullDate" class="small"></div><hr><div id="fullContent" style="white-space:pre-wrap;line-height:1.8"></div></div>
   </div>
  </section>
 
  <section id="goals" class="page">
   <div class="top"><h1>🎯 목표</h1></div>
-  <div class="card"><div class="row"><input id="goalInput" placeholder="새로운 목표를 입력하세요"><button class="btn" onclick="addGoal()">추가</button></div></div>
+  <div class="card"><div class="row"><input id="goalInput" placeholder="새로운 목표를 입력하세요"><button type="button" class="btn" onclick="addGoal()">추가</button></div></div>
   <div class="card"><div id="goalList"></div></div>
  </section>
 </main>
 </div>
 
 <div class="mobileNav">
- <button data-page="today" class="active">📔<br>오늘</button>
- <button data-page="year">📅<br>1년 계획</button>
- <button data-page="notes">📚<br>정리노트</button>
- <button data-page="goals">🎯<br>목표</button>
+ <button type="button" data-page="today" class="active">📔<br>오늘</button>
+ <button type="button" data-page="year">📅<br>1년 계획</button>
+ <button type="button" data-page="notes">📚<br>정리노트</button>
+ <button type="button" data-page="goals">🎯<br>목표</button>
 </div>
 
 <div id="modalBg" class="modal-bg"><div id="modal" class="modal"></div></div>
@@ -246,9 +253,9 @@ function renderToday(){
  let todos=d.todos||[];
  document.getElementById("todoList").innerHTML=todos.length?
   todos.map((t,i)=>`<div class="todo ${t.status==="done"?"done":""}">
-   <button class="status" ${locked?"disabled":""} onclick="cycleTodo(${i})">${t.status==="done"?"☑️":t.status==="half"?"🔺":"☐"}</button>
+   <button type="button" class="status" ${locked?"disabled":""} onclick="cycleTodo(${i})">${t.status==="done"?"☑️":t.status==="half"?"🔺":"☐"}</button>
    <div style="flex:1"><b>${escape(t.time)}</b>　<span class="text">${escape(t.text)}</span></div>
-   ${locked?"":`<button class="btn light" onclick="deleteTodo(${i})">삭제</button>`}
+   ${locked?"":`<button type="button" class="btn light" onclick="deleteTodo(${i})">삭제</button>`}
   </div>`).join(""):`<div class="empty">오늘의 할 일을 추가해보세요.</div>`;
 
  let html="";
@@ -323,14 +330,14 @@ const subjects=["🇰🇷 국어노트","🔢 수학노트","🔤 영어노트",
 function renderSubjects(){
  subjectListEl.style.display="block";subjectViewEl.style.display="none";writerEl.style.display="none";fullNoteEl.style.display="none";
  subjectsEl=document.getElementById("subjects");
- subjectsEl.innerHTML=subjects.map(s=>`<button class="subject" onclick="openSubject('${s}')">${s}</button>`).join("");
+ subjectsEl.innerHTML=subjects.map(s=>`<button type="button" class="subject" onclick="openSubject('${s}')">${s}</button>`).join("");
 }
 function openSubject(s){currentSubject=s;subjectListEl.style.display="none";subjectViewEl.style.display="block";subjectTitleEl.textContent=s;renderNotes()}
 function closeSubject(){currentSubject="";renderSubjects()}
 function renderNotes(){
  let ns=data.notes[currentSubject]||[];
- savedNotesEl.innerHTML=`<div class="card"><button class="btn" onclick="openWriter()">✏️ 작성하기</button></div>`+
- (ns.length?ns.map(n=>`<div class="card note"><b>${escape(n.major)} · ${escape(n.minor)}</b><div class="small">${escape(n.createdAt)}</div><div class="preview">${escape((n.content||"").replace(/\s+/g," "))}</div><div class="actions"><button class="btn light" onclick='openFull(${JSON.stringify(n)})'>내용 보기</button><button class="btn light" onclick='editNote(${JSON.stringify(n)})'>✏️ 수정</button><button class="btn danger" onclick="deleteNote(${n.id})">삭제</button></div></div>`).join(""):`<div class="card empty">아직 작성한 노트가 없습니다.</div>`);
+ savedNotesEl.innerHTML=`<div class="card"><button type="button" class="btn" onclick="openWriter()">✏️ 작성하기</button></div>`+
+ (ns.length?ns.map(n=>`<div class="card note"><b>${escape(n.major)} · ${escape(n.minor)}</b><div class="small">${escape(n.createdAt)}</div><div class="preview">${escape((n.content||"").replace(/\s+/g," "))}</div><div class="actions"><button type="button" class="btn light" onclick='openFull(${JSON.stringify(n)})'>내용 보기</button><button type="button" class="btn light" onclick='editNote(${JSON.stringify(n)})'>✏️ 수정</button><button type="button" class="btn danger" onclick="deleteNote(${n.id})">삭제</button></div></div>`).join(""):`<div class="card empty">아직 작성한 노트가 없습니다.</div>`);
 }
 function openWriter(){subjectViewEl.style.display="none";writerEl.style.display="block";writerTitleEl.textContent=currentSubject+" 작성";editingId=null;clearWriter()}
 function clearWriter(){majorEl.value="";minorEl.value="";contentEl.value="";saveNoteBtnEl.textContent="💾 저장"}
@@ -348,7 +355,7 @@ function openFull(n){subjectViewEl.style.display="none";fullNoteEl.style.display
 function closeFullNote(){fullNoteEl.style.display="none";subjectViewEl.style.display="block";renderNotes()}
 
 function renderGoals(){
- goalListEl.innerHTML=data.goals.length?data.goals.map((g,i)=>`<div class="todo ${g.done?"done":""}"><button class="status" onclick="toggleGoal(${i})">${g.done?"☑️":"☐"}</button><span class="text" style="flex:1">${escape(g.text)}</span><button class="btn light" onclick="deleteGoal(${i})">삭제</button></div>`).join(""):`<div class="empty">목표를 추가해보세요.</div>`;
+ goalListEl.innerHTML=data.goals.length?data.goals.map((g,i)=>`<div class="todo ${g.done?"done":""}"><button type="button" class="status" onclick="toggleGoal(${i})">${g.done?"☑️":"☐"}</button><span class="text" style="flex:1">${escape(g.text)}</span><button type="button" class="btn light" onclick="deleteGoal(${i})">삭제</button></div>`).join(""):`<div class="empty">목표를 추가해보세요.</div>`;
 }
 function addGoal(){let v=goalInputEl.value.trim();if(!v)return;data.goals.push({id:Date.now(),text:v,done:false});goalInputEl.value="";save();renderGoals()}
 function toggleGoal(i){data.goals[i].done=!data.goals[i].done;save();renderGoals()}
@@ -400,11 +407,11 @@ async function loadCloud(){
 }
 function openAuth(){
  modalEl.innerHTML=`<h2>🔐 로그인 / 회원가입</h2>
- <div class="auth-tabs"><button id="loginTab" class="active">로그인</button><button id="signupTab">회원가입</button></div>
+ <div class="auth-tabs"><button type="button" id="loginTab" class="active">로그인</button><button type="button" id="signupTab">회원가입</button></div>
  <div id="authMsg" class="auth-msg"></div>
  <label>이메일</label><input id="authEmail" type="email" placeholder="이메일"><br><br>
  <label>비밀번호</label><input id="authPw" type="password" placeholder="6자 이상"><br><br>
- <button class="btn" id="authGo">로그인</button> <button class="btn light" onclick="closeModal()">닫기</button>`;
+ <button type="button" class="btn" id="authGo">로그인</button> <button type="button" class="btn light" onclick="closeModal()">닫기</button>`;
  let mode="login";
  const msg=t=>{document.getElementById("authMsg").textContent=t;document.getElementById("authMsg").style.display="block"};
  document.getElementById("loginTab").onclick=()=>{mode="login";loginTab.classList.add("active");signupTab.classList.remove("active");document.getElementById("authGo").textContent="로그인"};
@@ -424,20 +431,20 @@ function openAuth(){
 function openAccount(){
  if(!currentUser){openAuth();return}
  modalEl.innerHTML=`<h2>☁️ 내 계정</h2><p>${escape(currentUser.email||"")}</p>
- <button class="btn" onclick="cloudSave().then(()=>alert('저장했습니다.'))">☁️ 지금 저장</button>
- <button class="btn light" onclick="openBackups()">💾 백업 보기</button>
- <button class="btn danger" onclick="logout()">로그아웃</button>
- <button class="btn light" onclick="closeModal()">닫기</button>`;
+ <button type="button" class="btn" onclick="cloudSave().then(()=>alert('저장했습니다.'))">☁️ 지금 저장</button>
+ <button type="button" class="btn light" onclick="openBackups()">💾 백업 보기</button>
+ <button type="button" class="btn danger" onclick="logout()">로그아웃</button>
+ <button type="button" class="btn light" onclick="closeModal()">닫기</button>`;
  openModal();
 }
 async function logout(){await sb.auth.signOut();currentUser=null;setCloud(false,"오프라인");closeModal();renderAll()}
 async function openBackups(){
  if(!currentUser)return;
- modalEl.innerHTML=`<h2>💾 백업</h2><p class="small">백업을 선택하면 현재 기록을 먼저 백업한 뒤 복구합니다.</p><div id="backupList">불러오는 중...</div><button class="btn light" onclick="closeModal()">닫기</button>`;
+ modalEl.innerHTML=`<h2>💾 백업</h2><p class="small">백업을 선택하면 현재 기록을 먼저 백업한 뒤 복구합니다.</p><div id="backupList">불러오는 중...</div><button type="button" class="btn light" onclick="closeModal()">닫기</button>`;
  const {data:rows,error}=await sb.from("diary_backups").select("id,app_version,reason,created_at").eq("user_id",currentUser.id).order("created_at",{ascending:false}).limit(20);
  if(error){document.getElementById("backupList").textContent="백업을 불러오지 못했습니다.";return}
  if(!rows.length){document.getElementById("backupList").innerHTML='<div class="empty">아직 백업이 없습니다.</div>';return}
- document.getElementById("backupList").innerHTML=rows.map(x=>`<div class="backup"><b>${new Date(x.created_at).toLocaleString("ko-KR")}</b><br><span class="small">${escape(x.reason)} · 앱 ${escape(x.app_version)}</span><button class="btn light" style="float:right" onclick="restoreBackup('${x.id}')">복구</button><div style="clear:both"></div></div>`).join("");
+ document.getElementById("backupList").innerHTML=rows.map(x=>`<div class="backup"><b>${new Date(x.created_at).toLocaleString("ko-KR")}</b><br><span class="small">${escape(x.reason)} · 앱 ${escape(x.app_version)}</span><button type="button" class="btn light" style="float:right" onclick="restoreBackup('${x.id}')">복구</button><div style="clear:both"></div></div>`).join("");
 }
 async function restoreBackup(id){
  if(!confirm("현재 기록을 먼저 백업하고 이 백업으로 복구할까요?"))return;
