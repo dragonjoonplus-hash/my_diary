@@ -36,6 +36,10 @@ h1{margin:0;font-size:28px}h2{margin:5px 0 14px}
 .todo-input-row{display:flex;gap:8px;margin-top:12px}
 .todo-input-row input{flex:1;min-width:0;padding:11px 12px;border:1px solid #ddd;border-radius:10px;outline:none}
 .todo-input-row input:focus{border-color:#4da6e8;box-shadow:0 0 0 3px #4da6e822}
+.streak-card{text-align:center;padding:18px;margin-bottom:14px}
+.streak-title{font-size:17px;font-weight:800}
+.streak-count{font-size:28px;font-weight:900;margin:6px 0}
+.streak-card .small{color:#777}
 .empty{text-align:center;color:#888;padding:22px}
 .small{font-size:13px;color:#777}
 .schedule .hour{display:grid;grid-template-columns:75px 1fr;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #eee}
@@ -68,9 +72,34 @@ input{min-width:0}
 .dateNav .dateMain{min-width:150px;font-size:16px}
 .account .small{display:none}
 }
+
+.title-line{display:flex;align-items:center;gap:10px}
+.title-line h1{margin:0}
+.mini-streak{border:0;background:rgba(255,255,255,.72);border-radius:999px;padding:7px 11px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.mini-streak:active{transform:scale(.96)}
+.streak-popup{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center}
+.streak-popup.hidden{display:none}
+.streak-overlay{position:absolute;inset:0;background:rgba(20,50,80,.28);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.streak-popup-content{position:relative;width:min(82vw,420px);padding:38px 24px 34px;text-align:center;border-radius:28px;background:rgba(255,255,255,.96);box-shadow:0 20px 70px rgba(0,0,0,.25);animation:streakPop .55s cubic-bezier(.2,1.35,.35,1)}
+.streak-big-fire{font-size:88px;line-height:1;margin-bottom:12px;animation:firePulse .8s ease-in-out infinite alternate}
+.streak-popup-count{font-size:38px;font-weight:950;margin-bottom:8px}
+.streak-popup-message{font-size:16px;color:#666}
+@keyframes streakPop{0%{opacity:0;transform:scale(.35)}70%{opacity:1;transform:scale(1.08)}100%{opacity:1;transform:scale(1)}}
+@keyframes firePulse{from{transform:scale(1) rotate(-3deg)}to{transform:scale(1.1) rotate(3deg)}}
+
 </style>
 </head>
 <body>
+
+<div id="streakPopup" class="streak-popup hidden">
+  <div class="streak-overlay"></div>
+  <div class="streak-popup-content">
+    <div class="streak-big-fire">🔥</div>
+    <div id="popupStreakCount" class="streak-popup-count">0일 연속</div>
+    <div id="popupStreakMessage" class="streak-popup-message">연속 기록을 이어가고 있어요!</div>
+  </div>
+</div>
+
 
 <div class="app">
 <aside class="sidebar">
@@ -85,7 +114,7 @@ input{min-width:0}
 
 <main class="main">
  <div class="top">
-  <h1 id="pageTitle">📔 오늘</h1>
+  <div class="title-line"><h1 id="pageTitle">📔 오늘</h1><button type="button" id="miniStreakBtn" class="mini-streak" onclick="showStreakPopup()">🔥 <span id="miniStreakCount">0</span></button></div>
   <div class="account">
    <span id="cloudDot" class="cloud-dot"></span>
    <span id="cloudText" class="small">오프라인</span>
@@ -102,7 +131,12 @@ input{min-width:0}
   </div>
   <div id="pastNotice" class="lock" style="display:none">🔒 이전 날짜의 기록은 읽기 전용입니다.</div>
 
-  <div class="card">
+  <div id="streakBox" class="card streak-card">
+    <div class="streak-title">🔥 연속 기록</div>
+    <div id="streakCount" class="streak-count">0일 연속</div>
+    <div id="streakMessage" class="small">오늘 기록을 남겨 연속 기록을 이어가세요!</div>
+   </div>
+   <div class="card">
    <h2>📋 오늘의 할 일</h2>
    <div id="todoList"></div>
    <div class="todo-input-row">
@@ -318,13 +352,78 @@ function carryHalf(){
  }
  localStorage.setItem("myDiaryCarryV2",k);saveLocal();
 }
+
+function getCurrentStreak(){
+  let streak=0;
+  let cursor=new Date();
+  cursor.setHours(0,0,0,0);
+  const hasMeaningfulRecord=(key)=>{
+    const d=data.days?.[key];
+    if(!d)return false;
+    const todos=d.todos||[];
+    return todos.some(t=>t.status==="done"||t.status==="half")
+      || (d.hours||[]).some(v=>String(v||"").trim())
+      || String(d.diary||"").trim().length>0;
+  };
+  while(hasMeaningfulRecord(fmtDate(cursor))){
+    streak++;
+    cursor.setDate(cursor.getDate()-1);
+  }
+  return streak;
+}
+function refreshMiniStreak(){
+  const n=getCurrentStreak();
+  const el=document.getElementById("miniStreakCount");
+  if(el)el.textContent=n;
+  return n;
+}
+function showStreakPopup(){
+  const n=refreshMiniStreak();
+  const popup=document.getElementById("streakPopup");
+  const count=document.getElementById("popupStreakCount");
+  const msg=document.getElementById("popupStreakMessage");
+  if(!popup)return;
+  count.textContent=`${n}일 연속`;
+  msg.textContent=n>0?"🔥 대단해요! 오늘도 기록을 이어가세요!":"오늘 기록을 시작하면 연속 기록이 시작돼요!";
+  popup.classList.remove("hidden");
+  clearTimeout(window.streakPopupTimer);
+  window.streakPopupTimer=setTimeout(()=>popup.classList.add("hidden"),2200);
+}
+
 function updateStreak(){
- let s=0,d=new Date();d.setHours(0,0,0,0);
- while(true){
-  let x=data.days[key(d)],has=x&&(x.text?.trim()||Object.keys(x.schedule||{}).length||(x.todos||[]).some(t=>t.status==="done"));
-  if(!has)break;s++;d.setDate(d.getDate()-1);
- }
- const streakEl=document.getElementById("streak"); if(streakEl) streakEl.textContent=s;
+  refreshMiniStreak();
+  const dates=Object.keys(data.days||{}).sort();
+  let streak=0;
+  let cursor=new Date();
+  cursor.setHours(0,0,0,0);
+
+  const hasMeaningfulRecord=(key)=>{
+    const d=data.days?.[key];
+    if(!d)return false;
+    const todos=(d.todos||[]);
+    const hasDone=todos.some(t=>t.status==="done");
+    const hasHalf=todos.some(t=>t.status==="half");
+    const hasPlan=(d.hours||[]).some(v=>String(v||"").trim());
+    const hasDiary=String(d.diary||"").trim().length>0;
+    return hasDone||hasHalf||hasPlan||hasDiary;
+  };
+
+  // Count consecutive days backwards, starting with today.
+  while(true){
+    const key=fmtDate(cursor);
+    if(!hasMeaningfulRecord(key))break;
+    streak++;
+    cursor.setDate(cursor.getDate()-1);
+  }
+
+  const countEl=document.getElementById("streakCount");
+  const msgEl=document.getElementById("streakMessage");
+  if(countEl)countEl.textContent=`🔥 ${streak}일 연속`;
+  if(msgEl){
+    msgEl.textContent=streak>0
+      ? "좋아요! 오늘도 기록해서 연속 기록을 이어가세요."
+      : "오늘 기록을 남기면 연속 기록이 시작돼요!";
+  }
 }
 
 function renderYear(){
@@ -434,6 +533,7 @@ function openAuth(){
   if(r.error){msg(r.error.message);return}
   if(mode==="signup"){msg("회원가입이 완료되었습니다. 이메일 확인이 필요한 경우 메일을 확인한 뒤 로그인해주세요.");return}
   closeModal();currentUser=r.data.user;updateAccountButton();await loadCloud();renderAll();
+maybeShowDailyStreakPopup();
  };
  openModal();
 }
@@ -480,7 +580,17 @@ function migrateOld(){
  if(sn&&!Object.keys(data.notes).length){try{let o=JSON.parse(sn);for(const [s,v] of Object.entries(o)){if(v)data.notes[s]=[{id:Date.now()+Math.random(),major:"기존 노트",minor:"기존 기록",content:v,createdAt:"이전 기록"}]}}catch(e){}}
  saveLocal();
 }
-function renderAll(){renderToday();renderYear();renderSubjects();renderGoals();showPage(currentPage)}
+
+function maybeShowDailyStreakPopup(){
+  const todayKey=fmtDate(new Date());
+  const seenKey="myDiaryStreakPopupSeen_"+todayKey;
+  if(localStorage.getItem(seenKey))return;
+  localStorage.setItem(seenKey,"1");
+  setTimeout(()=>showStreakPopup(),500);
+}
+
+function renderAll(){
+ updateStreak();renderToday();renderYear();renderSubjects();renderGoals();showPage(currentPage)}
 let currentPage="today";
 
 migrateOld();
