@@ -244,7 +244,7 @@ function renderToday(){
  document.getElementById("todoList").innerHTML=todos.length?
   todos.map((t,i)=>`<div class="todo ${t.status==="done"?"done":""}">
    <button type="button" class="status" ${locked?"disabled":""} onclick="cycleTodo(${i})">${t.status==="done"?"☑️":t.status==="half"?"🔺":"☐"}</button>
-   <div style="flex:1"><b>${escape(t.time)}</b>　<span class="text">${escape(t.text)}</span></div>
+   <div style="flex:1"><span class="text">${escape(t.text)}</span></div>
    ${locked?"":`<button type="button" class="btn light" onclick="deleteTodo(${i})">삭제</button>`}
   </div>`).join(""):`<div class="empty">오늘의 할 일을 추가해보세요.</div>`;
 
@@ -258,9 +258,8 @@ function renderToday(){
 }
 function addTodo(){
  if(!canEdit())return;
- let time=prompt("시간을 입력하세요. 예: 09:00");if(time===null)return;
- let text=prompt("할 일을 입력하세요.");if(!text)return;
- let d=day();d.todos=d.todos||[];d.todos.push({id:Date.now()+Math.random(),time,text,status:"pending"});saveDay(d);renderToday();
+ let text=prompt("할 일을 입력하세요.");if(text===null||!text.trim())return;
+ let d=day();d.todos=d.todos||[];d.todos.push({id:Date.now()+Math.random(),time:"",text:text.trim(),status:"pending"});saveDay(d);renderToday();
 }
 function cycleTodo(i){
  if(!canEdit())return;
