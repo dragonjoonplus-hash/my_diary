@@ -66,13 +66,6 @@ input{min-width:0}
 .account .small{display:none}
 }
 </style>
-
-<script>
-window.addEventListener("error", function(e) {
-  console.error("다이어리 오류:", e.error || e.message);
-});
-</script>
-
 </head>
 <body>
 
@@ -329,7 +322,7 @@ function saveYearPlan(){data.yearPlan=document.getElementById("yearPlan").value;
 const subjects=["🇰🇷 국어노트","🔢 수학노트","🔤 영어노트","🔬 과학노트","🌏 사회노트"];
 function renderSubjects(){
  subjectListEl.style.display="block";subjectViewEl.style.display="none";writerEl.style.display="none";fullNoteEl.style.display="none";
- subjectsEl=document.getElementById("subjects");
+ const subjectsEl=document.getElementById("subjects");
  subjectsEl.innerHTML=subjects.map(s=>`<button type="button" class="subject" onclick="openSubject('${s}')">${s}</button>`).join("");
 }
 function openSubject(s){currentSubject=s;subjectListEl.style.display="none";subjectViewEl.style.display="block";subjectTitleEl.textContent=s;renderNotes()}
@@ -372,8 +365,8 @@ document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>showPage(b.dat
 
 /* 클라우드 */
 function setCloud(on,text){
- document.getElementById("cloudDotEl.className="cloud-dot"+(on?" on":"");
- document.getElementById("cloudTextEl.textContent=text;
+ document.getElementById("cloudDot").className="cloud-dot"+(on?" on":"");
+ document.getElementById("cloudText").textContent=text;
 }
 function scheduleCloudSave(){
  if(!currentUser)return;
@@ -414,9 +407,9 @@ function openAuth(){
  <button type="button" class="btn" id="authGo">로그인</button> <button type="button" class="btn light" onclick="closeModal()">닫기</button>`;
  let mode="login";
  const msg=t=>{document.getElementById("authMsg").textContent=t;document.getElementById("authMsg").style.display="block"};
- document.getElementById("loginTab").onclick=()=>{mode="login";loginTab.classList.add("active");signupTab.classList.remove("active");document.getElementById("authGo").textContent="로그인"};
- document.getElementById("signupTab").onclick=()=>{mode="signup";signupTab.classList.add("active");loginTab.classList.remove("active");document.getElementById("authGo").textContent="회원가입"};
- authGo.onclick=async()=>{
+ document.getElementById("loginTab").onclick=()=>{mode="login";document.getElementById("loginTab").classList.add("active");document.getElementById("signupTab").classList.remove("active");document.getElementById("authGo").textContent="로그인"};
+ document.getElementById("signupTab").onclick=()=>{mode="signup";document.getElementById("signupTab").classList.add("active");document.getElementById("loginTab").classList.remove("active");document.getElementById("authGo").textContent="회원가입"};
+ document.getElementById("authGo").onclick=async()=>{
   let email=document.getElementById("authEmail").value.trim(),password=document.getElementById("authPw").value;
   if(!email||password.length<6){msg("이메일과 6자 이상의 비밀번호를 입력해주세요.");return}
   document.getElementById("authGo").disabled=true;
@@ -457,7 +450,7 @@ async function restoreBackup(id){
 }
 function openModal(){modalBgEl.style.display="flex"}
 function closeModal(){modalBgEl.style.display="none"}
-modalBgEl.onclick=e=>{if(e.target===modalBg)closeModal()}
+modalBgEl.onclick=e=>{if(e.target===modalBgEl)closeModal()}
 accountBtnEl.onclick=openAccount;
 
 function migrateOld(){
