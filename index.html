@@ -87,6 +87,15 @@ input{min-width:0}
 @keyframes streakPop{0%{opacity:0;transform:scale(.35)}70%{opacity:1;transform:scale(1.08)}100%{opacity:1;transform:scale(1)}}
 @keyframes firePulse{from{transform:scale(1) rotate(-3deg)}to{transform:scale(1.1) rotate(3deg)}}
 
+
+.progress-card{padding:18px;margin-bottom:14px}
+.progress-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.progress-head h2{margin:0 0 4px}
+.progress-percent{font-size:30px;font-weight:950}
+.progress-track{height:13px;background:#e8eef3;border-radius:999px;overflow:hidden;margin:14px 0 10px}
+.progress-bar{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,#4da6e8,#6fc6f5);transition:width .35s ease}
+.progress-detail{font-size:13px;color:#777}
+
 </style>
 </head>
 <body>
@@ -136,6 +145,17 @@ input{min-width:0}
     <div id="streakCount" class="streak-count">0일 연속</div>
     <div id="streakMessage" class="small">오늘 기록을 남겨 연속 기록을 이어가세요!</div>
    </div>
+   <div id="todayProgressCard" class="card progress-card">
+    <div class="progress-head">
+      <div>
+        <h2>📊 오늘의 진행률</h2>
+        <div id="progressText" class="small">0% 달성</div>
+      </div>
+      <div id="progressPercent" class="progress-percent">0%</div>
+    </div>
+    <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+    <div id="progressDetail" class="progress-detail">완료 0 · 반만 완료 0 · 미완료 0</div>
+   
    <div class="card">
    <h2>📋 오늘의 할 일</h2>
    <div id="todoList"></div>
@@ -269,7 +289,31 @@ function day(){return data.days[key(viewDate)]||{todos:[],schedule:{},text:""}}
 function saveDay(d){data.days[key(viewDate)]=d;save()}
 function escape(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
 
+
+function updateTodayProgress(){
+  const d=day();
+  const todos=d.todos||[];
+  const total=todos.length;
+  const done=todos.filter(t=>t.status==="done").length;
+  const half=todos.filter(t=>t.status==="half").length;
+  const pending=todos.filter(t=>t.status!=="done" && t.status!=="half").length;
+
+  // Today's progress is based on today's todo list.
+  // Done = 100%, half = 50%, pending = 0%.
+  const score=total ? Math.round(((done + half*0.5)/total)*100) : 0;
+
+  const bar=document.getElementById("progressBar");
+  const pct=document.getElementById("progressPercent");
+  const text=document.getElementById("progressText");
+  const detail=document.getElementById("progressDetail");
+  if(bar)bar.style.width=score+"%";
+  if(pct)pct.textContent=score+"%";
+  if(text)text.textContent=score+"% 달성";
+  if(detail)detail.textContent=`완료 ${done} · 반만 완료 ${half} · 미완료 ${pending}`;
+}
+
 function renderToday(){
+ updateTodayProgress();
  let d=day(),locked=!canEdit();
  document.getElementById("todayDate").textContent=korean(viewDate)+(locked?" 🔒":"");
  document.getElementById("pastNotice").style.display=locked?"block":"none";
