@@ -2,170 +2,481 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>나의 다이어리</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ff7eb6">
 <link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#ffffff">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>나의 다이어리</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;background:#f5f6fa;color:#202124}
-button,input,textarea{font:inherit}button{cursor:pointer;border:0}
-.app{display:flex;min-height:100vh}.sidebar{width:230px;background:#fff;border-right:1px solid #e5e7eb;padding:24px 16px;position:fixed;top:0;bottom:0}
-.logo{font-size:22px;font-weight:800;padding:8px 12px 24px}.nav button{width:100%;text-align:left;background:transparent;padding:13px 14px;border-radius:12px;margin:3px 0;color:#555}
-.nav button.active,.nav button:hover{background:#f0f2f8;color:#111;font-weight:700}.main{margin-left:230px;width:calc(100% - 230px);padding:30px;max-width:1250px}
-.page{display:none}.page.active{display:block}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}h1{margin:0;font-size:28px}h2{margin-top:0}
-.card{background:#fff;border:1px solid #e8e9ee;border-radius:18px;padding:22px;margin-bottom:18px;box-shadow:0 3px 12px rgba(0,0,0,.03)}
-.date{font-size:16px;color:#777;margin-top:7px}.dateNav{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.streak{font-size:18px;font-weight:700}.row{display:flex;gap:10px;align-items:center}.between{justify-content:space-between}
-.btn{background:#222;color:#fff;padding:11px 15px;border-radius:10px}.btn.light{background:#f0f1f5;color:#333}.btn.danger{background:#fff0f0;color:#c33}
-input,textarea,select{width:100%;padding:11px 12px;border:1px solid #d9dce3;border-radius:10px;background:#fff}textarea{min-height:180px;resize:vertical}
-.schedule{border:1px solid #eee;border-radius:14px;overflow:hidden}.hour{display:grid;grid-template-columns:85px 1fr;min-height:56px;border-bottom:1px solid #eee}.hour:last-child{border-bottom:0}
-.hour-time{background:#fafafa;padding:17px 12px;font-weight:700;color:#666;border-right:1px solid #eee}.hour input{border:0;border-radius:0;padding:15px 12px}.hour input:disabled{background:#f7f7f7;color:#777}
-.todo{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #eee}.todo:last-child{border-bottom:0}.status{font-size:20px;min-width:32px;background:transparent}
-.todo.done .text{text-decoration:line-through;color:#999}.actions{display:flex;gap:7px;margin-top:14px;flex-wrap:wrap}.small{font-size:13px;color:#888}
-.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.subject{padding:24px 12px;background:#fff;border:1px solid #e6e7ec;border-radius:16px;text-align:center;font-weight:700}
-.note{padding:18px}.preview{color:#777;margin:7px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.empty{text-align:center;color:#999;padding:35px 10px}
-.month-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.month-card{background:#fff;border:1px solid #e8e9ee;border-radius:16px;padding:16px}.month-card textarea{min-height:130px;margin-top:8px}
-.mobileNav{display:none}.readonly{background:#fafafa!important}.lock{color:#888;background:#f4f4f4;border-radius:10px;padding:10px 12px;margin-bottom:14px}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#fff7fb;color:#222}
+button,input,textarea{font:inherit}
+button{cursor:pointer;border:0}
+.app{display:flex;min-height:100vh}
+.sidebar{width:230px;background:#ffe0ee;padding:18px 12px;position:fixed;left:0;top:0;bottom:0}
+.logo{font-size:20px;font-weight:800;margin:8px 8px 22px}
+.nav button{display:block;width:100%;padding:14px 12px;margin:7px 0;text-align:left;border-radius:12px;background:transparent}
+.nav button.active{background:#fff;font-weight:800;box-shadow:0 2px 8px #0001}
+.main{margin-left:230px;width:calc(100% - 230px);max-width:1100px;padding:25px}
+.page{display:none}.page.active{display:block}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+h1{margin:0;font-size:28px}h2{margin:5px 0 14px}
+.card{background:#fff;border:1px solid #eee;border-radius:18px;padding:18px;margin-bottom:16px;box-shadow:0 3px 14px #00000008}
+.row{display:flex;align-items:center;gap:10px}.between{justify-content:space-between}
+.btn{background:#ff6fae;color:#fff;padding:10px 14px;border-radius:10px;font-weight:700}
+.btn.light{background:#f2f2f5;color:#222}.btn.danger{background:#ffe0e0;color:#a00}
+.streak{font-size:17px;font-weight:800}
+.dateNav{display:flex;justify-content:center;align-items:center;gap:7px;margin:0 0 16px;flex-wrap:wrap}
+.dateNav button{background:#f2f2f5;padding:9px 12px;border-radius:10px}
+.dateNav .dateMain{font-weight:800;min-width:210px;text-align:center;font-size:19px}
+.lock{padding:10px 13px;background:#f1f1f1;border-radius:10px;color:#666;margin-bottom:14px}
+.todo{display:flex;align-items:center;gap:9px;border-bottom:1px solid #eee;padding:10px 0}
+.todo:last-child{border-bottom:0}
+.todo .status{background:#f4f4f5;border-radius:9px;padding:7px 9px;font-size:17px}
+.todo.done .text{text-decoration:line-through;color:#999}
+.empty{text-align:center;color:#888;padding:22px}
+.small{font-size:13px;color:#777}
+.schedule .hour{display:grid;grid-template-columns:75px 1fr;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #eee}
+.hour-time{font-weight:700;color:#666}
+.hour input{width:100%;padding:10px;border:1px solid #ddd;border-radius:10px}
+textarea,input{border:1px solid #ddd;border-radius:10px;padding:11px;background:#fff}
+textarea{width:100%;min-height:130px;resize:vertical}
+input{min-width:0}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.subject{padding:18px;border-radius:14px;background:#fff;border:1px solid #eee;font-size:17px;font-weight:700}
+.month-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.month-card{border:1px solid #eee;border-radius:14px;padding:12px}
+.month-card textarea{min-height:100px;margin-top:8px}
+.note{margin-bottom:12px}.preview{color:#666;margin-top:8px;line-height:1.5}
+.account{display:flex;align-items:center;gap:7px}.cloud-dot{width:9px;height:9px;border-radius:50%;background:#999;display:inline-block}.cloud-dot.on{background:#20a968}
+.modal-bg{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:15px;z-index:50}
+.modal{background:#fff;border-radius:18px;padding:20px;width:min(540px,100%);max-height:90vh;overflow:auto}
+.modal h2{margin-top:0}
+.auth-tabs{display:flex;gap:7px;margin-bottom:14px}.auth-tabs button{flex:1;padding:10px;border-radius:9px;background:#eee}.auth-tabs .active{background:#ff6fae;color:#fff}
+.auth-msg{display:none;padding:10px;border-radius:10px;background:#fff1b8;margin:10px 0}
+.backup{border:1px solid #eee;border-radius:10px;padding:10px;margin:8px 0}
+.mobileNav{display:none}
 @media(max-width:760px){
-.sidebar{display:none}.main{margin:0;width:100%;padding:18px 14px 90px}.grid{grid-template-columns:repeat(2,1fr)}.month-grid{grid-template-columns:1fr}
-h1{font-size:24px}.top{align-items:flex-start}.streak{font-size:14px}.mobileNav{display:flex;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;z-index:10;padding-bottom:env(safe-area-inset-bottom)}
-.mobileNav button{flex:1;background:#fff;padding:11px 3px;font-size:12px}.hour{grid-template-columns:62px 1fr}.hour-time{padding:16px 7px;font-size:13px}
-.btn{min-height:44px}.status{min-width:42px;min-height:42px}
+.sidebar{display:none}.main{margin:0;width:100%;padding:15px 10px 80px}
+.mobileNav{display:flex;position:fixed;bottom:0;left:0;right:0;background:#ffe0ee;z-index:20;padding:5px}
+.mobileNav button{flex:1;background:transparent;border-radius:10px;padding:6px 2px;font-size:12px}.mobileNav button.active{background:#fff;font-weight:800}
+.top{align-items:flex-start}h1{font-size:23px}
+.grid{grid-template-columns:1fr}.month-grid{grid-template-columns:1fr 1fr}
+.dateNav .dateMain{min-width:150px;font-size:16px}
+.account .small{display:none}
 }
 </style>
 </head>
 <body>
+
 <div class="app">
-<aside class="sidebar"><div class="logo">📔 나의 다이어리</div><nav class="nav">
-<button data-page="today" class="active">📔 오늘</button><button data-page="year">📅 1년 계획</button><button data-page="notes">📚 정리노트</button><button data-page="goals">🎯 목표</button>
-</nav></aside>
+<aside class="sidebar">
+ <div class="logo">📔 나의 다이어리</div>
+ <nav class="nav">
+  <button data-page="today" class="active">📔 오늘</button>
+  <button data-page="year">📅 1년 계획</button>
+  <button data-page="notes">📚 정리노트</button>
+  <button data-page="goals">🎯 목표</button>
+ </nav>
+</aside>
+
 <main class="main">
-<section id="today" class="page active">
-<div class="top"><div><h1 id="todayHeading">오늘</h1><div id="todayDate" class="date"></div><div class="dateNav">
-<button class="btn light" onclick="changeDate(-1)">← 이전 날짜</button>
-<button class="btn" onclick="returnToday()">오늘</button>
-<button class="btn light" onclick="changeDate(1)">다음 날짜 →</button>
-</div></div><div class="streak">🔥 <span id="streak">0</span>일 연속</div></div>
-<div id="pastNotice" class="lock" style="display:none">🔒 지난 날짜의 기록은 읽기 전용입니다. 오늘과 내일은 수정할 수 있습니다.</div>
-<div class="card">
- <div class="row between"><h2>📋 오늘의 할 일</h2><button id="addTodoBtn" class="btn light" onclick="addTodo()">＋ 할 일</button></div>
- <div id="todoList"></div>
+ <div class="top">
+  <h1 id="pageTitle">📔 오늘</h1>
+  <div class="account">
+   <span id="cloudDot" class="cloud-dot"></span>
+   <span id="cloudText" class="small">오프라인</span>
+   <button id="accountBtn" class="btn light">로그인</button>
+  </div>
+ </div>
+
+ <section id="today" class="page active">
+  <div class="dateNav">
+   <button onclick="previousDate()">← 이전 날짜</button>
+   <button onclick="returnToday()">오늘</button>
+   <div id="todayDate" class="dateMain"></div>
+   <button onclick="nextDate()">다음 날짜 →</button>
+  </div>
+  <div id="pastNotice" class="lock" style="display:none">🔒 이전 날짜의 기록은 읽기 전용입니다.</div>
+
+  <div class="card">
+   <div class="row between">
+    <h2>📋 오늘의 할 일</h2>
+    <button id="addTodoBtn" class="btn light" onclick="addTodo()">＋ 할 일</button>
+   </div>
+   <div id="todoList"></div>
+  </div>
+
+  <div class="card">
+   <h2>⏰ 24시간 시간표</h2>
+   <p class="small">1시간 단위로 오늘의 계획을 적어보세요.</p>
+   <div id="schedule" class="schedule"></div>
+  </div>
+
+  <div class="card">
+   <h2>✍️ 오늘의 기록</h2>
+   <textarea id="diaryText" placeholder="오늘 하루를 기록해보세요."></textarea>
+   <div class="actions"><button id="saveDiaryBtn" class="btn" onclick="saveDiary()">💾 기록 저장</button></div>
+   <div id="diaryStatus" class="small"></div>
+  </div>
+
+  <div class="card">
+   <button class="btn light" onclick="showYesterday()">📖 어제 기록 보기</button>
+  </div>
+ </section>
+
+ <section id="year" class="page">
+  <div class="top"><h1>📅 1년 계획</h1></div>
+  <div class="card">
+   <h2>올해의 큰 계획</h2>
+   <textarea id="yearPlan" placeholder="올해 이루고 싶은 일과 계획을 적어보세요."></textarea>
+   <div class="actions"><button class="btn" onclick="saveYearPlan()">저장</button></div>
+  </div>
+  <div class="card"><h2>월별 계획</h2><div id="months" class="month-grid"></div></div>
+ </section>
+
+ <section id="notes" class="page">
+  <div id="subjectList">
+   <div class="top"><h1>📚 정리노트</h1></div>
+   <div class="grid" id="subjects"></div>
+  </div>
+  <div id="subjectView" style="display:none">
+   <div class="top"><h1 id="subjectTitle"></h1><button class="btn light" onclick="closeSubject()">← 과목 목록</button></div>
+   <div id="savedNotes"></div>
+  </div>
+  <div id="writer" style="display:none">
+   <div class="top"><h1 id="writerTitle">노트 작성</h1><button class="btn light" onclick="closeWriter()">← 노트 목록</button></div>
+   <div class="card">
+    <label>대단원</label><input id="major" placeholder="예: 함수"><br><br>
+    <label>소단원</label><input id="minor" placeholder="예: 일차함수"><br><br>
+    <label>정리 내용</label><textarea id="content" placeholder="배운 내용을 자유롭게 정리하세요."></textarea>
+    <div class="actions"><button id="saveNoteBtn" class="btn" onclick="saveNote()">💾 저장</button><button class="btn light" onclick="closeWriter()">취소</button></div>
+   </div>
+  </div>
+  <div id="fullNote" style="display:none">
+   <div class="top"><h1>노트 내용</h1><button class="btn light" onclick="closeFullNote()">← 노트 목록</button></div>
+   <div class="card"><h2 id="fullTitle"></h2><div id="fullDate" class="small"></div><hr><div id="fullContent" style="white-space:pre-wrap;line-height:1.8"></div></div>
+  </div>
+ </section>
+
+ <section id="goals" class="page">
+  <div class="top"><h1>🎯 목표</h1></div>
+  <div class="card"><div class="row"><input id="goalInput" placeholder="새로운 목표를 입력하세요"><button class="btn" onclick="addGoal()">추가</button></div></div>
+  <div class="card"><div id="goalList"></div></div>
+ </section>
+</main>
 </div>
-<div class="card"><h2>⏰ 24시간 시간표</h2><p style="color:#777">1시간 단위로 오늘의 계획을 적어보세요.</p><div id="schedule" class="schedule"></div></div>
-<div class="card"><h2>✍️ 오늘의 기록</h2><textarea id="diaryText" placeholder="오늘 하루를 기록해보세요."></textarea><div class="actions"><button id="saveDiaryBtn" class="btn" onclick="saveDiary()">💾 기록 저장</button></div><div id="diaryStatus" class="small"></div></div>
-<div class="card"><button class="btn light" onclick="showYesterday()">📖 어제 기록 보기</button></div>
-</section>
 
-<section id="year" class="page"><div class="top"><h1>📅 1년 계획</h1></div>
-<div class="card"><h2>올해의 큰 계획</h2><textarea id="yearPlan" placeholder="올해 이루고 싶은 일과 계획을 적어보세요."></textarea><div class="actions"><button class="btn" onclick="saveYearPlan()">저장</button></div></div>
-<div class="card"><h2>월별 계획</h2><div id="months" class="month-grid"></div></div></section>
+<div class="mobileNav">
+ <button data-page="today" class="active">📔<br>오늘</button>
+ <button data-page="year">📅<br>1년 계획</button>
+ <button data-page="notes">📚<br>정리노트</button>
+ <button data-page="goals">🎯<br>목표</button>
+</div>
 
-<section id="notes" class="page">
-<div id="subjectList"><div class="top"><h1>📚 정리노트</h1></div><div class="grid" id="subjects"></div></div>
-<div id="subjectView" style="display:none"><div class="top"><h1 id="subjectTitle"></h1><button class="btn light" onclick="closeSubject()">← 과목 목록</button></div><div id="savedNotes"></div></div>
-<div id="writer" style="display:none"><div class="top"><h1 id="writerTitle">노트 작성</h1><button class="btn light" onclick="closeWriter()">← 노트 목록</button></div>
-<div class="card"><label>대단원</label><input id="major" placeholder="예: 함수"><br><br><label>소단원</label><input id="minor" placeholder="예: 일차함수"><br><br><label>정리 내용</label><textarea id="content" placeholder="배운 내용을 자유롭게 정리하세요."></textarea><div class="actions"><button id="saveNoteBtn" class="btn" onclick="saveNote()">💾 저장</button><button class="btn light" onclick="closeWriter()">취소</button></div></div></div>
-<div id="fullNote" style="display:none"><div class="top"><h1>노트 내용</h1><button class="btn light" onclick="closeFullNote()">← 노트 목록</button></div><div class="card"><h2 id="fullTitle"></h2><div id="fullDate" class="small"></div><hr><div id="fullContent" style="white-space:pre-wrap;line-height:1.8"></div></div></div>
-</section>
+<div id="modalBg" class="modal-bg"><div id="modal" class="modal"></div></div>
 
-<section id="goals" class="page"><div class="top"><h1>🎯 목표</h1></div><div class="card"><div class="row"><input id="goalInput" placeholder="새로운 목표를 입력하세요"><button class="btn" onclick="addGoal()">추가</button></div></div><div class="card"><div id="goalList"></div></div></section>
-</main></div>
-<div class="mobileNav"><button data-page="today">📔<br>오늘</button><button data-page="year">📅<br>1년 계획</button><button data-page="notes">📚<br>정리노트</button><button data-page="goals">🎯<br>목표</button></div>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+const SUPABASE_URL="https://mednsjmvbtzozpjzwlao.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable__Xl0HA_qZavw-qMyuX9Xpw_xmRi9cMH";
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 const KEY="myDiaryIntegratedV2";
-let data=JSON.parse(localStorage.getItem(KEY)||"{}");
-data.days=data.days||{};data.notes=data.notes||{};data.goals=data.goals||[];data.months=data.months||{};data.yearPlan=data.yearPlan||"";
-let viewDate=new Date();viewDate.setHours(0,0,0,0),currentSubject="",editingId=null;
+const APP_VERSION="6.1.0";
 
-function save(){localStorage.setItem(KEY,JSON.stringify(data))}
-function key(d){
-  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");
-  return `${y}-${m}-${day}`;
+let data=loadData();
+let viewDate=new Date();viewDate.setHours(0,0,0,0);
+let currentSubject="",editingId=null,currentUser=null,cloudTimer=null;
+
+function blankData(){return{days:{},notes:{},goals:[],months:{},yearPlan:""}}
+function loadData(){
+ try{
+  let raw=localStorage.getItem(KEY)||localStorage.getItem("myDiaryData_v6")||localStorage.getItem("myDiaryData_v5")||localStorage.getItem("local_diaryData");
+  let x=raw?JSON.parse(raw):{};
+  let d=blankData();
+  d.days=x.days||{};
+  d.notes=x.notes||{};
+  d.goals=x.goals||[];
+  d.months=x.months||{};
+  d.yearPlan=x.yearPlan||"";
+  return d;
+ }catch(e){return blankData()}
 }
+function saveLocal(){localStorage.setItem(KEY,JSON.stringify(data))}
+function save(){saveLocal();scheduleCloudSave()}
+function key(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
 function korean(d){return d.toLocaleDateString("ko-KR",{year:"numeric",month:"long",day:"numeric",weekday:"long"})}
-function isToday(){return key(viewDate)===key(new Date())}
-function isPast(){
-  const today=new Date();
-  today.setHours(0,0,0,0);
-  return viewDate < today;
-}
-function canEdit(){return !isPast()}
+function todayKey(){let d=new Date();d.setHours(0,0,0,0);return key(d)}
+function isPastDate(){return key(viewDate)<todayKey()}
+function canEdit(){return !isPastDate()}
 function day(){return data.days[key(viewDate)]||{todos:[],schedule:{},text:""}}
 function saveDay(d){data.days[key(viewDate)]=d;save()}
-function changeDate(amount){
-  const d=new Date(viewDate);
-  d.setDate(d.getDate()+amount);
-  d.setHours(0,0,0,0);
-  viewDate=d;
-  renderToday();
-}
-function escape(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function escape(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
 
 function renderToday(){
- let d=day();
- document.getElementById("todayDate").textContent=korean(viewDate);
- document.getElementById("todayHeading").textContent=isToday()?"오늘":(isPast()?"지난 기록":"미래 기록");
- const locked=isPast();
+ let d=day(),locked=!canEdit();
+ document.getElementById("todayDate").textContent=korean(viewDate)+(locked?" 🔒":"");
  document.getElementById("pastNotice").style.display=locked?"block":"none";
- document.getElementById("addTodoBtn").disabled=locked;document.getElementById("diaryText").disabled=locked;document.getElementById("saveDiaryBtn").disabled=locked;
- document.getElementById("diaryText").classList.toggle("readonly",locked);document.getElementById("diaryText").value=d.text||"";
- let todos=d.todos||[];document.getElementById("todoList").innerHTML=todos.length?todos.map((t,i)=>`<div class="todo ${t.status==="done"?"done":""}"><button class="status" ${locked?"disabled":""} onclick="cycleTodo(${i})">${t.status==="done"?"☑️":t.status==="half"?"🔺":"☐"}</button><div style="flex:1"><b>${escape(t.time)}</b>　<span class="text">${escape(t.text)}</span></div>${locked?"":`<button class="btn light" onclick="deleteTodo(${i})">삭제</button>`}</div>`).join(""):`<div class="empty">오늘의 할 일을 추가해보세요.</div>`;
- let html="";for(let h=0;h<24;h++){let t=String(h).padStart(2,"0")+":00";html+=`<div class="hour"><div class="hour-time">${t}</div><input ${locked?"disabled":""} value="${escape(d.schedule?.[t]||"")}" placeholder="계획 입력" onchange="saveSchedule('${t}',this.value)"></div>`}
- document.getElementById("schedule").innerHTML=html;updateStreak();
-}
-function addTodo(){if(!canEdit())return;let time=prompt("시간을 입력하세요. 예: 09:00");if(time===null)return;let text=prompt("할 일을 입력하세요.");if(!text)return;let d=day();d.todos.push({id:Date.now()+Math.random(),time,text,status:"pending"});saveDay(d);renderToday()}
-function cycleTodo(i){if(!canEdit())return;let d=day(),t=d.todos[i];t.status=t.status==="pending"?"half":t.status==="half"?"done":"pending";saveDay(d);renderToday()}
-function deleteTodo(i){if(!canEdit())return;let d=day();d.todos.splice(i,1);saveDay(d);renderToday()}
-function saveSchedule(t,v){if(!canEdit())return;let d=day();d.schedule=d.schedule||{};if(v.trim())d.schedule[t]=v.trim();else delete d.schedule[t];saveDay(d)}
-function saveDiary(){if(!canEdit())return;let d=day();d.text=document.getElementById("diaryText").value;saveDay(d);document.getElementById("diaryStatus").textContent="✓ 저장되었습니다";updateStreak();setTimeout(()=>document.getElementById("diaryStatus").textContent="",1800)}
-function showYesterday(){let y=new Date();y.setHours(0,0,0,0);y.setDate(y.getDate()-1);viewDate=y;showPage("today");}
-function returnToday(){viewDate=new Date();viewDate.setHours(0,0,0,0);renderToday();}
-function carryHalf(){
- let today=new Date();today.setHours(0,0,0,0),k=key(today),stamp=localStorage.getItem("myDiaryCarryV2");
- if(stamp===k)return;let p=new Date(today);p.setDate(p.getDate()-1);let old=data.days[key(p)];if(old?.todos?.length){let half=old.todos.filter(x=>x.status==="half").map(x=>({id:Date.now()+Math.random(),time:x.time,text:x.text,status:"pending"}));if(half.length){data.days[k]=data.days[k]||{todos:[],schedule:{},text:""};data.days[k].todos=[...(data.days[k].todos||[]),...half]}}localStorage.setItem("myDiaryCarryV2",k);save()}
-function updateStreak(){let s=0,d=new Date();d.setHours(0,0,0,0);while(true){let x=data.days[key(d)],has=x&&(x.text?.trim()||Object.keys(x.schedule||{}).length||(x.todos||[]).length);if(!has)break;s++;d.setDate(d.getDate()-1)}document.getElementById("streak").textContent=s}
+ document.getElementById("addTodoBtn").disabled=locked;
+ document.getElementById("diaryText").disabled=locked;
+ document.getElementById("saveDiaryBtn").disabled=locked;
+ document.getElementById("diaryText").value=d.text||"";
 
-function renderYear(){document.getElementById("yearPlan").value=data.yearPlan;let y=new Date().getFullYear();document.getElementById("months").innerHTML=Array.from({length:12},(_,i)=>`<div class="month-card"><b>${i+1}월</b><textarea data-month="${i+1}" placeholder="${i+1}월 계획">${escape(data.months[i+1]||"")}</textarea></div>`).join("");document.querySelectorAll("[data-month]").forEach(x=>x.onchange=()=>{data.months[x.dataset.month]=x.value;save()})}
+ let todos=d.todos||[];
+ document.getElementById("todoList").innerHTML=todos.length?
+  todos.map((t,i)=>`<div class="todo ${t.status==="done"?"done":""}">
+   <button class="status" ${locked?"disabled":""} onclick="cycleTodo(${i})">${t.status==="done"?"☑️":t.status==="half"?"🔺":"☐"}</button>
+   <div style="flex:1"><b>${escape(t.time)}</b>　<span class="text">${escape(t.text)}</span></div>
+   ${locked?"":`<button class="btn light" onclick="deleteTodo(${i})">삭제</button>`}
+  </div>`).join(""):`<div class="empty">오늘의 할 일을 추가해보세요.</div>`;
+
+ let html="";
+ for(let h=0;h<24;h++){
+  let t=String(h).padStart(2,"0")+":00";
+  html+=`<div class="hour"><div class="hour-time">${t}</div><input ${locked?"disabled":""} value="${escape(d.schedule?.[t]||"")}" placeholder="계획 입력" onchange="saveSchedule('${t}',this.value)"></div>`;
+ }
+ document.getElementById("schedule").innerHTML=html;
+ updateStreak();
+}
+function addTodo(){
+ if(!canEdit())return;
+ let time=prompt("시간을 입력하세요. 예: 09:00");if(time===null)return;
+ let text=prompt("할 일을 입력하세요.");if(!text)return;
+ let d=day();d.todos=d.todos||[];d.todos.push({id:Date.now()+Math.random(),time,text,status:"pending"});saveDay(d);renderToday();
+}
+function cycleTodo(i){
+ if(!canEdit())return;
+ let d=day(),t=d.todos[i];t.status=t.status==="pending"?"half":t.status==="half"?"done":"pending";saveDay(d);renderToday();
+}
+function deleteTodo(i){
+ if(!canEdit())return;
+ let d=day();d.todos.splice(i,1);saveDay(d);renderToday();
+}
+function saveSchedule(t,v){
+ if(!canEdit())return;
+ let d=day();d.schedule=d.schedule||{};
+ if(v.trim())d.schedule[t]=v.trim();else delete d.schedule[t];
+ saveDay(d);
+}
+function saveDiary(){
+ if(!canEdit())return;
+ let d=day();d.text=document.getElementById("diaryText").value;saveDay(d);
+ document.getElementById("diaryStatus").textContent="✓ 저장되었습니다";
+ updateStreak();setTimeout(()=>document.getElementById("diaryStatus").textContent="",1800);
+}
+function previousDate(){viewDate.setDate(viewDate.getDate()-1);renderToday()}
+function nextDate(){viewDate.setDate(viewDate.getDate()+1);renderToday()}
+function returnToday(){viewDate=new Date();viewDate.setHours(0,0,0,0);renderToday()}
+function showYesterday(){let y=new Date();y.setHours(0,0,0,0);y.setDate(y.getDate()-1);viewDate=y;showPage("today")}
+function carryHalf(){
+ let t=new Date();t.setHours(0,0,0,0),k=todayKey(),stamp=localStorage.getItem("myDiaryCarryV2");
+ if(stamp===k)return;
+ let p=new Date(t);p.setDate(p.getDate()-1);
+ let old=data.days[key(p)];
+ if(old?.todos?.length){
+  let half=old.todos.filter(x=>x.status==="half").map(x=>({id:Date.now()+Math.random(),time:x.time,text:x.text,status:"pending"}));
+  if(half.length){
+   data.days[k]=data.days[k]||{todos:[],schedule:{},text:""};
+   data.days[k].todos=[...(data.days[k].todos||[]),...half];
+  }
+ }
+ localStorage.setItem("myDiaryCarryV2",k);saveLocal();
+}
+function updateStreak(){
+ let s=0,d=new Date();d.setHours(0,0,0,0);
+ while(true){
+  let x=data.days[key(d)],has=x&&(x.text?.trim()||Object.keys(x.schedule||{}).length||(x.todos||[]).some(t=>t.status==="done"));
+  if(!has)break;s++;d.setDate(d.getDate()-1);
+ }
+ document.getElementById("streak")?.textContent=s;
+}
+
+function renderYear(){
+ document.getElementById("yearPlan").value=data.yearPlan||"";
+ document.getElementById("months").innerHTML=Array.from({length:12},(_,i)=>`<div class="month-card"><b>${i+1}월</b><textarea data-month="${i+1}" placeholder="${i+1}월 계획">${escape(data.months[i+1]||"")}</textarea></div>`).join("");
+ document.querySelectorAll("[data-month]").forEach(x=>x.onchange=()=>{data.months[x.dataset.month]=x.value;save()});
+}
 function saveYearPlan(){data.yearPlan=document.getElementById("yearPlan").value;save();alert("저장했습니다.")}
 
 const subjects=["🇰🇷 국어노트","🔢 수학노트","🔤 영어노트","🔬 과학노트","🌏 사회노트"];
-function renderSubjects(){subjectList.style.display="block";subjectView.style.display="none";writer.style.display="none";fullNote.style.display="none";subjectsEl=document.getElementById("subjects");subjectsEl.innerHTML=subjects.map(s=>`<button class="subject" onclick="openSubject('${s}')">${s}</button>`).join("")}
+function renderSubjects(){
+ subjectList.style.display="block";subjectView.style.display="none";writer.style.display="none";fullNote.style.display="none";
+ subjectsEl=document.getElementById("subjects");
+ subjectsEl.innerHTML=subjects.map(s=>`<button class="subject" onclick="openSubject('${s}')">${s}</button>`).join("");
+}
 function openSubject(s){currentSubject=s;subjectList.style.display="none";subjectView.style.display="block";subjectTitle.textContent=s;renderNotes()}
 function closeSubject(){currentSubject="";renderSubjects()}
-function renderNotes(){let ns=data.notes[currentSubject]||[];savedNotes.innerHTML=`<div class="card"><button class="btn" onclick="openWriter()">✏️ 작성하기</button></div>`+(ns.length?ns.map(n=>`<div class="card note"><b>${escape(n.major)} · ${escape(n.minor)}</b><div class="small">${escape(n.createdAt)}</div><div class="preview">${escape(n.content.replace(/\s+/g," "))}</div><div class="actions"><button class="btn light" onclick='openFull(${JSON.stringify(n)})'>내용 보기</button><button class="btn light" onclick='editNote(${JSON.stringify(n)})'>✏️ 수정</button><button class="btn danger" onclick="deleteNote(${n.id})">삭제</button></div></div>`).join(""):`<div class="card empty">아직 작성한 노트가 없습니다.</div>`)}
+function renderNotes(){
+ let ns=data.notes[currentSubject]||[];
+ savedNotes.innerHTML=`<div class="card"><button class="btn" onclick="openWriter()">✏️ 작성하기</button></div>`+
+ (ns.length?ns.map(n=>`<div class="card note"><b>${escape(n.major)} · ${escape(n.minor)}</b><div class="small">${escape(n.createdAt)}</div><div class="preview">${escape((n.content||"").replace(/\s+/g," "))}</div><div class="actions"><button class="btn light" onclick='openFull(${JSON.stringify(n)})'>내용 보기</button><button class="btn light" onclick='editNote(${JSON.stringify(n)})'>✏️ 수정</button><button class="btn danger" onclick="deleteNote(${n.id})">삭제</button></div></div>`).join(""):`<div class="card empty">아직 작성한 노트가 없습니다.</div>`);
+}
 function openWriter(){subjectView.style.display="none";writer.style.display="block";writerTitle.textContent=currentSubject+" 작성";editingId=null;clearWriter()}
 function clearWriter(){major.value="";minor.value="";content.value="";saveNoteBtn.textContent="💾 저장"}
 function closeWriter(){writer.style.display="none";subjectView.style.display="block";renderNotes()}
-function saveNote(){if(!major.value.trim()||!minor.value.trim()||!content.value.trim()){alert("모든 항목을 입력해주세요.");return}data.notes[currentSubject]=data.notes[currentSubject]||[];if(editingId){let n=data.notes[currentSubject].find(x=>x.id===editingId);Object.assign(n,{major:major.value.trim(),minor:minor.value.trim(),content:content.value.trim()})}else data.notes[currentSubject].push({id:Date.now(),major:major.value.trim(),minor:minor.value.trim(),content:content.value.trim(),createdAt:korean(new Date())});save();editingId=null;closeWriter()}
+function saveNote(){
+ if(!major.value.trim()||!minor.value.trim()||!content.value.trim()){alert("모든 항목을 입력해주세요.");return}
+ data.notes[currentSubject]=data.notes[currentSubject]||[];
+ if(editingId){let n=data.notes[currentSubject].find(x=>x.id===editingId);Object.assign(n,{major:major.value.trim(),minor:minor.value.trim(),content:content.value.trim()})}
+ else data.notes[currentSubject].push({id:Date.now(),major:major.value.trim(),minor:minor.value.trim(),content:content.value.trim(),createdAt:korean(new Date())});
+ save();editingId=null;closeWriter();
+}
 function editNote(n){openWriter();editingId=n.id;major.value=n.major;minor.value=n.minor;content.value=n.content;saveNoteBtn.textContent="💾 수정 저장"}
 function deleteNote(id){if(confirm("이 노트를 삭제할까요?")){data.notes[currentSubject]=(data.notes[currentSubject]||[]).filter(n=>n.id!==id);save();renderNotes()}}
 function openFull(n){subjectView.style.display="none";fullNote.style.display="block";fullTitle.textContent=n.major+" · "+n.minor;fullDate.textContent=n.createdAt;fullContent.textContent=n.content}
 function closeFullNote(){fullNote.style.display="none";subjectView.style.display="block";renderNotes()}
 
-function renderGoals(){goalList.innerHTML=data.goals.length?data.goals.map((g,i)=>`<div class="todo ${g.done?"done":""}"><button class="status" onclick="toggleGoal(${i})">${g.done?"☑️":"☐"}</button><span class="text" style="flex:1">${escape(g.text)}</span><button class="btn light" onclick="deleteGoal(${i})">삭제</button></div>`).join(""):`<div class="empty">목표를 추가해보세요.</div>`}
+function renderGoals(){
+ goalList.innerHTML=data.goals.length?data.goals.map((g,i)=>`<div class="todo ${g.done?"done":""}"><button class="status" onclick="toggleGoal(${i})">${g.done?"☑️":"☐"}</button><span class="text" style="flex:1">${escape(g.text)}</span><button class="btn light" onclick="deleteGoal(${i})">삭제</button></div>`).join(""):`<div class="empty">목표를 추가해보세요.</div>`;
+}
 function addGoal(){let v=goalInput.value.trim();if(!v)return;data.goals.push({id:Date.now(),text:v,done:false});goalInput.value="";save();renderGoals()}
 function toggleGoal(i){data.goals[i].done=!data.goals[i].done;save();renderGoals()}
 function deleteGoal(i){data.goals.splice(i,1);save();renderGoals()}
 
-function showPage(id){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll("[data-page]").forEach(x=>x.classList.toggle("active",x.dataset.page===id));if(id==="today")renderToday();if(id==="year")renderYear();if(id==="notes")renderSubjects();if(id==="goals")renderGoals()}
+function showPage(id){
+ document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ document.querySelectorAll("[data-page]").forEach(x=>x.classList.toggle("active",x.dataset.page===id));
+ document.getElementById("pageTitle").textContent={today:"📔 오늘",year:"📅 1년 계획",notes:"📚 정리노트",goals:"🎯 목표"}[id];
+ if(id==="today")renderToday();if(id==="year")renderYear();if(id==="notes")renderSubjects();if(id==="goals")renderGoals();
+}
 document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
 
-function migrateOld(){
- // Migrate the previous no-login diary data if it exists in this browser.
- const old=localStorage.getItem("local_diaryData");
- if(old&&!Object.keys(data.days).length){try{const o=JSON.parse(old);for(const [k,v] of Object.entries(o))data.days[k]={todos:v.todos||[],schedule:v.schedule||{},text:v.text||""};}catch(e){}}
- const yp=localStorage.getItem("local_yearPlans");if(yp&&!data.yearPlan){try{let o=JSON.parse(yp),y=new Date().getFullYear();data.yearPlan=o[y]||""}catch(e){}}
- const yg=localStorage.getItem("local_yearGoals");if(yg&&!data.goals.length){try{data.goals=JSON.parse(yg)}catch(e){}}
- const sn=localStorage.getItem("local_subjectNotes");if(sn&&!Object.keys(data.notes).length){try{let o=JSON.parse(sn);for(const [s,v] of Object.entries(o)){if(v){data.notes[s]=[{id:Date.now()+Math.random(),major:"기존 노트",minor:"기존 기록",content:v,createdAt:"이전 기록"}]}}}catch(e){}}
- save()
+/* 클라우드 */
+function setCloud(on,text){
+ document.getElementById("cloudDot").className="cloud-dot"+(on?" on":"");
+ document.getElementById("cloudText").textContent=text;
 }
-migrateOld();carryHalf();renderToday();renderYear();renderGoals();renderSubjects();
-let last=key(new Date());setInterval(()=>{let k=key(new Date());if(k!==last){last=k;viewDate=new Date();viewDate.setHours(0,0,0,0);carryHalf();renderToday()}},1000);
+function scheduleCloudSave(){
+ if(!currentUser)return;
+ clearTimeout(cloudTimer);cloudTimer=setTimeout(cloudSave,800);
+}
+async function cloudSave(){
+ if(!currentUser)return;
+ const {error}=await sb.from("diary_data").upsert({
+  user_id:currentUser.id,app_version:APP_VERSION,data:data,updated_at:new Date().toISOString()
+ },{onConflict:"user_id"});
+ if(error){console.error(error);setCloud(false,"클라우드 저장 실패")}
+ else setCloud(true,"클라우드 저장됨");
+}
+async function backup(reason){
+ if(!currentUser)return;
+ const {error}=await sb.from("diary_backups").insert({user_id:currentUser.id,app_version:APP_VERSION,reason,data:data});
+ if(error)console.error(error);
+}
+async function loadCloud(){
+ if(!currentUser)return;
+ const {data:row,error}=await sb.from("diary_data").select("*").eq("user_id",currentUser.id).maybeSingle();
+ if(error){console.error(error);setCloud(false,"클라우드 오류");return}
+ if(row?.data){
+  data=Object.assign(blankData(),row.data);
+  data.days=data.days||{};data.notes=data.notes||{};data.goals=data.goals||[];data.months=data.months||{};data.yearPlan=data.yearPlan||"";
+  saveLocal();setCloud(true,"클라우드 불러옴");
+ }else{
+  await backup("최초 로그인 전 로컬 기록 백업");
+  await cloudSave();
+ }
+}
+function openAuth(){
+ modal.innerHTML=`<h2>🔐 로그인 / 회원가입</h2>
+ <div class="auth-tabs"><button id="loginTab" class="active">로그인</button><button id="signupTab">회원가입</button></div>
+ <div id="authMsg" class="auth-msg"></div>
+ <label>이메일</label><input id="authEmail" type="email" placeholder="이메일"><br><br>
+ <label>비밀번호</label><input id="authPw" type="password" placeholder="6자 이상"><br><br>
+ <button class="btn" id="authGo">로그인</button> <button class="btn light" onclick="closeModal()">닫기</button>`;
+ let mode="login";
+ const msg=t=>{authMsg.textContent=t;authMsg.style.display="block"};
+ loginTab.onclick=()=>{mode="login";loginTab.classList.add("active");signupTab.classList.remove("active");authGo.textContent="로그인"};
+ signupTab.onclick=()=>{mode="signup";signupTab.classList.add("active");loginTab.classList.remove("active");authGo.textContent="회원가입"};
+ authGo.onclick=async()=>{
+  let email=authEmail.value.trim(),password=authPw.value;
+  if(!email||password.length<6){msg("이메일과 6자 이상의 비밀번호를 입력해주세요.");return}
+  authGo.disabled=true;
+  let r=mode==="login"?await sb.auth.signInWithPassword({email,password}):await sb.auth.signUp({email,password});
+  authGo.disabled=false;
+  if(r.error){msg(r.error.message);return}
+  if(mode==="signup"){msg("회원가입이 완료되었습니다. 이메일 확인이 필요한 경우 메일을 확인한 뒤 로그인해주세요.");return}
+  closeModal();currentUser=r.data.user;await loadCloud();renderAll();
+ };
+ openModal();
+}
+function openAccount(){
+ if(!currentUser){openAuth();return}
+ modal.innerHTML=`<h2>☁️ 내 계정</h2><p>${escape(currentUser.email||"")}</p>
+ <button class="btn" onclick="cloudSave().then(()=>alert('저장했습니다.'))">☁️ 지금 저장</button>
+ <button class="btn light" onclick="openBackups()">💾 백업 보기</button>
+ <button class="btn danger" onclick="logout()">로그아웃</button>
+ <button class="btn light" onclick="closeModal()">닫기</button>`;
+ openModal();
+}
+async function logout(){await sb.auth.signOut();currentUser=null;setCloud(false,"오프라인");closeModal();renderAll()}
+async function openBackups(){
+ if(!currentUser)return;
+ modal.innerHTML=`<h2>💾 백업</h2><p class="small">백업을 선택하면 현재 기록을 먼저 백업한 뒤 복구합니다.</p><div id="backupList">불러오는 중...</div><button class="btn light" onclick="closeModal()">닫기</button>`;
+ const {data:rows,error}=await sb.from("diary_backups").select("id,app_version,reason,created_at").eq("user_id",currentUser.id).order("created_at",{ascending:false}).limit(20);
+ if(error){backupList.textContent="백업을 불러오지 못했습니다.";return}
+ if(!rows.length){backupList.innerHTML='<div class="empty">아직 백업이 없습니다.</div>';return}
+ backupList.innerHTML=rows.map(x=>`<div class="backup"><b>${new Date(x.created_at).toLocaleString("ko-KR")}</b><br><span class="small">${escape(x.reason)} · 앱 ${escape(x.app_version)}</span><button class="btn light" style="float:right" onclick="restoreBackup('${x.id}')">복구</button><div style="clear:both"></div></div>`).join("");
+}
+async function restoreBackup(id){
+ if(!confirm("현재 기록을 먼저 백업하고 이 백업으로 복구할까요?"))return;
+ const {data:row,error}=await sb.from("diary_backups").select("*").eq("id",id).eq("user_id",currentUser.id).single();
+ if(error||!row){alert("백업을 불러오지 못했습니다.");return}
+ await backup("복구 직전 자동 백업");
+ data=Object.assign(blankData(),row.data);
+ data.days=data.days||{};data.notes=data.notes||{};data.goals=data.goals||[];data.months=data.months||{};data.yearPlan=data.yearPlan||"";
+ saveLocal();await cloudSave();closeModal();renderAll();alert("복구했습니다.");
+}
+function openModal(){modalBg.style.display="flex"}
+function closeModal(){modalBg.style.display="none"}
+modalBg.onclick=e=>{if(e.target===modalBg)closeModal()}
+accountBtn.onclick=openAccount;
+
+function migrateOld(){
+ const old=localStorage.getItem("local_diaryData");
+ if(old&&!Object.keys(data.days).length){try{let o=JSON.parse(old);for(const [k,v] of Object.entries(o))data.days[k]={todos:v.todos||[],schedule:v.schedule||{},text:v.text||""}}catch(e){}}
+ const yp=localStorage.getItem("local_yearPlans");
+ if(yp&&!data.yearPlan){try{let o=JSON.parse(yp),y=new Date().getFullYear();data.yearPlan=o[y]||""}catch(e){}}
+ const yg=localStorage.getItem("local_yearGoals");
+ if(yg&&!data.goals.length){try{data.goals=JSON.parse(yg)}catch(e){}}
+ const sn=localStorage.getItem("local_subjectNotes");
+ if(sn&&!Object.keys(data.notes).length){try{let o=JSON.parse(sn);for(const [s,v] of Object.entries(o)){if(v)data.notes[s]=[{id:Date.now()+Math.random(),major:"기존 노트",minor:"기존 기록",content:v,createdAt:"이전 기록"}]}}catch(e){}}
+ saveLocal();
+}
+function renderAll(){renderToday();renderYear();renderSubjects();renderGoals();showPage(currentPage)}
+let currentPage="today";
+
+migrateOld();
+carryHalf();
+renderAll();
+
+(async()=>{
+ const {data:sessionData}=await sb.auth.getSession();
+ if(sessionData.session){
+  currentUser=sessionData.session.user;
+  setCloud(true,"로그인됨");
+  await loadCloud();
+  renderAll();
+ }
+ sb.auth.onAuthStateChange(async(event,session)=>{
+  if(session&&!currentUser){currentUser=session.user;await loadCloud();renderAll()}
+  if(!session){currentUser=null;setCloud(false,"오프라인");renderAll()}
+ });
+})();
+
+let lastDate=key(new Date());
+setInterval(()=>{
+ let k=key(new Date());
+ if(k!==lastDate){
+  lastDate=k;viewDate=new Date();viewDate.setHours(0,0,0,0);carryHalf();renderToday();
+ }
+},1000);
 </script>
+
 <script>
-if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(console.error))}
+if("serviceWorker" in navigator){
+ window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(console.error));
+}
 </script>
-</body></html>
+</body>
+</html>
