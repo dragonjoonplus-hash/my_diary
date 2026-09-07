@@ -710,7 +710,6 @@ function renderProfile(){
   )).length;
   const goalRate=goals.length?Math.round(completedGoals/goals.length*100):0;
   const todoRate=totalTodos?Math.round((doneTodos+halfTodos*0.5)/totalTodos*100):0;
-  const streak=getCurrentStreak();
 
   document.getElementById("profileContent").innerHTML=`
     <div style="margin-top:14px">
@@ -720,7 +719,6 @@ function renderProfile(){
     </div>
 
     <div class="profile-summary">
-      <div class="profile-stat"><div>🔥 현재 연승</div><div class="num">${streak}일</div></div>
       <div class="profile-stat"><div>📔 기록한 날</div><div class="num">${writtenDays}일</div></div>
       <div class="profile-stat"><div>📋 할 일</div><div class="num">${totalTodos}개</div></div>
       <div class="profile-stat"><div>🎯 목표</div><div class="num">${goals.length}개</div></div>
@@ -753,13 +751,7 @@ function renderProfile(){
       <h3>📚 과목별 정리노트</h3>
       <div class="profile-subjects">${noteRows}</div>
     </div>
-
-    <div class="profile-section">
-      <h3>🔥 연승</h3>
-      <div class="profile-row"><span>현재 연승</span><b>${streak}일</b></div>
-      <div class="profile-row"><span>마지막 접속</span><b>${escProfile(data.loginStreak?.lastVisit||"기록 없음")}</b></div>
-    </div>
-  `;
+`;
 }
 function noteRowsFallback(x){ return x; }
 
