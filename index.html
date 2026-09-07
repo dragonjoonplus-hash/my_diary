@@ -96,6 +96,20 @@ input{min-width:0}
 .progress-bar{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,#4da6e8,#6fc6f5);transition:width .35s ease}
 .progress-detail{font-size:13px;color:#777}
 
+
+.profile-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0}
+.profile-stat{padding:16px;border-radius:18px;background:#f3faff;border:1px solid #d7edfb;text-align:center}
+.profile-stat .num{font-size:26px;font-weight:800;margin-top:5px}
+.profile-stat .label{font-size:13px;color:#587080}
+.profile-section{margin-top:18px}
+.profile-section h3{margin:0 0 10px}
+.profile-bar{height:12px;border-radius:99px;background:#e8eef2;overflow:hidden}
+.profile-bar>div{height:100%;border-radius:99px;background:#4da6e8}
+.profile-subjects{display:grid;gap:8px}
+.profile-row{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#f8fcff;border-radius:12px}
+.profile-badge{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;background:#e8f5ff;font-weight:700}
+@media(max-width:600px){.profile-summary{grid-template-columns:1fr 1fr}.profile-stat{padding:12px}.profile-stat .num{font-size:22px}}
+
 </style>
 </head>
 <body>
@@ -649,9 +663,123 @@ setInterval(()=>{
 </script>
 
 <script>
+
+function escProfile(v){
+  return String(v ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+}
+function openProfile(){
+  renderProfile();
+  document.getElementById("profileModal").classList.remove("hidden");
+}
+function closeProfile(){
+  document.getElementById("profileModal").classList.add("hidden");
+}
+function renderProfile(){
+  const days=data.days||{};
+  const notes=data.notes||{};
+  const goals=Array.isArray(data.goals)?data.goals:[];
+  let writtenDays=0, totalTodos=0, doneTodos=0, halfTodos=0, pendingTodos=0;
+  let scheduleCount=0;
+
+  Object.values(days).forEach(d=>{
+    if(!d)return;
+    const hasDiary=String(d.diary||"").trim().length>0;
+    const todos=Array.isArray(d.todos)?d.todos:[];
+    const hours=d.hours&&typeof d.hours==="object"?d.hours:{};
+    if(hasDiary||todos.length||Object.values(hours).some(v=>String(v||"").trim())){
+      writtenDays++;
+    }
+    todos.forEach(t=>{
+      totalTodos++;
+      if(t.status==="done")doneTodos++;
+      else if(t.status==="half")halfTodos++;
+      else pendingTodos++;
+    });
+    scheduleCount += Object.values(hours).filter(v=>String(v||"").trim()).length;
+  });
+
+  let noteTotal=0;
+  const subjectRows=subjects.map(s=>{
+    const n=Array.isArray(notes[s])?notes[s].length:0;
+    noteTotal+=n;
+    return `<div class="profile-row"><span>${escProfile(s)}</span><b>${n}개</b></div>`;
+  }).join("");
+
+  const completedGoals=goals.filter(g=>g&&(
+    g.done===true || g.completed===true || g.status==="done"
+  )).length;
+  const goalRate=goals.length?Math.round(completedGoals/goals.length*100):0;
+  const todoRate=totalTodos?Math.round((doneTodos+halfTodos*0.5)/totalTodos*100):0;
+  const streak=getCurrentStreak();
+
+  document.getElementById("profileContent").innerHTML=`
+    <div style="margin-top:14px">
+      <div class="profile-badge">📊 나의 통합 리포트</div>
+      <h2 style="margin:10px 0 2px">${currentUser?escProfile(currentUser.email):"나의 다이어리"}</h2>
+      <div style="color:#667781">${currentUser?"로그인 계정":"이 기기에서 사용하는 계정"}</div>
+    </div>
+
+    <div class="profile-summary">
+      <div class="profile-stat"><div>🔥 현재 연승</div><div class="num">${streak}일</div></div>
+      <div class="profile-stat"><div>📔 기록한 날</div><div class="num">${writtenDays}일</div></div>
+      <div class="profile-stat"><div>📋 할 일</div><div class="num">${totalTodos}개</div></div>
+      <div class="profile-stat"><div>🎯 목표</div><div class="num">${goals.length}개</div></div>
+      <div class="profile-stat"><div>📚 정리노트</div><div class="num">${noteTotal}개</div></div>
+      <div class="profile-stat"><div>⏰ 시간표 작성</div><div class="num">${scheduleCount}개</div></div>
+    </div>
+
+    <div class="profile-section">
+      <h3>📋 할 일 통계</h3>
+      <div style="display:flex;justify-content:space-between;margin-bottom:7px">
+        <span>진행률</span><b>${todoRate}%</b>
+      </div>
+      <div class="profile-bar"><div style="width:${todoRate}%"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:13px">
+        <span>☑️ ${doneTodos} 완료</span>
+        <span>🔺 ${halfTodos} 반완료</span>
+        <span>☐ ${pendingTodos} 미완료</span>
+      </div>
+    </div>
+
+    <div class="profile-section">
+      <h3>🎯 목표</h3>
+      <div style="display:flex;justify-content:space-between;margin-bottom:7px">
+        <span>${completedGoals}/${goals.length} 달성</span><b>${goalRate}%</b>
+      </div>
+      <div class="profile-bar"><div style="width:${goalRate}%"></div></div>
+    </div>
+
+    <div class="profile-section">
+      <h3>📚 과목별 정리노트</h3>
+      <div class="profile-subjects">${noteRows}</div>
+    </div>
+
+    <div class="profile-section">
+      <h3>🔥 연승</h3>
+      <div class="profile-row"><span>현재 연승</span><b>${streak}일</b></div>
+      <div class="profile-row"><span>마지막 접속</span><b>${escProfile(data.loginStreak?.lastVisit||"기록 없음")}</b></div>
+    </div>
+  `;
+}
+function noteRowsFallback(x){ return x; }
+
+</script>
+
+<script>
 if("serviceWorker" in navigator){
  window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(console.error));
 }
 </script>
+
+<div class="modal-backdrop hidden" id="profileModal">
+  <div class="modal" style="max-width:620px;max-height:88vh;overflow:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <h2 style="margin:0">👤 내 프로필</h2>
+      <button type="button" class="btn" onclick="closeProfile()">닫기</button>
+    </div>
+    <div id="profileContent"></div>
+  </div>
+</div>
+
 </body>
 </html>
