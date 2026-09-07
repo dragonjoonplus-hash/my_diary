@@ -417,7 +417,9 @@ function recordDailyVisit(){
   }
   data.loginStreak.lastVisit=todayKey;
   saveLocal();
-  cloudSave();
+  if(currentUser){
+    cloudSave();
+  }
 }
 function refreshMiniStreak(){
   const n=getCurrentStreak();
