@@ -36,10 +36,6 @@ h1{margin:0;font-size:28px}h2{margin:5px 0 14px}
 .todo-input-row{display:flex;gap:8px;margin-top:12px}
 .todo-input-row input{flex:1;min-width:0;padding:11px 12px;border:1px solid #ddd;border-radius:10px;outline:none}
 .todo-input-row input:focus{border-color:#4da6e8;box-shadow:0 0 0 3px #4da6e822}
-.streak-card{text-align:center;padding:18px;margin-bottom:14px}
-.streak-title{font-size:17px;font-weight:800}
-.streak-count{font-size:28px;font-weight:900;margin:6px 0}
-.streak-card .small{color:#777}
 .empty{text-align:center;color:#888;padding:22px}
 .small{font-size:13px;color:#777}
 .schedule .hour{display:grid;grid-template-columns:75px 1fr;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #eee}
@@ -77,13 +73,6 @@ input{min-width:0}
 .title-line h1{margin:0}
 .mini-streak{border:0;background:rgba(255,255,255,.72);border-radius:999px;padding:7px 11px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.08)}
 .mini-streak:active{transform:scale(.96)}
-.streak-popup{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center}
-.streak-popup.hidden{display:none}
-.streak-overlay{position:absolute;inset:0;background:rgba(20,50,80,.28);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-.streak-popup-content{position:relative;width:min(82vw,420px);padding:38px 24px 34px;text-align:center;border-radius:28px;background:rgba(255,255,255,.96);box-shadow:0 20px 70px rgba(0,0,0,.25);animation:streakPop .55s cubic-bezier(.2,1.35,.35,1)}
-.streak-big-fire{font-size:88px;line-height:1;margin-bottom:12px;animation:firePulse .8s ease-in-out infinite alternate}
-.streak-popup-count{font-size:38px;font-weight:950;margin-bottom:8px}
-.streak-popup-message{font-size:16px;color:#666}
 @keyframes streakPop{0%{opacity:0;transform:scale(.35)}70%{opacity:1;transform:scale(1.08)}100%{opacity:1;transform:scale(1)}}
 @keyframes firePulse{from{transform:scale(1) rotate(-3deg)}to{transform:scale(1.1) rotate(3deg)}}
 
@@ -110,17 +99,11 @@ input{min-width:0}
 .profile-badge{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;background:#e8f5ff;font-weight:700}
 @media(max-width:600px){.profile-summary{grid-template-columns:1fr 1fr}.profile-stat{padding:12px}.profile-stat .num{font-size:22px}}
 
+
+.profile-nav-btn{width:100%;text-align:left;margin-bottom:8px;font-weight:700}
 </style>
 </head>
 <body>
-
-<div id="streakPopup" class="streak-popup hidden">
-  <div class="streak-overlay"></div>
-  <div class="streak-popup-content">
-    <div class="streak-big-fire">🔥</div>
-    <div id="popupStreakCount" class="streak-popup-count">0일 연속</div>
-    <div id="popupStreakMessage" class="streak-popup-message">연속 기록을 이어가고 있어요!</div>
-  </div>
 </div>
 
 
@@ -128,6 +111,7 @@ input{min-width:0}
 <aside class="sidebar">
  <div class="logo">📔 나의 다이어리</div>
  <nav class="nav">
+  <button type="button" class="profile-nav-btn" id="profileNavBtn">👤 내 프로필</button>
   <button type="button" data-page="today" class="active">📔 오늘</button>
   <button type="button" data-page="year">📅 1년 계획</button>
   <button type="button" data-page="notes">📚 정리노트</button>
@@ -137,7 +121,7 @@ input{min-width:0}
 
 <main class="main">
  <div class="top">
-  <div class="title-line"><h1 id="pageTitle">📔 오늘</h1><button type="button" id="miniStreakBtn" class="mini-streak" onclick="showStreakPopup()">🔥 <span id="miniStreakCount">0</span></button></div>
+  <div class="title-line"><h1 id="pageTitle">📔 오늘</h1></div>
   <div class="account">
    <span id="cloudDot" class="cloud-dot"></span>
    <span id="cloudText" class="small">오프라인</span>
@@ -153,9 +137,6 @@ input{min-width:0}
    <button type="button" onclick="nextDate()">다음 날짜 →</button>
   </div>
   <div id="pastNotice" class="lock" style="display:none">🔒 이전 날짜의 기록은 읽기 전용입니다.</div>
-
-  <div id="streakBox" class="card streak-card">
-    <div class="streak-title">🔥 연속 기록</div>
     <div id="streakCount" class="streak-count">0일 연속</div>
     <div id="streakMessage" class="small">오늘 기록을 남겨 연속 기록을 이어가세요!</div>
    </div>
@@ -246,6 +227,17 @@ input{min-width:0}
 <div id="modalBg" class="modal-bg"><div id="modal" class="modal"></div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<div class="modal-backdrop hidden" id="profileModal">
+  <div class="modal" style="max-width:620px;max-height:88vh;overflow:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <h2 style="margin:0">👤 내 프로필</h2>
+      <button type="button" class="btn" onclick="closeProfile()">닫기</button>
+    </div>
+    <div id="profileContent"></div>
+  </div>
+</div>
+
 <script>
 const SUPABASE_URL="https://mednsjmvbtzozpjzwlao.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable__Xl0HA_qZavw-qMyuX9Xpw_xmRi9cMH";
@@ -278,7 +270,7 @@ const accountBtnEl=document.getElementById("accountBtn");
 const cloudDotEl=document.getElementById("cloudDot");
 const cloudTextEl=document.getElementById("cloudText");
 
-function blankData(){return{days:{},notes:{},goals:[],months:{},yearPlan:"",loginStreak:{count:0,lastVisit:""}}}
+function blankData(){return{days:{},notes:{},goals:[],months:{},yearPlan:""}}
 function loadData(){
  try{
   let raw=localStorage.getItem(KEY)||localStorage.getItem("myDiaryData_v6")||localStorage.getItem("myDiaryData_v5")||localStorage.getItem("local_diaryData");
@@ -411,59 +403,7 @@ function carryHalf(){
  localStorage.setItem("myDiaryCarryV2",k);saveLocal();
 }
 
-function getCurrentStreak(){
-  return Number(data.loginStreak?.count || 0);
-}
-function recordDailyVisit(){
-  const todayKey=fmtDate(new Date());
-  data.loginStreak=data.loginStreak||{count:0,lastVisit:""};
-  if(data.loginStreak.lastVisit===todayKey)return;
-  const last=data.loginStreak.lastVisit;
-  if(!last){
-    data.loginStreak.count=1;
-  }else{
-    const lastDate=new Date(last+"T00:00:00");
-    const todayDate=new Date(todayKey+"T00:00:00");
-    const diff=Math.round((todayDate-lastDate)/86400000);
-    data.loginStreak.count=(diff===1)
-      ? Number(data.loginStreak.count||0)+1
-      : 1;
-  }
-  data.loginStreak.lastVisit=todayKey;
-  saveLocal();
-  if(currentUser){
-    cloudSave();
-  }
-}
-function refreshMiniStreak(){
-  const n=getCurrentStreak();
-  const el=document.getElementById("miniStreakCount");
-  if(el)el.textContent=n;
-  return n;
-}
-function showStreakPopup(){
-  const n=refreshMiniStreak();
-  const popup=document.getElementById("streakPopup");
-  const count=document.getElementById("popupStreakCount");
-  const msg=document.getElementById("popupStreakMessage");
-  if(!popup)return;
-  count.textContent=`${n}일 연속`;
-  msg.textContent=n>0?"🔥 대단해요! 오늘도 기록을 이어가세요!":"오늘 기록을 시작하면 연속 기록이 시작돼요!";
-  popup.classList.remove("hidden");
-  clearTimeout(window.streakPopupTimer);
-  window.streakPopupTimer=setTimeout(()=>popup.classList.add("hidden"),2200);
-}
 
-function updateStreak(){
-  const n=getCurrentStreak();
-  const countEl=document.getElementById("streakCount");
-  const msgEl=document.getElementById("streakMessage");
-  if(countEl)countEl.textContent=`🔥 ${n}일 연속`;
-  if(msgEl)msgEl.textContent=n>0
-    ?"좋아요! 오늘도 접속해서 연속 기록을 이어가세요."
-    :"오늘 접속하면 연속 기록이 시작돼요!";
-  if(typeof refreshMiniStreak==="function")refreshMiniStreak();
-}
 
 function renderYear(){
  document.getElementById("yearPlan").value=data.yearPlan||"";
@@ -544,8 +484,7 @@ async function loadCloud(){
  if(error){console.error(error);setCloud(false,"클라우드 오류");return}
  if(row?.data){
   data=Object.assign(blankData(),row.data);
-  data.days=data.days||{};data.notes=data.notes||{};data.goals=data.goals||[];data.months=data.months||{};data.yearPlan=data.yearPlan||"";data.loginStreak=data.loginStreak||{count:0,lastVisit:""};
-  saveLocal();setCloud(true,"클라우드 불러옴");
+  data.days=data.days||{};data.notes=data.notes||{};data.goals=data.goals||[];data.months=data.months||{};data.yearPlan=data.yearPlan||"";  saveLocal();setCloud(true,"클라우드 불러옴");
  }else{
   await backup("최초 로그인 전 로컬 기록 백업");
   await cloudSave();
@@ -602,8 +541,7 @@ async function restoreBackup(id){
  if(error||!row){alert("백업을 불러오지 못했습니다.");return}
  await backup("복구 직전 자동 백업");
  data=Object.assign(blankData(),row.data);
- data.days=data.days||{};data.notes=data.notes||{};data.goals=data.goals||[];data.months=data.months||{};data.yearPlan=data.yearPlan||"";data.loginStreak=data.loginStreak||{count:0,lastVisit:""};
- saveLocal();await cloudSave();closeModal();renderAll();alert("복구했습니다.");
+ data.days=data.days||{};data.notes=data.notes||{};data.goals=data.goals||[];data.months=data.months||{};data.yearPlan=data.yearPlan||""; saveLocal();await cloudSave();closeModal();renderAll();alert("복구했습니다.");
 }
 function openModal(){modalBgEl.style.display="flex"}
 function closeModal(){modalBgEl.style.display="none"}
@@ -622,16 +560,9 @@ function migrateOld(){
  saveLocal();
 }
 
-function maybeShowDailyStreakPopup(){
-  const todayKey=fmtDate(new Date());
-  const seenKey="myDiaryStreakPopupSeen_"+todayKey;
-  if(localStorage.getItem(seenKey))return;
-  localStorage.setItem(seenKey,"1");
-  setTimeout(()=>showStreakPopup(),500);
-}
 
 function renderAll(){
- updateStreak();renderToday();renderYear();renderSubjects();renderGoals();showPage(currentPage)}
+ renderToday();renderYear();renderSubjects();renderGoals();showPage(currentPage)}
 let currentPage="today";
 
 migrateOld();
@@ -662,52 +593,50 @@ setInterval(()=>{
 },1000);
 </script>
 
-<script>
 
+<script>
 function escProfile(v){
   return String(v ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 }
 function openProfile(){
+  const modal=document.getElementById("profileModal");
+  if(!modal)return;
   renderProfile();
-  document.getElementById("profileModal").classList.remove("hidden");
+  modal.classList.remove("hidden");
 }
 function closeProfile(){
-  document.getElementById("profileModal").classList.add("hidden");
+  const modal=document.getElementById("profileModal");
+  if(modal)modal.classList.add("hidden");
 }
 function renderProfile(){
   const days=data.days||{};
   const notes=data.notes||{};
   const goals=Array.isArray(data.goals)?data.goals:[];
-  let writtenDays=0, totalTodos=0, doneTodos=0, halfTodos=0, pendingTodos=0;
-  let scheduleCount=0;
+  let writtenDays=0,totalTodos=0,doneTodos=0,halfTodos=0,pendingTodos=0,scheduleCount=0;
 
   Object.values(days).forEach(d=>{
     if(!d)return;
-    const hasDiary=String(d.diary||"").trim().length>0;
     const todos=Array.isArray(d.todos)?d.todos:[];
     const hours=d.hours&&typeof d.hours==="object"?d.hours:{};
-    if(hasDiary||todos.length||Object.values(hours).some(v=>String(v||"").trim())){
-      writtenDays++;
-    }
+    const hasDiary=String(d.diary||"").trim().length>0;
+    if(hasDiary||todos.length||Object.values(hours).some(v=>String(v||"").trim())) writtenDays++;
     todos.forEach(t=>{
       totalTodos++;
       if(t.status==="done")doneTodos++;
       else if(t.status==="half")halfTodos++;
       else pendingTodos++;
     });
-    scheduleCount += Object.values(hours).filter(v=>String(v||"").trim()).length;
+    scheduleCount+=Object.values(hours).filter(v=>String(v||"").trim()).length;
   });
 
   let noteTotal=0;
-  const subjectRows=subjects.map(s=>{
+  const noteRows=subjects.map(s=>{
     const n=Array.isArray(notes[s])?notes[s].length:0;
     noteTotal+=n;
     return `<div class="profile-row"><span>${escProfile(s)}</span><b>${n}개</b></div>`;
   }).join("");
 
-  const completedGoals=goals.filter(g=>g&&(
-    g.done===true || g.completed===true || g.status==="done"
-  )).length;
+  const completedGoals=goals.filter(g=>g&&(g.done===true||g.completed===true||g.status==="done")).length;
   const goalRate=goals.length?Math.round(completedGoals/goals.length*100):0;
   const todoRate=totalTodos?Math.round((doneTodos+halfTodos*0.5)/totalTodos*100):0;
 
@@ -717,7 +646,6 @@ function renderProfile(){
       <h2 style="margin:10px 0 2px">${currentUser?escProfile(currentUser.email):"나의 다이어리"}</h2>
       <div style="color:#667781">${currentUser?"로그인 계정":"이 기기에서 사용하는 계정"}</div>
     </div>
-
     <div class="profile-summary">
       <div class="profile-stat"><div>📔 기록한 날</div><div class="num">${writtenDays}일</div></div>
       <div class="profile-stat"><div>📋 할 일</div><div class="num">${totalTodos}개</div></div>
@@ -725,37 +653,35 @@ function renderProfile(){
       <div class="profile-stat"><div>📚 정리노트</div><div class="num">${noteTotal}개</div></div>
       <div class="profile-stat"><div>⏰ 시간표 작성</div><div class="num">${scheduleCount}개</div></div>
     </div>
-
     <div class="profile-section">
       <h3>📋 할 일 통계</h3>
-      <div style="display:flex;justify-content:space-between;margin-bottom:7px">
-        <span>진행률</span><b>${todoRate}%</b>
-      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:7px"><span>진행률</span><b>${todoRate}%</b></div>
       <div class="profile-bar"><div style="width:${todoRate}%"></div></div>
       <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:13px">
-        <span>☑️ ${doneTodos} 완료</span>
-        <span>🔺 ${halfTodos} 반완료</span>
-        <span>☐ ${pendingTodos} 미완료</span>
+        <span>☑️ ${doneTodos} 완료</span><span>🔺 ${halfTodos} 반완료</span><span>☐ ${pendingTodos} 미완료</span>
       </div>
     </div>
-
     <div class="profile-section">
       <h3>🎯 목표</h3>
-      <div style="display:flex;justify-content:space-between;margin-bottom:7px">
-        <span>${completedGoals}/${goals.length} 달성</span><b>${goalRate}%</b>
-      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:7px"><span>${completedGoals}/${goals.length} 달성</span><b>${goalRate}%</b></div>
       <div class="profile-bar"><div style="width:${goalRate}%"></div></div>
     </div>
-
     <div class="profile-section">
       <h3>📚 과목별 정리노트</h3>
       <div class="profile-subjects">${noteRows}</div>
     </div>
-`;
+  `;
 }
-function noteRowsFallback(x){ return x; }
-
+document.addEventListener("DOMContentLoaded",()=>{
+  const b=document.getElementById("profileNavBtn");
+  if(b)b.addEventListener("click",openProfile);
+  const c=document.getElementById("closeProfileBtn");
+  if(c)c.addEventListener("click",closeProfile);
+  const m=document.getElementById("profileModal");
+  if(m)m.addEventListener("click",e=>{if(e.target===m)closeProfile()});
+});
 </script>
+
 
 <script>
 if("serviceWorker" in navigator){
@@ -763,15 +689,6 @@ if("serviceWorker" in navigator){
 }
 </script>
 
-<div class="modal-backdrop hidden" id="profileModal">
-  <div class="modal" style="max-width:620px;max-height:88vh;overflow:auto">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-      <h2 style="margin:0">👤 내 프로필</h2>
-      <button type="button" class="btn" onclick="closeProfile()">닫기</button>
-    </div>
-    <div id="profileContent"></div>
-  </div>
-</div>
 
 </body>
 </html>
