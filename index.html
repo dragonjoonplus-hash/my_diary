@@ -5,7 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#4da6e8">
 <link rel="manifest" href="./manifest.json">
-<title>나의 다이어리</title>
+<title>나의 다이어리앱 | 하루 계획과 목표 관리</title>
+<meta name="description" content="나의 다이어리앱은 하루 계획, 1년 계획, 정리노트와 목표를 한곳에서 관리할 수 있는 다이어리 앱입니다.">
+<link rel="canonical" href="https://dragonjoonplus-hash.github.io/my_diary/">
+<meta property="og:title" content="나의 다이어리앱 | 하루 계획과 목표 관리">
+<meta property="og:description" content="하루 계획, 1년 계획, 정리노트와 목표를 한곳에서 관리하는 나의 다이어리앱입니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://dragonjoonplus-hash.github.io/my_diary/">
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(135deg,#f3fbff 0%,#e8f5ff 55%,#dff1ff 100%);color:#222}
@@ -96,6 +102,17 @@ input{min-width:0}
 @media(max-width:600px){.profile-summary{grid-template-columns:1fr 1fr}.profile-stat{padding:12px}.profile-stat .num{font-size:22px}}
 .stats-wrap{max-width:1050px}.stats-head{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin-bottom:20px}.stats-head h2{margin:8px 0 4px;font-size:28px}.stats-head p{margin:0;color:#607583}.stats-badge{display:inline-block;background:#e8f5ff;color:#1769aa;padding:7px 12px;border-radius:999px;font-weight:700}.stats-period{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.stats-period button{border:1px solid #d4e5ef;background:#fff;border-radius:12px;padding:9px 13px;cursor:pointer;font-weight:700}.stats-period button.active{background:#4da6e8;color:#fff;border-color:#4da6e8}.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.stats-card{background:#fff;border:1px solid #d8eaf4;border-radius:18px;padding:18px;box-shadow:0 5px 18px rgba(50,100,130,.06)}.stats-wide{grid-column:span 2}.stats-card-title{font-weight:700;color:#4f6673}.stats-big{font-size:42px;font-weight:900;margin:8px 0}.stats-number{font-size:30px;font-weight:900;margin-top:8px}.stats-time{font-size:24px}.stats-muted{font-size:13px;color:#71828c;margin-top:5px}.stats-bar{height:13px;background:#edf3f6;border-radius:99px;overflow:hidden}.stats-bar>div{height:100%;width:0;background:#4da6e8;border-radius:99px}.stats-section-card{background:#fff;border:1px solid #d8eaf4;border-radius:18px;padding:18px;margin-top:14px}.stats-section-card h3{margin:0 0 14px}.stats-hours{display:grid;gap:9px}.stats-hour-row{display:grid;grid-template-columns:105px 1fr 55px;align-items:center;gap:10px;font-size:13px}.stats-hour-label{text-align:right;font-weight:700}.stats-hour-track{height:10px;background:#edf3f6;border-radius:99px;overflow:hidden}.stats-hour-fill{height:100%;background:#4da6e8;border-radius:99px}.stats-hour-count{text-align:right;font-weight:700}.stats-subjects{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}.stats-subject{background:#f7fbfd;border-radius:14px;padding:13px;text-align:center}.stats-subject b{display:block;font-size:20px;margin-top:4px}.stats-empty{padding:20px;text-align:center;color:#758792;background:#f8fbfd;border-radius:14px}@media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.stats-wide{grid-column:span 2}.stats-subjects{grid-template-columns:repeat(2,minmax(0,1fr))}.stats-head{align-items:flex-start;flex-direction:column}.stats-period{justify-content:flex-start}}@media(max-width:600px){.stats-grid{grid-template-columns:1fr}.stats-wide{grid-column:span 1}.stats-hour-row{grid-template-columns:82px 1fr 42px}}
 </style>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"WebApplication",
+  "name":"나의 다이어리앱",
+  "url":"https://dragonjoonplus-hash.github.io/my_diary/",
+  "description":"하루 계획, 1년 계획, 정리노트와 목표를 한곳에서 관리하는 다이어리 앱입니다.",
+  "applicationCategory":"ProductivityApplication",
+  "operatingSystem":"Web"
+}
+</script>
 </head>
 <body>
 
@@ -104,7 +121,7 @@ input{min-width:0}
 
 <div class="app">
 <aside class="sidebar">
- <div class="logo">📔 나의 다이어리</div>
+ <div class="logo">📔 나의 다이어리앱</div>
  <nav class="nav">
   <button type="button" data-page="stats">📊 나의 기록</button>
   <button type="button" class="profile-nav-btn" onclick="openProfile()">👤 내 프로필</button>
