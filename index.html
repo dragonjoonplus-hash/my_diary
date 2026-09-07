@@ -94,6 +94,7 @@ input{min-width:0}
 .profile-subjects{display:grid;gap:8px}.profile-row{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#f8fcff;border-radius:12px}
 .profile-badge{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;background:#e8f5ff;font-weight:700}
 @media(max-width:600px){.profile-summary{grid-template-columns:1fr 1fr}.profile-stat{padding:12px}.profile-stat .num{font-size:22px}}
+.stats-wrap{max-width:1050px}.stats-head{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin-bottom:20px}.stats-head h2{margin:8px 0 4px;font-size:28px}.stats-head p{margin:0;color:#607583}.stats-badge{display:inline-block;background:#e8f5ff;color:#1769aa;padding:7px 12px;border-radius:999px;font-weight:700}.stats-period{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.stats-period button{border:1px solid #d4e5ef;background:#fff;border-radius:12px;padding:9px 13px;cursor:pointer;font-weight:700}.stats-period button.active{background:#4da6e8;color:#fff;border-color:#4da6e8}.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.stats-card{background:#fff;border:1px solid #d8eaf4;border-radius:18px;padding:18px;box-shadow:0 5px 18px rgba(50,100,130,.06)}.stats-wide{grid-column:span 2}.stats-card-title{font-weight:700;color:#4f6673}.stats-big{font-size:42px;font-weight:900;margin:8px 0}.stats-number{font-size:30px;font-weight:900;margin-top:8px}.stats-time{font-size:24px}.stats-muted{font-size:13px;color:#71828c;margin-top:5px}.stats-bar{height:13px;background:#edf3f6;border-radius:99px;overflow:hidden}.stats-bar>div{height:100%;width:0;background:#4da6e8;border-radius:99px}.stats-section-card{background:#fff;border:1px solid #d8eaf4;border-radius:18px;padding:18px;margin-top:14px}.stats-section-card h3{margin:0 0 14px}.stats-hours{display:grid;gap:9px}.stats-hour-row{display:grid;grid-template-columns:105px 1fr 55px;align-items:center;gap:10px;font-size:13px}.stats-hour-label{text-align:right;font-weight:700}.stats-hour-track{height:10px;background:#edf3f6;border-radius:99px;overflow:hidden}.stats-hour-fill{height:100%;background:#4da6e8;border-radius:99px}.stats-hour-count{text-align:right;font-weight:700}.stats-subjects{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}.stats-subject{background:#f7fbfd;border-radius:14px;padding:13px;text-align:center}.stats-subject b{display:block;font-size:20px;margin-top:4px}.stats-empty{padding:20px;text-align:center;color:#758792;background:#f8fbfd;border-radius:14px}@media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.stats-wide{grid-column:span 2}.stats-subjects{grid-template-columns:repeat(2,minmax(0,1fr))}.stats-head{align-items:flex-start;flex-direction:column}.stats-period{justify-content:flex-start}}@media(max-width:600px){.stats-grid{grid-template-columns:1fr}.stats-wide{grid-column:span 1}.stats-hour-row{grid-template-columns:82px 1fr 42px}}
 </style>
 </head>
 <body>
@@ -105,6 +106,7 @@ input{min-width:0}
 <aside class="sidebar">
  <div class="logo">📔 나의 다이어리</div>
  <nav class="nav">
+  <button type="button" data-page="stats">📊 나의 기록</button>
   <button type="button" class="profile-nav-btn" onclick="openProfile()">👤 내 프로필</button>
   <button type="button" data-page="today" class="active">📔 오늘</button>
   <button type="button" data-page="year">📅 1년 계획</button>
@@ -123,7 +125,42 @@ input{min-width:0}
   </div>
  </div>
 
- <section id="today" class="page active">
+ <section id="stats" class="page">
+  <div class="stats-wrap">
+    <div class="stats-head">
+      <div>
+        <div class="stats-badge">📊 나의 기록</div>
+        <h2>나의 활동 통계</h2>
+        <p>다이어리에 남긴 기록을 기간별로 한눈에 확인해보세요.</p>
+      </div>
+      <div class="stats-period">
+        <button type="button" data-stats-period="week" class="active">이번 주</button>
+        <button type="button" data-stats-period="month">이번 달</button>
+        <button type="button" data-stats-period="year">올해</button>
+        <button type="button" data-stats-period="all">전체</button>
+      </div>
+    </div>
+    <div class="stats-grid">
+      <div class="stats-card stats-wide">
+        <div class="stats-card-title">📋 계획 완료율</div>
+        <div class="stats-big" id="statsCompletionRate">0%</div>
+        <div class="stats-bar"><div id="statsCompletionBar"></div></div>
+        <div class="stats-muted" id="statsCompletionText">완료 0개 / 전체 0개</div>
+      </div>
+      <div class="stats-card"><div class="stats-card-title">☑️ 완료한 계획</div><div class="stats-number" id="statsDone">0</div><div class="stats-muted">완료</div></div>
+      <div class="stats-card"><div class="stats-card-title">🔺 반만 완료</div><div class="stats-number" id="statsHalf">0</div><div class="stats-muted">반완료</div></div>
+      <div class="stats-card"><div class="stats-card-title">☐ 미완료 계획</div><div class="stats-number" id="statsPending">0</div><div class="stats-muted">미완료</div></div>
+      <div class="stats-card"><div class="stats-card-title">📝 기록한 날</div><div class="stats-number" id="statsWrittenDays">0</div><div class="stats-muted">일</div></div>
+      <div class="stats-card"><div class="stats-card-title">⏰ 가장 많이 사용한 시간</div><div class="stats-number stats-time" id="statsTopHour">-</div><div class="stats-muted" id="statsTopHourCount">작성 0회</div></div>
+      <div class="stats-card"><div class="stats-card-title">📚 정리노트</div><div class="stats-number" id="statsNotes">0</div><div class="stats-muted">작성</div></div>
+      <div class="stats-card"><div class="stats-card-title">🎯 목표</div><div class="stats-number" id="statsGoals">0</div><div class="stats-muted" id="statsGoalText">달성 0개</div></div>
+    </div>
+    <div class="stats-section-card"><h3>⏰ 시간대별 사용량</h3><div id="statsHours" class="stats-hours"></div></div>
+    <div class="stats-section-card"><h3>📚 과목별 정리노트</h3><div id="statsSubjects" class="stats-subjects"></div></div>
+  </div>
+</section>
+
+<section id="today" class="page active">
   <div class="dateNav">
    <button type="button" onclick="previousDate()">← 이전 날짜</button>
    <button type="button" onclick="returnToday()">오늘</button>
@@ -549,6 +586,52 @@ function migrateOld(){
 }
 
 
+
+let statsPeriod="week";
+function statsPeriodRange(period){
+  const now=new Date(); now.setHours(0,0,0,0);
+  if(period==="week"){
+    const day=now.getDay(), start=new Date(now);
+    start.setDate(now.getDate()-(day===0?6:day-1));
+    const end=new Date(start); end.setDate(start.getDate()+6);
+    return [start,end];
+  }
+  if(period==="month") return [new Date(now.getFullYear(),now.getMonth(),1),new Date(now.getFullYear(),now.getMonth()+1,0)];
+  if(period==="year") return [new Date(now.getFullYear(),0,1),new Date(now.getFullYear(),11,31)];
+  return [null,null];
+}
+function renderStats(){
+  const days=data.days||{}, [from,to]=statsPeriodRange(statsPeriod);
+  let total=0,done=0,half=0,pending=0,writtenDays=0;
+  const hourCounts=Array(24).fill(0);
+  Object.entries(days).forEach(([key,d])=>{
+    const dt=new Date(key+"T00:00:00");
+    if(Number.isNaN(dt.getTime()) || (from&&(dt<from||dt>to))) return;
+    d=d||{}; const todos=Array.isArray(d.todos)?d.todos:[], hours=d.hours||{};
+    if(String(d.diary||"").trim()||todos.length||Object.values(hours).some(v=>String(v||"").trim())) writtenDays++;
+    todos.forEach(t=>{total++; if(t.status==="done")done++; else if(t.status==="half")half++; else pending++;});
+    Object.entries(hours).forEach(([h,v])=>{const n=Number(h);if(n>=0&&n<24&&String(v||"").trim())hourCounts[n]++;});
+  });
+  const rate=total?Math.round((done+half*.5)/total*100):0, max=Math.max(...hourCounts), top=max?hourCounts.indexOf(max):-1;
+  const notes=data.notes||{}; let noteTotal=0;
+  const subjectData=subjects.map(s=>{const arr=Array.isArray(notes[s])?notes[s]:[]; const n=statsPeriod==="all"?arr.length:arr.filter(x=>{const v=x.date||x.createdAt||x.created_at;if(!v)return false;const d=new Date(String(v).length===10?v+"T00:00:00":v);return from&&to&&!Number.isNaN(d.getTime())&&d>=from&&d<=to}).length;noteTotal+=n;return[s,n]});
+  const goals=Array.isArray(data.goals)?data.goals:[], goalDone=goals.filter(g=>g&&(g.done===true||g.completed===true||g.status==="done")).length;
+  document.getElementById("statsCompletionRate").textContent=rate+"%";
+  document.getElementById("statsCompletionBar").style.width=rate+"%";
+  document.getElementById("statsCompletionText").textContent=`완료 ${done}개 / 전체 ${total}개`;
+  document.getElementById("statsDone").textContent=done; document.getElementById("statsHalf").textContent=half; document.getElementById("statsPending").textContent=pending;
+  document.getElementById("statsWrittenDays").textContent=writtenDays;
+  document.getElementById("statsTopHour").textContent=top>=0?`${String(top).padStart(2,"0")}:00~${String((top+1)%24).padStart(2,"0")}:00`:"-";
+  document.getElementById("statsTopHourCount").textContent=`작성 ${max||0}회`;
+  document.getElementById("statsNotes").textContent=noteTotal;
+  document.getElementById("statsGoals").textContent=goals.length; document.getElementById("statsGoalText").textContent=`달성 ${goalDone}개`;
+  document.getElementById("statsHours").innerHTML=max?hourCounts.map((c,h)=>`<div class="stats-hour-row"><div class="stats-hour-label">${String(h).padStart(2,"0")}:00</div><div class="stats-hour-track"><div class="stats-hour-fill" style="width:${Math.round(c/max*100)}%"></div></div><div class="stats-hour-count">${c}회</div></div>`).join(""):'<div class="stats-empty">아직 작성된 시간표가 없어요.</div>';
+  document.getElementById("statsSubjects").innerHTML=subjectData.map(([s,n])=>`<div class="stats-subject"><span>${escProfile(s)}</span><b>${n}개</b></div>`).join("");
+}
+function initStats(){
+  document.querySelectorAll("[data-stats-period]").forEach(b=>b.addEventListener("click",()=>{statsPeriod=b.dataset.statsPeriod;document.querySelectorAll("[data-stats-period]").forEach(x=>x.classList.toggle("active",x===b));renderStats();}));
+}
+
 function renderAll(){
 renderToday();renderYear();renderSubjects();renderGoals();showPage(currentPage)}
 let currentPage="today";
@@ -622,7 +705,7 @@ function renderProfile(){
   <div class="profile-section"><h3>🎯 목표 달성</h3><div style="display:flex;justify-content:space-between;margin-bottom:7px"><span>${completedGoals}/${goals.length} 달성</span><b>${goalRate}%</b></div><div class="profile-bar"><div style="width:${goalRate}%"></div></div></div>
   <div class="profile-section"><h3>📚 과목별 정리노트</h3><div class="profile-subjects">${noteRows||'<div class="small">아직 정리노트가 없습니다.</div>'}</div></div>`;
 }
-document.addEventListener("DOMContentLoaded",()=>{
+document.addEventListener("DOMContentLoaded",()=>{initStats();
  const modal=document.getElementById("profileModal");
  if(modal)modal.addEventListener("click",e=>{if(e.target===modal)closeProfile();});
 });
