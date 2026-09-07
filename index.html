@@ -264,7 +264,7 @@ const accountBtnEl=document.getElementById("accountBtn");
 const cloudDotEl=document.getElementById("cloudDot");
 const cloudTextEl=document.getElementById("cloudText");
 
-function blankData(){return{days:{},notes:{},goals:[],months:{},yearPlan:""}}
+function blankData(){return{days:{},notes:{},goals:[],months:{},yearPlan:"",loginStreak:{count:0,lastVisit:""}}}
 function loadData(){
  try{
   let raw=localStorage.getItem(KEY)||localStorage.getItem("myDiaryData_v6")||localStorage.getItem("myDiaryData_v5")||localStorage.getItem("local_diaryData");
@@ -398,22 +398,26 @@ function carryHalf(){
 }
 
 function getCurrentStreak(){
-  let streak=0;
-  let cursor=new Date();
-  cursor.setHours(0,0,0,0);
-  const hasMeaningfulRecord=(key)=>{
-    const d=data.days?.[key];
-    if(!d)return false;
-    const todos=d.todos||[];
-    return todos.some(t=>t.status==="done"||t.status==="half")
-      || (d.hours||[]).some(v=>String(v||"").trim())
-      || String(d.diary||"").trim().length>0;
-  };
-  while(hasMeaningfulRecord(fmtDate(cursor))){
-    streak++;
-    cursor.setDate(cursor.getDate()-1);
+  return Number(data.loginStreak?.count || 0);
+}
+function recordDailyVisit(){
+  const todayKey=fmtDate(new Date());
+  data.loginStreak=data.loginStreak||{count:0,lastVisit:""};
+  if(data.loginStreak.lastVisit===todayKey)return;
+  const last=data.loginStreak.lastVisit;
+  if(!last){
+    data.loginStreak.count=1;
+  }else{
+    const lastDate=new Date(last+"T00:00:00");
+    const todayDate=new Date(todayKey+"T00:00:00");
+    const diff=Math.round((todayDate-lastDate)/86400000);
+    data.loginStreak.count=(diff===1)
+      ? Number(data.loginStreak.count||0)+1
+      : 1;
   }
-  return streak;
+  data.loginStreak.lastVisit=todayKey;
+  saveLocal();
+  cloudSave();
 }
 function refreshMiniStreak(){
   const n=getCurrentStreak();
@@ -435,39 +439,14 @@ function showStreakPopup(){
 }
 
 function updateStreak(){
-  refreshMiniStreak();
-  const dates=Object.keys(data.days||{}).sort();
-  let streak=0;
-  let cursor=new Date();
-  cursor.setHours(0,0,0,0);
-
-  const hasMeaningfulRecord=(key)=>{
-    const d=data.days?.[key];
-    if(!d)return false;
-    const todos=(d.todos||[]);
-    const hasDone=todos.some(t=>t.status==="done");
-    const hasHalf=todos.some(t=>t.status==="half");
-    const hasPlan=(d.hours||[]).some(v=>String(v||"").trim());
-    const hasDiary=String(d.diary||"").trim().length>0;
-    return hasDone||hasHalf||hasPlan||hasDiary;
-  };
-
-  // Count consecutive days backwards, starting with today.
-  while(true){
-    const key=fmtDate(cursor);
-    if(!hasMeaningfulRecord(key))break;
-    streak++;
-    cursor.setDate(cursor.getDate()-1);
-  }
-
+  const n=getCurrentStreak();
   const countEl=document.getElementById("streakCount");
   const msgEl=document.getElementById("streakMessage");
-  if(countEl)countEl.textContent=`🔥 ${streak}일 연속`;
-  if(msgEl){
-    msgEl.textContent=streak>0
-      ? "좋아요! 오늘도 기록해서 연속 기록을 이어가세요."
-      : "오늘 기록을 남기면 연속 기록이 시작돼요!";
-  }
+  if(countEl)countEl.textContent=`🔥 ${n}일 연속`;
+  if(msgEl)msgEl.textContent=n>0
+    ?"좋아요! 오늘도 접속해서 연속 기록을 이어가세요."
+    :"오늘 접속하면 연속 기록이 시작돼요!";
+  if(typeof refreshMiniStreak==="function")refreshMiniStreak();
 }
 
 function renderYear(){
@@ -549,7 +528,7 @@ async function loadCloud(){
  if(error){console.error(error);setCloud(false,"클라우드 오류");return}
  if(row?.data){
   data=Object.assign(blankData(),row.data);
-  data.days=data.days||{};data.notes=data.notes||{};data.goals=data.goals||[];data.months=data.months||{};data.yearPlan=data.yearPlan||"";
+  data.days=data.days||{};data.notes=data.notes||{};data.goals=data.goals||[];data.months=data.months||{};data.yearPlan=data.yearPlan||"";data.loginStreak=data.loginStreak||{count:0,lastVisit:""};
   saveLocal();setCloud(true,"클라우드 불러옴");
  }else{
   await backup("최초 로그인 전 로컬 기록 백업");
@@ -577,6 +556,8 @@ function openAuth(){
   if(r.error){msg(r.error.message);return}
   if(mode==="signup"){msg("회원가입이 완료되었습니다. 이메일 확인이 필요한 경우 메일을 확인한 뒤 로그인해주세요.");return}
   closeModal();currentUser=r.data.user;updateAccountButton();await loadCloud();renderAll();
+recordDailyVisit();
+updateStreak();
 maybeShowDailyStreakPopup();
  };
  openModal();
@@ -605,7 +586,7 @@ async function restoreBackup(id){
  if(error||!row){alert("백업을 불러오지 못했습니다.");return}
  await backup("복구 직전 자동 백업");
  data=Object.assign(blankData(),row.data);
- data.days=data.days||{};data.notes=data.notes||{};data.goals=data.goals||[];data.months=data.months||{};data.yearPlan=data.yearPlan||"";
+ data.days=data.days||{};data.notes=data.notes||{};data.goals=data.goals||[];data.months=data.months||{};data.yearPlan=data.yearPlan||"";data.loginStreak=data.loginStreak||{count:0,lastVisit:""};
  saveLocal();await cloudSave();closeModal();renderAll();alert("복구했습니다.");
 }
 function openModal(){modalBgEl.style.display="flex"}
