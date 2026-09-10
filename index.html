@@ -3,735 +3,5104 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+
 <meta name="theme-color" content="#4da6e8">
 <link rel="manifest" href="./manifest.json">
-<title>나의 다이어리앱 | 하루 계획과 목표 관리</title>
-<meta name="description" content="나의 다이어리앱은 하루 계획, 1년 계획, 정리노트와 목표를 한곳에서 관리할 수 있는 다이어리 앱입니다.">
+
+<title>나의 다이어리앱 | 하루 계획·1년 계획·정리노트·목표 관리</title>
+
+<meta name="description" content="나의 다이어리앱은 하루 계획과 할 일, 1년 계획, 정리노트, 목표 관리, 나의 기록을 한곳에서 사용할 수 있는 무료 다이어리 앱입니다.">
+
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+
+<meta name="application-name" content="나의 다이어리앱">
+<meta name="apple-mobile-web-app-title" content="나의 다이어리앱">
+
 <link rel="canonical" href="https://dragonjoonplus-hash.github.io/my_diary/">
-<meta property="og:title" content="나의 다이어리앱 | 하루 계획과 목표 관리">
-<meta property="og:description" content="하루 계획, 1년 계획, 정리노트와 목표를 한곳에서 관리하는 나의 다이어리앱입니다.">
+<link rel="icon" type="image/png" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+
+<meta property="og:site_name" content="나의 다이어리앱">
+<meta property="og:title" content="나의 다이어리앱 | 하루 계획·1년 계획·정리노트·목표 관리">
+<meta property="og:description" content="하루 계획과 할 일, 1년 계획, 정리노트와 목표를 한곳에서 관리하는 나의 다이어리앱입니다.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://dragonjoonplus-hash.github.io/my_diary/">
+<meta property="og:locale" content="ko_KR">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="나의 다이어리앱 | 하루 계획·1년 계획·정리노트·목표 관리">
+<meta name="twitter:description" content="하루 계획, 1년 계획, 정리노트와 목표를 한곳에서 관리하는 나의 다이어리앱입니다.">
+
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(135deg,#f3fbff 0%,#e8f5ff 55%,#dff1ff 100%);color:#222}
-button,input,textarea{font:inherit}
-button{cursor:pointer;border:0}
-.app{display:flex;min-height:100vh}
-.sidebar{width:230px;background:#dff1ff;padding:18px 12px;position:fixed;left:0;top:0;bottom:0}
-.logo{font-size:20px;font-weight:800;margin:8px 8px 22px}
-.nav button{display:block;width:100%;padding:14px 12px;margin:7px 0;text-align:left;border-radius:12px;background:transparent}
-.nav button.active{background:#fff;font-weight:800;box-shadow:0 2px 8px #0001}
-.main{margin-left:230px;width:calc(100% - 230px);max-width:1100px;padding:25px}
-.page{display:none}.page.active{display:block}
-.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
-h1{margin:0;font-size:28px}h2{margin:5px 0 14px}
-.card{background:#fff;border:1px solid #eee;border-radius:18px;padding:18px;margin-bottom:16px;box-shadow:0 3px 14px #00000008}
-.row{display:flex;align-items:center;gap:10px}.between{justify-content:space-between}
-.btn{background:#4da6e8;color:#fff;padding:10px 14px;border-radius:10px;font-weight:700}
-.btn.light{background:#f2f2f5;color:#222}.btn.danger{background:#ffe0e0;color:#1769aa}
-.dateNav{display:flex;justify-content:center;align-items:center;gap:7px;margin:0 0 16px;flex-wrap:wrap}
-.dateNav button{background:#f2f2f5;padding:9px 12px;border-radius:10px}
-.dateNav .dateMain{font-weight:800;min-width:210px;text-align:center;font-size:19px}
-.lock{padding:10px 13px;background:#f1f1f1;border-radius:10px;color:#666;margin-bottom:14px}
-.todo{display:flex;align-items:center;gap:9px;border-bottom:1px solid #eee;padding:10px 0}
-.todo:last-child{border-bottom:0}
-.todo .status{background:#f4f4f5;border-radius:9px;padding:7px 9px;font-size:17px}
-.todo.done .text{text-decoration:line-through;color:#999}
-.todo-input-row{display:flex;gap:8px;margin-top:12px}
-.todo-input-row input{flex:1;min-width:0;padding:11px 12px;border:1px solid #ddd;border-radius:10px;outline:none}
-.todo-input-row input:focus{border-color:#4da6e8;box-shadow:0 0 0 3px #4da6e822}
-.empty{text-align:center;color:#888;padding:22px}
-.small{font-size:13px;color:#777}
-.schedule .hour{display:grid;grid-template-columns:75px 1fr;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #eee}
-.hour-time{font-weight:700;color:#666}
-.hour input{width:100%;padding:10px;border:1px solid #ddd;border-radius:10px}
-textarea,input{border:1px solid #ddd;border-radius:10px;padding:11px;background:#fff}
-textarea{width:100%;min-height:130px;resize:vertical}
-input{min-width:0}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.subject{padding:18px;border-radius:14px;background:#fff;border:1px solid #eee;font-size:17px;font-weight:700}
-.month-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.month-card{border:1px solid #eee;border-radius:14px;padding:12px}
-.month-card textarea{min-height:100px;margin-top:8px}
-.note{margin-bottom:12px}.preview{color:#666;margin-top:8px;line-height:1.5}
-.account{display:flex;align-items:center;gap:7px}.cloud-dot{width:9px;height:9px;border-radius:50%;background:#999;display:inline-block}.cloud-dot.on{background:#20a968}
-.modal-bg{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:15px;z-index:50}
-.modal{background:#fff;border-radius:18px;padding:20px;width:min(540px,100%);max-height:90vh;overflow:auto}
-.modal h2{margin-top:0}
-.auth-tabs{display:flex;gap:7px;margin-bottom:14px}.auth-tabs button{flex:1;padding:10px;border-radius:9px;background:#eee}.auth-tabs .active{background:#4da6e8;color:#fff}
-.auth-msg{display:none;padding:10px;border-radius:10px;background:#e8f5ff;margin:10px 0}
-.backup{border:1px solid #eee;border-radius:10px;padding:10px;margin:8px 0}
-.mobileNav{display:none}
-@media(max-width:760px){
-.sidebar{display:none}.main{margin:0;width:100%;padding:15px 10px 80px}
-.mobileNav{display:flex;position:fixed;bottom:0;left:0;right:0;background:#dff1ff;z-index:20;padding:5px}
-.mobileNav button{flex:1;background:transparent;border-radius:10px;padding:6px 2px;font-size:12px}.mobileNav button.active{background:#fff;font-weight:800}
-.top{align-items:flex-start}h1{font-size:23px}
-.grid{grid-template-columns:1fr}.month-grid{grid-template-columns:1fr 1fr}
-.dateNav .dateMain{min-width:150px;font-size:16px}
-.account .small{display:none}
+*{
+ box-sizing:border-box;
 }
 
-.title-line{display:flex;align-items:center;gap:10px}
-.title-line h1{margin:0}
-.mini-streak{border:0;background:rgba(255,255,255,.72);border-radius:999px;padding:7px 11px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-.mini-streak:active{transform:scale(.96)}70%{opacity:1;transform:scale(1.08)}100%{opacity:1;transform:scale(1)}}to{transform:scale(1.1) rotate(3deg)}}
+body{
+ margin:0;
+ font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+ background:linear-gradient(135deg,#f3fbff 0%,#e8f5ff 55%,#dff1ff 100%);
+ color:#222;
+}
 
+button,input,textarea{
+ font:inherit;
+}
 
-.progress-card{padding:18px;margin-bottom:14px}
-.progress-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.progress-head h2{margin:0 0 4px}
-.progress-percent{font-size:30px;font-weight:950}
-.progress-track{height:13px;background:#e8eef3;border-radius:999px;overflow:hidden;margin:14px 0 10px}
-.progress-bar{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,#4da6e8,#6fc6f5);transition:width .35s ease}
-.progress-detail{font-size:13px;color:#777}
+button{
+ cursor:pointer;
+ border:0;
+}
 
+.app{
+ display:flex;
+ min-height:100vh;
+}
 
-.hidden{display:none!important}
-.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:15px;z-index:100}
-.profile-nav-btn{font-weight:800}
-.profile-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0}
-.profile-stat{padding:16px;border-radius:18px;background:#f3faff;border:1px solid #d7edfb;text-align:center}
-.profile-stat .num{font-size:26px;font-weight:800;margin-top:5px}
-.profile-section{margin-top:18px}.profile-section h3{margin:0 0 10px}
-.profile-bar{height:12px;border-radius:99px;background:#e8eef2;overflow:hidden}.profile-bar>div{height:100%;border-radius:99px;background:#4da6e8}
-.profile-subjects{display:grid;gap:8px}.profile-row{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#f8fcff;border-radius:12px}
-.profile-badge{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;background:#e8f5ff;font-weight:700}
-@media(max-width:600px){.profile-summary{grid-template-columns:1fr 1fr}.profile-stat{padding:12px}.profile-stat .num{font-size:22px}}
-.stats-wrap{max-width:1050px}.stats-head{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin-bottom:20px}.stats-head h2{margin:8px 0 4px;font-size:28px}.stats-head p{margin:0;color:#607583}.stats-badge{display:inline-block;background:#e8f5ff;color:#1769aa;padding:7px 12px;border-radius:999px;font-weight:700}.stats-period{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.stats-period button{border:1px solid #d4e5ef;background:#fff;border-radius:12px;padding:9px 13px;cursor:pointer;font-weight:700}.stats-period button.active{background:#4da6e8;color:#fff;border-color:#4da6e8}.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.stats-card{background:#fff;border:1px solid #d8eaf4;border-radius:18px;padding:18px;box-shadow:0 5px 18px rgba(50,100,130,.06)}.stats-wide{grid-column:span 2}.stats-card-title{font-weight:700;color:#4f6673}.stats-big{font-size:42px;font-weight:900;margin:8px 0}.stats-number{font-size:30px;font-weight:900;margin-top:8px}.stats-time{font-size:24px}.stats-muted{font-size:13px;color:#71828c;margin-top:5px}.stats-bar{height:13px;background:#edf3f6;border-radius:99px;overflow:hidden}.stats-bar>div{height:100%;width:0;background:#4da6e8;border-radius:99px}.stats-section-card{background:#fff;border:1px solid #d8eaf4;border-radius:18px;padding:18px;margin-top:14px}.stats-section-card h3{margin:0 0 14px}.stats-hours{display:grid;gap:9px}.stats-hour-row{display:grid;grid-template-columns:105px 1fr 55px;align-items:center;gap:10px;font-size:13px}.stats-hour-label{text-align:right;font-weight:700}.stats-hour-track{height:10px;background:#edf3f6;border-radius:99px;overflow:hidden}.stats-hour-fill{height:100%;background:#4da6e8;border-radius:99px}.stats-hour-count{text-align:right;font-weight:700}.stats-subjects{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}.stats-subject{background:#f7fbfd;border-radius:14px;padding:13px;text-align:center}.stats-subject b{display:block;font-size:20px;margin-top:4px}.stats-empty{padding:20px;text-align:center;color:#758792;background:#f8fbfd;border-radius:14px}@media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.stats-wide{grid-column:span 2}.stats-subjects{grid-template-columns:repeat(2,minmax(0,1fr))}.stats-head{align-items:flex-start;flex-direction:column}.stats-period{justify-content:flex-start}}@media(max-width:600px){.stats-grid{grid-template-columns:1fr}.stats-wide{grid-column:span 1}.stats-hour-row{grid-template-columns:82px 1fr 42px}}
+/* =========================
+   PC 사이드바
+========================= */
+
+.sidebar{
+ width:230px;
+ background:#dff1ff;
+ padding:18px 12px;
+ position:fixed;
+ left:0;
+ top:0;
+ bottom:0;
+}
+
+.logo{
+ font-size:20px;
+ font-weight:800;
+ margin:8px 8px 22px;
+}
+
+.nav button{
+ display:block;
+ width:100%;
+ padding:14px 12px;
+ margin:7px 0;
+ text-align:left;
+ border-radius:12px;
+ background:transparent;
+}
+
+.nav button.active{
+ background:#fff;
+ font-weight:800;
+ box-shadow:0 2px 8px #0001;
+}
+
+.main{
+ margin-left:230px;
+ width:calc(100% - 230px);
+ max-width:1100px;
+ padding:25px;
+}
+
+.page{
+ display:none;
+}
+
+.page.active{
+ display:block;
+}
+
+/* =========================
+   상단
+========================= */
+
+.top{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:12px;
+ margin-bottom:18px;
+}
+
+h1{
+ margin:0;
+ font-size:28px;
+}
+
+h2{
+ margin:5px 0 14px;
+}
+
+.title-line{
+ display:flex;
+ align-items:center;
+ gap:10px;
+}
+
+.title-line h1{
+ margin:0;
+}
+
+/* =========================
+   카드
+========================= */
+
+.card{
+ background:#fff;
+ border:1px solid #eee;
+ border-radius:18px;
+ padding:18px;
+ margin-bottom:16px;
+ box-shadow:0 3px 14px #00000008;
+}
+
+.row{
+ display:flex;
+ align-items:center;
+ gap:10px;
+}
+
+.between{
+ justify-content:space-between;
+}
+
+/* =========================
+   버튼
+========================= */
+
+.btn{
+ background:#4da6e8;
+ color:#fff;
+ padding:10px 14px;
+ border-radius:10px;
+ font-weight:700;
+}
+
+.btn.light{
+ background:#f2f2f5;
+ color:#222;
+}
+
+.btn.danger{
+ background:#ffe0e0;
+ color:#1769aa;
+}
+
+/* =========================
+   날짜
+========================= */
+
+.dateNav{
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ gap:7px;
+ margin:0 0 16px;
+ flex-wrap:wrap;
+}
+
+.dateNav button{
+ background:#f2f2f5;
+ padding:9px 12px;
+ border-radius:10px;
+}
+
+.dateNav .dateMain{
+ font-weight:800;
+ min-width:210px;
+ text-align:center;
+ font-size:19px;
+}
+
+.lock{
+ padding:10px 13px;
+ background:#f1f1f1;
+ border-radius:10px;
+ color:#666;
+ margin-bottom:14px;
+}
+
+/* =========================
+   할 일
+========================= */
+
+.todo{
+ display:flex;
+ align-items:center;
+ gap:9px;
+ border-bottom:1px solid #eee;
+ padding:10px 0;
+}
+
+.todo:last-child{
+ border-bottom:0;
+}
+
+.todo .status{
+ background:#f4f4f5;
+ border-radius:9px;
+ padding:7px 9px;
+ font-size:17px;
+}
+
+.todo.done .text{
+ text-decoration:line-through;
+ color:#999;
+}
+
+.todo-input-row{
+ display:flex;
+ gap:8px;
+ margin-top:12px;
+}
+
+.todo-input-row input{
+ flex:1;
+ min-width:0;
+ padding:11px 12px;
+ border:1px solid #ddd;
+ border-radius:10px;
+ outline:none;
+}
+
+.todo-input-row input:focus{
+ border-color:#4da6e8;
+ box-shadow:0 0 0 3px #4da6e822;
+}
+
+.empty{
+ text-align:center;
+ color:#888;
+ padding:22px;
+}
+
+/* =========================
+   기본 입력
+========================= */
+
+.small{
+ font-size:13px;
+ color:#777;
+}
+
+textarea,
+input{
+ border:1px solid #ddd;
+ border-radius:10px;
+ padding:11px;
+ background:#fff;
+}
+
+textarea{
+ width:100%;
+ min-height:130px;
+ resize:vertical;
+}
+
+input{
+ min-width:0;
+}
+
+.actions{
+ display:flex;
+ gap:8px;
+ flex-wrap:wrap;
+ margin-top:10px;
+}
+
+/* =========================
+   시간표
+========================= */
+
+.schedule .hour{
+ display:grid;
+ grid-template-columns:75px 1fr;
+ gap:10px;
+ align-items:center;
+ padding:8px 0;
+ border-bottom:1px solid #eee;
+}
+
+.hour-time{
+ font-weight:700;
+ color:#666;
+}
+
+.hour input{
+ width:100%;
+ padding:10px;
+ border:1px solid #ddd;
+ border-radius:10px;
+}
+
+/* =========================
+   그리드
+========================= */
+
+.grid{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:12px;
+}
+
+.subject{
+ padding:18px;
+ border-radius:14px;
+ background:#fff;
+ border:1px solid #eee;
+ font-size:17px;
+ font-weight:700;
+}
+
+.month-grid{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:12px;
+}
+
+.month-card{
+ border:1px solid #eee;
+ border-radius:14px;
+ padding:12px;
+}
+
+.month-card textarea{
+ min-height:100px;
+ margin-top:8px;
+}
+
+/* =========================
+   정리노트
+========================= */
+
+.note{
+ margin-bottom:12px;
+}
+
+.preview{
+ color:#666;
+ margin-top:8px;
+ line-height:1.5;
+}
+
+/* =========================
+   계정
+========================= */
+
+.account{
+ display:flex;
+ align-items:center;
+ gap:7px;
+}
+
+.cloud-dot{
+ width:9px;
+ height:9px;
+ border-radius:50%;
+ background:#999;
+ display:inline-block;
+}
+
+.cloud-dot.on{
+ background:#20a968;
+}
+
+/* =========================
+   로그인 모달
+========================= */
+
+.modal-bg{
+ position:fixed;
+ inset:0;
+ background:#0008;
+ display:none;
+ align-items:center;
+ justify-content:center;
+ padding:15px;
+ z-index:50;
+}
+
+.modal{
+ background:#fff;
+ border-radius:18px;
+ padding:20px;
+ width:min(540px,100%);
+ max-height:90vh;
+ overflow:auto;
+}
+
+.modal h2{
+ margin-top:0;
+}
+
+.auth-tabs{
+ display:flex;
+ gap:7px;
+ margin-bottom:14px;
+}
+
+.auth-tabs button{
+ flex:1;
+ padding:10px;
+ border-radius:9px;
+ background:#eee;
+}
+
+.auth-tabs .active{
+ background:#4da6e8;
+ color:#fff;
+}
+
+.auth-msg{
+ display:none;
+ padding:10px;
+ border-radius:10px;
+ background:#e8f5ff;
+ margin:10px 0;
+}
+
+.backup{
+ border:1px solid #eee;
+ border-radius:10px;
+ padding:10px;
+ margin:8px 0;
+}
+
+/* =========================
+   모바일 메뉴
+========================= */
+
+.mobileNav{
+ display:none;
+}
+
+/* =========================
+   진행률
+========================= */
+
+.progress-card{
+ padding:18px;
+ margin-bottom:14px;
+}
+
+.progress-head{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:12px;
+}
+
+.progress-head h2{
+ margin:0 0 4px;
+}
+
+.progress-percent{
+ font-size:30px;
+ font-weight:950;
+}
+
+.progress-track{
+ height:13px;
+ background:#e8eef3;
+ border-radius:999px;
+ overflow:hidden;
+ margin:14px 0 10px;
+}
+
+.progress-bar{
+ height:100%;
+ width:0%;
+ border-radius:999px;
+ background:linear-gradient(90deg,#4da6e8,#6fc6f5);
+ transition:width .35s ease;
+}
+
+.progress-detail{
+ font-size:13px;
+ color:#777;
+}
+
+/* =========================
+   프로필
+========================= */
+
+.hidden{
+ display:none!important;
+}
+
+.modal-backdrop{
+ position:fixed;
+ inset:0;
+ background:rgba(0,0,0,.45);
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ padding:15px;
+ z-index:100;
+}
+
+.profile-nav-btn{
+ font-weight:800;
+}
+
+.profile-summary{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:12px;
+ margin:14px 0;
+}
+
+.profile-stat{
+ padding:16px;
+ border-radius:18px;
+ background:#f3faff;
+ border:1px solid #d7edfb;
+ text-align:center;
+}
+
+.profile-stat .num{
+ font-size:26px;
+ font-weight:800;
+ margin-top:5px;
+}
+
+.profile-section{
+ margin-top:18px;
+}
+
+.profile-section h3{
+ margin:0 0 10px;
+}
+
+.profile-bar{
+ height:12px;
+ border-radius:99px;
+ background:#e8eef2;
+ overflow:hidden;
+}
+
+.profile-bar>div{
+ height:100%;
+ border-radius:99px;
+ background:#4da6e8;
+}
+
+.profile-subjects{
+ display:grid;
+ gap:8px;
+}
+
+.profile-row{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ padding:10px 12px;
+ background:#f8fcff;
+ border-radius:12px;
+}
+
+.profile-badge{
+ display:inline-flex;
+ align-items:center;
+ gap:6px;
+ padding:8px 12px;
+ border-radius:999px;
+ background:#e8f5ff;
+ font-weight:700;
+}
+
+/* =========================
+   통계
+========================= */
+
+.stats-wrap{
+ max-width:1050px;
+}
+
+.stats-head{
+ display:flex;
+ justify-content:space-between;
+ align-items:flex-end;
+ gap:18px;
+ margin-bottom:20px;
+}
+
+.stats-head h2{
+ margin:8px 0 4px;
+ font-size:28px;
+}
+
+.stats-head p{
+ margin:0;
+ color:#607583;
+}
+
+.stats-badge{
+ display:inline-block;
+ background:#e8f5ff;
+ color:#1769aa;
+ padding:7px 12px;
+ border-radius:999px;
+ font-weight:700;
+}
+
+.stats-period{
+ display:flex;
+ gap:6px;
+ flex-wrap:wrap;
+ justify-content:flex-end;
+}
+
+.stats-period button{
+ border:1px solid #d4e5ef;
+ background:#fff;
+ border-radius:12px;
+ padding:9px 13px;
+ cursor:pointer;
+ font-weight:700;
+}
+
+.stats-period button.active{
+ background:#4da6e8;
+ color:#fff;
+ border-color:#4da6e8;
+}
+
+.stats-grid{
+ display:grid;
+ grid-template-columns:repeat(4,minmax(0,1fr));
+ gap:12px;
+}
+
+.stats-card{
+ background:#fff;
+ border:1px solid #d8eaf4;
+ border-radius:18px;
+ padding:18px;
+ box-shadow:0 5px 18px rgba(50,100,130,.06);
+}
+
+.stats-wide{
+ grid-column:span 2;
+}
+
+.stats-card-title{
+ font-weight:700;
+ color:#4f6673;
+}
+
+.stats-big{
+ font-size:42px;
+ font-weight:900;
+ margin:8px 0;
+}
+
+.stats-number{
+ font-size:30px;
+ font-weight:900;
+ margin-top:8px;
+}
+
+.stats-time{
+ font-size:24px;
+}
+
+.stats-muted{
+ font-size:13px;
+ color:#71828c;
+ margin-top:5px;
+}
+
+.stats-bar{
+ height:13px;
+ background:#edf3f6;
+ border-radius:99px;
+ overflow:hidden;
+}
+
+.stats-bar>div{
+ height:100%;
+ width:0;
+ background:#4da6e8;
+ border-radius:99px;
+}
+
+.stats-section-card{
+ background:#fff;
+ border:1px solid #d8eaf4;
+ border-radius:18px;
+ padding:18px;
+ margin-top:14px;
+}
+
+.stats-section-card h3{
+ margin:0 0 14px;
+}
+
+.stats-hours{
+ display:grid;
+ gap:9px;
+}
+
+.stats-hour-row{
+ display:grid;
+ grid-template-columns:105px 1fr 55px;
+ align-items:center;
+ gap:10px;
+ font-size:13px;
+}
+
+.stats-hour-label{
+ text-align:right;
+ font-weight:700;
+}
+
+.stats-hour-track{
+ height:10px;
+ background:#edf3f6;
+ border-radius:99px;
+ overflow:hidden;
+}
+
+.stats-hour-fill{
+ height:100%;
+ background:#4da6e8;
+ border-radius:99px;
+}
+
+.stats-hour-count{
+ text-align:right;
+ font-weight:700;
+}
+
+.stats-subjects{
+ display:grid;
+ grid-template-columns:repeat(5,minmax(0,1fr));
+ gap:9px;
+}
+
+.stats-subject{
+ background:#f7fbfd;
+ border-radius:14px;
+ padding:13px;
+ text-align:center;
+}
+
+.stats-subject b{
+ display:block;
+ font-size:20px;
+ margin-top:4px;
+}
+
+.stats-empty{
+ padding:20px;
+ text-align:center;
+ color:#758792;
+ background:#f8fbfd;
+ border-radius:14px;
+}
+
+/* =========================
+   검색 노출용 사이트 소개
+========================= */
+
+.seo-intro{
+  background:#ffffff;
+  border:1px solid #d8eaf4;
+  border-radius:18px;
+  padding:18px 20px;
+  margin:0 0 16px;
+  box-shadow:0 3px 14px #00000008;
+}
+
+.seo-intro h2{
+  margin:0 0 8px;
+  font-size:21px;
+  color:#1769aa;
+}
+
+.seo-intro p{
+  margin:0;
+  color:#536873;
+  line-height:1.75;
+}
+
+.seo-keywords{
+  margin-top:10px!important;
+  font-size:13px;
+  color:#71828c!important;
+}
+
+/* =========================
+   모바일
+========================= */
+
+@media(max-width:760px){
+
+ .sidebar{
+  display:none;
+ }
+
+ .main{
+  margin:0;
+  width:100%;
+  padding:15px 10px 88px;
+ }
+
+ .mobileNav{
+  display:flex;
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#dff1ff;
+  z-index:200;
+  padding:5px;
+  gap:3px;
+  box-shadow:0 -2px 10px #0001;
+ }
+
+ .mobileNav button{
+  flex:1;
+  min-width:0;
+  background:transparent;
+  border-radius:10px;
+  padding:6px 1px;
+  font-size:11px;
+  line-height:1.35;
+  white-space:nowrap;
+ }
+
+ .mobileNav button.active{
+  background:#fff;
+  font-weight:800;
+ }
+
+ .top{
+  align-items:flex-start;
+ }
+
+ h1{
+  font-size:23px;
+ }
+
+ .grid{
+  grid-template-columns:1fr;
+ }
+
+ .month-grid{
+  grid-template-columns:1fr 1fr;
+ }
+
+ .dateNav .dateMain{
+  min-width:150px;
+  font-size:16px;
+ }
+
+ .account .small{
+  display:none;
+ }
+
+ .stats-head{
+  align-items:flex-start;
+  flex-direction:column;
+ }
+
+ .stats-period{
+  justify-content:flex-start;
+ }
+
+ .stats-grid{
+  grid-template-columns:1fr;
+ }
+
+ .stats-wide{
+  grid-column:span 1;
+ }
+
+ .stats-hour-row{
+  grid-template-columns:82px 1fr 42px;
+ }
+
+ .stats-subjects{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+ }
+
+ .profile-summary{
+  grid-template-columns:1fr 1fr;
+ }
+
+ .profile-stat{
+  padding:12px;
+ }
+
+ .profile-stat .num{
+  font-size:22px;
+ }
+
+}
+
+@media(max-width:380px){
+
+ .mobileNav button{
+  font-size:10px;
+ }
+
+ .mobileNav{
+  gap:1px;
+  padding:4px 2px;
+ }
+
+}
+
+/* =========================
+   작은 화면 통계
+========================= */
+
+@media(max-width:600px){
+
+ .stats-grid{
+  grid-template-columns:1fr;
+ }
+
+ .stats-wide{
+  grid-column:span 1;
+ }
+
+ .stats-hour-row{
+  grid-template-columns:82px 1fr 42px;
+ }
+
+}
 </style>
+
 <script type="application/ld+json">
 {
-  "@context":"https://schema.org",
-  "@type":"WebApplication",
-  "name":"나의 다이어리앱",
-  "url":"https://dragonjoonplus-hash.github.io/my_diary/",
-  "description":"하루 계획, 1년 계획, 정리노트와 목표를 한곳에서 관리하는 다이어리 앱입니다.",
-  "applicationCategory":"ProductivityApplication",
-  "operatingSystem":"Web"
+ "@context":"https://schema.org",
+ "@graph":[
+  {
+   "@type":"WebSite",
+   "@id":"https://dragonjoonplus-hash.github.io/my_diary/#website",
+   "url":"https://dragonjoonplus-hash.github.io/my_diary/",
+   "name":"나의 다이어리앱",
+   "alternateName":"나의 다이어리 앱",
+   "description":"하루 계획, 1년 계획, 정리노트와 목표를 한곳에서 관리하는 다이어리 앱입니다.",
+   "inLanguage":"ko-KR"
+  },
+  {
+   "@type":"WebApplication",
+   "@id":"https://dragonjoonplus-hash.github.io/my_diary/#app",
+   "name":"나의 다이어리앱",
+   "url":"https://dragonjoonplus-hash.github.io/my_diary/",
+   "description":"하루 계획과 할 일, 1년 계획, 정리노트, 목표 관리, 나의 기록을 한곳에서 사용할 수 있는 다이어리 앱입니다.",
+   "applicationCategory":"ProductivityApplication",
+   "operatingSystem":"Web",
+   "browserRequirements":"Requires JavaScript",
+   "isAccessibleForFree":true,
+   "inLanguage":"ko-KR",
+   "isPartOf":{
+    "@id":"https://dragonjoonplus-hash.github.io/my_diary/#website"
+   }
+  }
+ ]
 }
 </script>
+
 </head>
+
 <body>
 
-</div>
-
-
 <div class="app">
+
+<!-- =========================
+     PC 사이드바
+========================= -->
+
 <aside class="sidebar">
- <div class="logo">📔 나의 다이어리앱</div>
+
+ <div class="logo">
+  📔 나의 다이어리앱
+ </div>
+
  <nav class="nav">
-  <button type="button" data-page="stats">📊 나의 기록</button>
-  <button type="button" class="profile-nav-btn" onclick="openProfile()">👤 내 프로필</button>
-  <button type="button" data-page="today" class="active">📔 오늘</button>
-  <button type="button" data-page="year">📅 1년 계획</button>
-  <button type="button" data-page="notes">📚 정리노트</button>
-  <button type="button" data-page="goals">🎯 목표</button>
+
+  <button type="button" data-page="stats">
+   📊 나의 기록
+  </button>
+
+  <button type="button" class="profile-nav-btn" onclick="openProfile()">
+   👤 내 프로필
+  </button>
+
+  <button type="button" data-page="today" class="active">
+   📔 오늘
+  </button>
+
+  <button type="button" data-page="year">
+   📅 1년 계획
+  </button>
+
+  <button type="button" data-page="notes">
+   📚 정리노트
+  </button>
+
+  <button type="button" data-page="goals">
+   🎯 목표
+  </button>
+
  </nav>
+
 </aside>
 
+
+<!-- =========================
+     메인
+========================= -->
+
 <main class="main">
+
  <div class="top">
-  <div class="title-line"><h1 id="pageTitle">📔 오늘</h1></div>
-  <div class="account">
-   <span id="cloudDot" class="cloud-dot"></span>
-   <span id="cloudText" class="small">오프라인</span>
-   <button type="button" id="accountBtn" class="btn light">로그인</button>
+
+  <div class="title-line">
+   <h1 id="pageTitle">📔 오늘</h1>
   </div>
+
+  <div class="account">
+
+   <span id="cloudDot" class="cloud-dot"></span>
+
+   <span id="cloudText" class="small">
+    오프라인
+   </span>
+
+   <button type="button" id="accountBtn" class="btn light">
+    로그인
+   </button>
+
+  </div>
+
  </div>
 
- <section id="stats" class="page">
-  <div class="stats-wrap">
-    <div class="stats-head">
-      <div>
-        <div class="stats-badge">📊 나의 기록</div>
-        <h2>나의 활동 통계</h2>
-        <p>다이어리에 남긴 기록을 기간별로 한눈에 확인해보세요.</p>
-      </div>
-      <div class="stats-period">
-        <button type="button" data-stats-period="week" class="active">이번 주</button>
-        <button type="button" data-stats-period="month">이번 달</button>
-        <button type="button" data-stats-period="year">올해</button>
-        <button type="button" data-stats-period="all">전체</button>
-      </div>
+
+<!-- =========================
+     나의 기록
+========================= -->
+
+<section id="stats" class="page">
+
+ <div class="stats-wrap">
+
+  <div class="stats-head">
+
+   <div>
+
+    <div class="stats-badge">
+     📊 나의 기록
     </div>
-    <div class="stats-grid">
-      <div class="stats-card stats-wide">
-        <div class="stats-card-title">📋 계획 완료율</div>
-        <div class="stats-big" id="statsCompletionRate">0%</div>
-        <div class="stats-bar"><div id="statsCompletionBar"></div></div>
-        <div class="stats-muted" id="statsCompletionText">완료 0개 / 전체 0개</div>
-      </div>
-      <div class="stats-card"><div class="stats-card-title">☑️ 완료한 계획</div><div class="stats-number" id="statsDone">0</div><div class="stats-muted">완료</div></div>
-      <div class="stats-card"><div class="stats-card-title">🔺 반만 완료</div><div class="stats-number" id="statsHalf">0</div><div class="stats-muted">반완료</div></div>
-      <div class="stats-card"><div class="stats-card-title">☐ 미완료 계획</div><div class="stats-number" id="statsPending">0</div><div class="stats-muted">미완료</div></div>
-      <div class="stats-card"><div class="stats-card-title">📝 기록한 날</div><div class="stats-number" id="statsWrittenDays">0</div><div class="stats-muted">일</div></div>
-      <div class="stats-card"><div class="stats-card-title">⏰ 가장 많이 사용한 시간</div><div class="stats-number stats-time" id="statsTopHour">-</div><div class="stats-muted" id="statsTopHourCount">작성 0회</div></div>
-      <div class="stats-card"><div class="stats-card-title">📚 정리노트</div><div class="stats-number" id="statsNotes">0</div><div class="stats-muted">작성</div></div>
-      <div class="stats-card"><div class="stats-card-title">🎯 목표</div><div class="stats-number" id="statsGoals">0</div><div class="stats-muted" id="statsGoalText">달성 0개</div></div>
-    </div>
-    <div class="stats-section-card"><h3>⏰ 시간대별 사용량</h3><div id="statsHours" class="stats-hours"></div></div>
-    <div class="stats-section-card"><h3>📚 과목별 정리노트</h3><div id="statsSubjects" class="stats-subjects"></div></div>
+
+    <h2>
+     나의 활동 통계
+    </h2>
+
+    <p>
+     다이어리에 남긴 기록을 기간별로 한눈에 확인해보세요.
+    </p>
+
+   </div>
+
+   <div class="stats-period">
+
+    <button type="button" data-stats-period="week" class="active">
+     이번 주
+    </button>
+
+    <button type="button" data-stats-period="month">
+     이번 달
+    </button>
+
+    <button type="button" data-stats-period="year">
+     올해
+    </button>
+
+    <button type="button" data-stats-period="all">
+     전체
+    </button>
+
+   </div>
+
   </div>
+
+
+  <div class="stats-grid">
+
+   <div class="stats-card stats-wide">
+
+    <div class="stats-card-title">
+     📋 계획 완료율
+    </div>
+
+    <div class="stats-big" id="statsCompletionRate">
+     0%
+    </div>
+
+    <div class="stats-bar">
+     <div id="statsCompletionBar"></div>
+    </div>
+
+    <div class="stats-muted" id="statsCompletionText">
+     완료 0개 / 전체 0개
+    </div>
+
+   </div>
+
+
+   <div class="stats-card">
+
+    <div class="stats-card-title">
+     ☑️ 완료한 계획
+    </div>
+
+    <div class="stats-number" id="statsDone">
+     0
+    </div>
+
+    <div class="stats-muted">
+     완료
+    </div>
+
+   </div>
+
+
+   <div class="stats-card">
+
+    <div class="stats-card-title">
+     🔺 반만 완료
+    </div>
+
+    <div class="stats-number" id="statsHalf">
+     0
+    </div>
+
+    <div class="stats-muted">
+     반완료
+    </div>
+
+   </div>
+
+
+   <div class="stats-card">
+
+    <div class="stats-card-title">
+     ☐ 미완료 계획
+    </div>
+
+    <div class="stats-number" id="statsPending">
+     0
+    </div>
+
+    <div class="stats-muted">
+     미완료
+    </div>
+
+   </div>
+
+
+   <div class="stats-card">
+
+    <div class="stats-card-title">
+     📝 기록한 날
+    </div>
+
+    <div class="stats-number" id="statsWrittenDays">
+     0
+    </div>
+
+    <div class="stats-muted">
+     일
+    </div>
+
+   </div>
+
+
+   <div class="stats-card">
+
+    <div class="stats-card-title">
+     ⏰ 가장 많이 사용한 시간
+    </div>
+
+    <div class="stats-number stats-time" id="statsTopHour">
+     -
+    </div>
+
+    <div class="stats-muted" id="statsTopHourCount">
+     작성 0회
+    </div>
+
+   </div>
+
+
+   <div class="stats-card">
+
+    <div class="stats-card-title">
+     📚 정리노트
+    </div>
+
+    <div class="stats-number" id="statsNotes">
+     0
+    </div>
+
+    <div class="stats-muted">
+     작성
+    </div>
+
+   </div>
+
+
+   <div class="stats-card">
+
+    <div class="stats-card-title">
+     🎯 목표
+    </div>
+
+    <div class="stats-number" id="statsGoals">
+     0
+    </div>
+
+    <div class="stats-muted" id="statsGoalText">
+     달성 0개
+    </div>
+
+   </div>
+
+  </div>
+
+
+  <div class="stats-section-card">
+
+   <h3>
+    ⏰ 시간대별 사용량
+   </h3>
+
+   <div id="statsHours" class="stats-hours"></div>
+
+  </div>
+
+
+  <div class="stats-section-card">
+
+   <h3>
+    📚 과목별 정리노트
+   </h3>
+
+   <div id="statsSubjects" class="stats-subjects"></div>
+
+  </div>
+
+ </div>
+
 </section>
 
+
+<!-- =========================
+     오늘
+========================= -->
+
 <section id="today" class="page active">
-  <div class="dateNav">
-   <button type="button" onclick="previousDate()">← 이전 날짜</button>
-   <button type="button" onclick="returnToday()">오늘</button>
-   <div id="todayDate" class="dateMain"></div>
-   <button type="button" onclick="nextDate()">다음 날짜 →</button>
-  </div>
-  <div id="pastNotice" class="lock" style="display:none">🔒 이전 날짜의 기록은 읽기 전용입니다.</div>
-   <div id="todayProgressCard" class="card progress-card">
-    <div class="progress-head">
-      <div>
-        <h2>📊 오늘의 진행률</h2>
-        <div id="progressText" class="small">0% 달성</div>
-      </div>
-      <div id="progressPercent" class="progress-percent">0%</div>
+
+ <div class="dateNav">
+
+  <button type="button" onclick="previousDate()">
+   ← 이전 날짜
+  </button>
+
+  <button type="button" onclick="returnToday()">
+   오늘
+  </button>
+
+  <div id="todayDate" class="dateMain"></div>
+
+  <button type="button" onclick="nextDate()">
+   다음 날짜 →
+  </button>
+
+ </div>
+
+
+ <div id="pastNotice" class="lock" style="display:none">
+  🔒 이전 날짜의 기록은 읽기 전용입니다.
+ </div>
+
+
+ <!-- 진행률 -->
+
+ <div id="todayProgressCard" class="card progress-card">
+
+  <div class="progress-head">
+
+   <div>
+
+    <h2>
+     📊 오늘의 진행률
+    </h2>
+
+    <div id="progressText" class="small">
+     0% 달성
     </div>
-    <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
-    <div id="progressDetail" class="progress-detail">완료 0 · 반만 완료 0 · 미완료 0</div>
-   
-   <div class="card">
-   <h2>📋 오늘의 할 일</h2>
-   <div id="todoList"></div>
-   <div class="todo-input-row">
-    <input id="todoInput" type="text" placeholder="할 일을 입력하세요." autocomplete="off">
-    <button type="button" id="todoAddInlineBtn" class="btn light" onclick="addTodoFromInput()">추가</button>
+
    </div>
-  </div>
 
-  <div class="card">
-   <h2>⏰ 24시간 시간표</h2>
-   <p class="small">1시간 단위로 오늘의 계획을 적어보세요.</p>
-   <div id="schedule" class="schedule"></div>
-  </div>
-
-  <div class="card">
-   <h2>✍️ 오늘의 기록</h2>
-   <textarea id="diaryText" placeholder="오늘 하루를 기록해보세요."></textarea>
-   <div class="actions"><button type="button" id="saveDiaryBtn" class="btn" onclick="saveDiary()">💾 기록 저장</button></div>
-   <div id="diaryStatus" class="small"></div>
-  </div>
-
-  <div class="card">
-   <button type="button" class="btn light" onclick="showYesterday()">📖 어제 기록 보기</button>
-  </div>
- </section>
-
- <section id="year" class="page">
-  <div class="card">
-   <h2>올해의 큰 계획</h2>
-   <textarea id="yearPlan" placeholder="올해 이루고 싶은 일과 계획을 적어보세요."></textarea>
-   <div class="actions"><button type="button" class="btn" onclick="saveYearPlan()">저장</button></div>
-  </div>
-  <div class="card"><h2>월별 계획</h2><div id="months" class="month-grid"></div></div>
- </section>
-
- <section id="notes" class="page">
-  <div id="subjectList">
-   <div class="grid" id="subjects"></div>
-  </div>
-  <div id="subjectView" style="display:none">
-   <div class="top"><h1 id="subjectTitle"></h1><button type="button" class="btn light" onclick="closeSubject()">← 과목 목록</button></div>
-   <div id="savedNotes"></div>
-  </div>
-  <div id="writer" style="display:none">
-   <div class="top"><h1 id="writerTitle">노트 작성</h1><button type="button" class="btn light" onclick="closeWriter()">← 노트 목록</button></div>
-   <div class="card">
-    <label>대단원</label><input id="major" placeholder="예: 함수"><br><br>
-    <label>소단원</label><input id="minor" placeholder="예: 일차함수"><br><br>
-    <label>정리 내용</label><textarea id="content" placeholder="배운 내용을 자유롭게 정리하세요."></textarea>
-    <div class="actions"><button type="button" id="saveNoteBtn" class="btn" onclick="saveNote()">💾 저장</button><button type="button" class="btn light" onclick="closeWriter()">취소</button></div>
+   <div id="progressPercent" class="progress-percent">
+    0%
    </div>
-  </div>
-  <div id="fullNote" style="display:none">
-   <div class="top"><h1>노트 내용</h1><button type="button" class="btn light" onclick="closeFullNote()">← 노트 목록</button></div>
-   <div class="card"><h2 id="fullTitle"></h2><div id="fullDate" class="small"></div><hr><div id="fullContent" style="white-space:pre-wrap;line-height:1.8"></div></div>
-  </div>
- </section>
 
- <section id="goals" class="page">
-  <div class="card"><div class="row"><input id="goalInput" placeholder="새로운 목표를 입력하세요"><button type="button" class="btn" onclick="addGoal()">추가</button></div></div>
-  <div class="card"><div id="goalList"></div></div>
- </section>
+  </div>
+
+  <div class="progress-track">
+   <div id="progressBar" class="progress-bar"></div>
+  </div>
+
+  <div id="progressDetail" class="progress-detail">
+   완료 0 · 반만 완료 0 · 미완료 0
+  </div>
+
+ </div>
+
+
+ <!-- 할 일 -->
+
+ <div class="card">
+
+  <h2>
+   📋 오늘의 할 일
+  </h2>
+
+  <div id="todoList"></div>
+
+  <div class="todo-input-row">
+
+   <input
+    id="todoInput"
+    type="text"
+    placeholder="할 일을 입력하세요."
+    autocomplete="off"
+   >
+
+   <button
+    type="button"
+    id="todoAddInlineBtn"
+    class="btn light"
+    onclick="addTodoFromInput()"
+   >
+    추가
+   </button>
+
+  </div>
+
+ </div>
+
+
+ <!-- 시간표 -->
+
+ <div class="card">
+
+  <h2>
+   ⏰ 24시간 시간표
+  </h2>
+
+  <p class="small">
+   1시간 단위로 오늘의 계획을 적어보세요.
+  </p>
+
+  <div id="schedule" class="schedule"></div>
+
+ </div>
+
+
+ <!-- 오늘의 기록 -->
+
+ <div class="card">
+
+  <h2>
+   ✍️ 오늘의 기록
+  </h2>
+
+  <textarea
+   id="diaryText"
+   placeholder="오늘 하루를 기록해보세요."
+  ></textarea>
+
+  <div class="actions">
+
+   <button
+    type="button"
+    id="saveDiaryBtn"
+    class="btn"
+    onclick="saveDiary()"
+   >
+    💾 기록 저장
+   </button>
+
+  </div>
+
+  <div id="diaryStatus" class="small"></div>
+
+ </div>
+
+
+ <!-- 어제 기록 -->
+
+ <div class="card">
+
+  <button
+   type="button"
+   class="btn light"
+   onclick="showYesterday()"
+  >
+   📖 어제 기록 보기
+  </button>
+
+ </div>
+
+</section>
+
+
+<!-- =========================
+     1년 계획
+========================= -->
+
+<section id="year" class="page">
+
+ <div class="card">
+
+  <h2>
+   올해의 큰 계획
+  </h2>
+
+  <textarea
+   id="yearPlan"
+   placeholder="올해 이루고 싶은 일과 계획을 적어보세요."
+  ></textarea>
+
+  <div class="actions">
+
+   <button
+    type="button"
+    class="btn"
+    onclick="saveYearPlan()"
+   >
+    저장
+   </button>
+
+  </div>
+
+ </div>
+
+
+ <div class="card">
+
+  <h2>
+   월별 계획
+  </h2>
+
+  <div id="months" class="month-grid"></div>
+
+ </div>
+
+</section>
+
+
+<!-- =========================
+     정리노트
+========================= -->
+
+<section id="notes" class="page">
+
+ <div id="subjectList">
+
+  <div class="grid" id="subjects"></div>
+
+ </div>
+
+
+ <div id="subjectView" style="display:none">
+
+  <div class="top">
+
+   <h1 id="subjectTitle"></h1>
+
+   <button
+    type="button"
+    class="btn light"
+    onclick="closeSubject()"
+   >
+    ← 과목 목록
+   </button>
+
+  </div>
+
+  <div id="savedNotes"></div>
+
+ </div>
+
+
+ <div id="writer" style="display:none">
+
+  <div class="top">
+
+   <h1 id="writerTitle">
+    노트 작성
+   </h1>
+
+   <button
+    type="button"
+    class="btn light"
+    onclick="closeWriter()"
+   >
+    ← 노트 목록
+   </button>
+
+  </div>
+
+
+  <div class="card">
+
+   <label>
+    대단원
+   </label>
+
+   <input
+    id="major"
+    placeholder="예: 함수"
+   >
+
+   <br><br>
+
+   <label>
+    소단원
+   </label>
+
+   <input
+    id="minor"
+    placeholder="예: 일차함수"
+   >
+
+   <br><br>
+
+   <label>
+    정리 내용
+   </label>
+
+   <textarea
+    id="content"
+    placeholder="배운 내용을 자유롭게 정리하세요."
+   ></textarea>
+
+   <div class="actions">
+
+    <button
+     type="button"
+     id="saveNoteBtn"
+     class="btn"
+     onclick="saveNote()"
+    >
+     💾 저장
+    </button>
+
+    <button
+     type="button"
+     class="btn light"
+     onclick="closeWriter()"
+    >
+     취소
+    </button>
+
+   </div>
+
+  </div>
+
+ </div>
+
+
+ <div id="fullNote" style="display:none">
+
+  <div class="top">
+
+   <h1>
+    노트 내용
+   </h1>
+
+   <button
+    type="button"
+    class="btn light"
+    onclick="closeFullNote()"
+   >
+    ← 노트 목록
+   </button>
+
+  </div>
+
+  <div class="card">
+
+   <h2 id="fullTitle"></h2>
+
+   <div id="fullDate" class="small"></div>
+
+   <hr>
+
+   <div
+    id="fullContent"
+    style="white-space:pre-wrap;line-height:1.8"
+   ></div>
+
+  </div>
+
+ </div>
+
+</section>
+
+
+<!-- =========================
+     목표
+========================= -->
+
+<section id="goals" class="page">
+
+ <div class="card">
+
+  <div class="row">
+
+   <input
+    id="goalInput"
+    placeholder="새로운 목표를 입력하세요"
+   >
+
+   <button
+    type="button"
+    class="btn"
+    onclick="addGoal()"
+   >
+    추가
+   </button>
+
+  </div>
+
+ </div>
+
+
+ <div class="card">
+
+  <div id="goalList"></div>
+
+ </div>
+
+</section>
+
 </main>
+
 </div>
+
+
+<!-- =========================
+     모바일 하단 메뉴
+========================= -->
 
 <div class="mobileNav">
- <button type="button" data-page="today" class="active">📔<br>오늘</button>
- <button type="button" data-page="year">📅<br>1년 계획</button>
- <button type="button" data-page="notes">📚<br>정리노트</button>
- <button type="button" data-page="goals">🎯<br>목표</button>
+
+ <button
+  type="button"
+  data-page="today"
+  class="active"
+ >
+  📔<br>오늘
+ </button>
+
+ <button
+  type="button"
+  data-page="stats"
+ >
+  📊<br>나의 기록
+ </button>
+
+ <button
+  type="button"
+  data-page="notes"
+ >
+  📚<br>정리노트
+ </button>
+
+ <button
+  type="button"
+  data-page="goals"
+ >
+  🎯<br>목표
+ </button>
+
+ <button
+  type="button"
+  class="profile-nav-btn"
+  onclick="openProfile()"
+ >
+  👤<br>내 프로필
+ </button>
+
 </div>
 
-<div id="modalBg" class="modal-bg"><div id="modal" class="modal"></div></div>
+
+<!-- =========================
+     로그인 모달
+========================= -->
+
+<div id="modalBg" class="modal-bg">
+
+ <div id="modal" class="modal"></div>
+
+</div>
 
 
-<div class="modal-backdrop hidden" id="profileModal">
- <div class="modal" style="max-width:620px;max-height:88vh;overflow:auto">
-  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-   <h2 style="margin:0">👤 내 프로필</h2>
-   <button type="button" class="btn light" onclick="closeProfile()">닫기</button>
+<!-- =========================
+     프로필 모달
+========================= -->
+
+<div
+ class="modal-backdrop hidden"
+ id="profileModal"
+>
+
+ <div
+  class="modal"
+  style="max-width:620px;max-height:88vh;overflow:auto"
+ >
+
+  <div
+   style="display:flex;justify-content:space-between;align-items:center;gap:10px"
+  >
+
+   <h2 style="margin:0">
+    👤 내 프로필
+   </h2>
+
+   <button
+    type="button"
+    class="btn light"
+    onclick="closeProfile()"
+   >
+    닫기
+   </button>
+
   </div>
+
   <div id="profileContent"></div>
+
  </div>
+
 </div>
+
+
+<!-- =========================
+     Supabase
+========================= -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
-const SUPABASE_URL="https://mednsjmvbtzozpjzwlao.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY="sb_publishable__Xl0HA_qZavw-qMyuX9Xpw_xmRi9cMH";
-const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+
+const SUPABASE_URL =
+"https://mednsjmvbtzozpjzwlao.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+"sb_publishable__Xl0HA_qZavw-qMyuX9Xpw_xmRi9cMH";
+
+const sb =
+window.supabase.createClient(
+ SUPABASE_URL,
+ SUPABASE_PUBLISHABLE_KEY,
+ {
+  auth:{
+   persistSession:true,
+   autoRefreshToken:true,
+   detectSessionInUrl:true
+  }
+ }
+);
+
+
 const KEY="myDiaryIntegratedV2";
 const APP_VERSION="6.1.0";
 
-let data=loadData();
-let viewDate=new Date();viewDate.setHours(0,0,0,0);
-let currentSubject="",editingId=null,currentUser=null,cloudTimer=null;
-const subjectListEl=document.getElementById("subjectList");
-const subjectViewEl=document.getElementById("subjectView");
-const writerEl=document.getElementById("writer");
-const fullNoteEl=document.getElementById("fullNote");
-const subjectTitleEl=document.getElementById("subjectTitle");
-const writerTitleEl=document.getElementById("writerTitle");
-const savedNotesEl=document.getElementById("savedNotes");
-const majorEl=document.getElementById("major");
-const minorEl=document.getElementById("minor");
-const contentEl=document.getElementById("content");
-const saveNoteBtnEl=document.getElementById("saveNoteBtn");
-const fullTitleEl=document.getElementById("fullTitle");
-const fullDateEl=document.getElementById("fullDate");
-const fullContentEl=document.getElementById("fullContent");
-const goalListEl=document.getElementById("goalList");
-const goalInputEl=document.getElementById("goalInput");
-const modalEl=document.getElementById("modal");
-const modalBgEl=document.getElementById("modalBg");
-const accountBtnEl=document.getElementById("accountBtn");
-const cloudDotEl=document.getElementById("cloudDot");
-const cloudTextEl=document.getElementById("cloudText");
 
-function blankData(){return{days:{},notes:{},goals:[],months:{},yearPlan:""}}
+let data=loadData();
+
+let viewDate=new Date();
+viewDate.setHours(0,0,0,0);
+
+let currentSubject="";
+let editingId=null;
+let currentUser=null;
+let cloudTimer=null;
+
+let currentPage="today";
+
+
+/* =========================
+   DOM
+========================= */
+
+const subjectListEl=
+document.getElementById("subjectList");
+
+const subjectViewEl=
+document.getElementById("subjectView");
+
+const writerEl=
+document.getElementById("writer");
+
+const fullNoteEl=
+document.getElementById("fullNote");
+
+const subjectTitleEl=
+document.getElementById("subjectTitle");
+
+const writerTitleEl=
+document.getElementById("writerTitle");
+
+const savedNotesEl=
+document.getElementById("savedNotes");
+
+const majorEl=
+document.getElementById("major");
+
+const minorEl=
+document.getElementById("minor");
+
+const contentEl=
+document.getElementById("content");
+
+const saveNoteBtnEl=
+document.getElementById("saveNoteBtn");
+
+const fullTitleEl=
+document.getElementById("fullTitle");
+
+const fullDateEl=
+document.getElementById("fullDate");
+
+const fullContentEl=
+document.getElementById("fullContent");
+
+const goalListEl=
+document.getElementById("goalList");
+
+const goalInputEl=
+document.getElementById("goalInput");
+
+const modalEl=
+document.getElementById("modal");
+
+const modalBgEl=
+document.getElementById("modalBg");
+
+const accountBtnEl=
+document.getElementById("accountBtn");
+
+const cloudDotEl=
+document.getElementById("cloudDot");
+
+const cloudTextEl=
+document.getElementById("cloudText");
+
+
+/* =========================
+   데이터
+========================= */
+
+function blankData(){
+
+ return {
+  days:{},
+  notes:{},
+  goals:[],
+  months:{},
+  yearPlan:"",
+  loginStreak:{
+   count:0,
+   lastVisit:""
+  }
+ };
+
+}
+
+
 function loadData(){
+
  try{
-  let raw=localStorage.getItem(KEY)||localStorage.getItem("myDiaryData_v6")||localStorage.getItem("myDiaryData_v5")||localStorage.getItem("local_diaryData");
-  let x=raw?JSON.parse(raw):{};
+
+  let raw=
+   localStorage.getItem(KEY) ||
+   localStorage.getItem("myDiaryData_v6") ||
+   localStorage.getItem("myDiaryData_v5") ||
+   localStorage.getItem("local_diaryData");
+
+  let x=
+   raw ? JSON.parse(raw) : {};
+
   let d=blankData();
+
   d.days=x.days||{};
   d.notes=x.notes||{};
   d.goals=x.goals||[];
   d.months=x.months||{};
   d.yearPlan=x.yearPlan||"";
-  return d;
- }catch(e){return blankData()}
-}
-function saveLocal(){localStorage.setItem(KEY,JSON.stringify(data))}
-function save(){saveLocal();scheduleCloudSave()}
-function key(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
-function korean(d){return d.toLocaleDateString("ko-KR",{year:"numeric",month:"long",day:"numeric",weekday:"long"})}
-function todayKey(){let d=new Date();d.setHours(0,0,0,0);return key(d)}
-function isPastDate(){return key(viewDate)<todayKey()}
-function canEdit(){return !isPastDate()}
-function day(){return data.days[key(viewDate)]||{todos:[],schedule:{},text:""}}
-function saveDay(d){data.days[key(viewDate)]=d;save()}
-function escape(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+  d.loginStreak=x.loginStreak||{
+   count:0,
+   lastVisit:""
+  };
 
+  return d;
+
+ }catch(e){
+
+  return blankData();
+
+ }
+
+}
+
+
+function saveLocal(){
+
+ localStorage.setItem(
+  KEY,
+  JSON.stringify(data)
+ );
+
+}
+
+
+function save(){
+
+ saveLocal();
+ scheduleCloudSave();
+
+}
+
+
+function key(d){
+
+ return `${d.getFullYear()}-${String(
+  d.getMonth()+1
+ ).padStart(2,"0")}-${String(
+  d.getDate()
+ ).padStart(2,"0")}`;
+
+}
+
+
+function korean(d){
+
+ return d.toLocaleDateString(
+  "ko-KR",
+  {
+   year:"numeric",
+   month:"long",
+   day:"numeric",
+   weekday:"long"
+  }
+ );
+
+}
+
+
+function todayKey(){
+
+ let d=new Date();
+
+ d.setHours(0,0,0,0);
+
+ return key(d);
+
+}
+
+
+function isPastDate(){
+
+ return key(viewDate)<todayKey();
+
+}
+
+
+function canEdit(){
+
+ return !isPastDate();
+
+}
+
+
+function day(){
+
+ return data.days[key(viewDate)] || {
+  todos:[],
+  schedule:{},
+  text:""
+ };
+
+}
+
+
+function saveDay(d){
+
+ data.days[key(viewDate)]=d;
+
+ save();
+
+}
+
+
+function escape(s){
+
+ return String(s??"").replace(
+  /[&<>"']/g,
+  m=>({
+   "&":"&amp;",
+   "<":"&lt;",
+   ">":"&gt;",
+   '"':"&quot;",
+   "'":"&#039;"
+  }[m])
+ );
+
+}
+
+
+/* =========================
+   오늘 진행률
+========================= */
 
 function updateTodayProgress(){
-  const d=day();
-  const todos=d.todos||[];
-  const total=todos.length;
-  const done=todos.filter(t=>t.status==="done").length;
-  const half=todos.filter(t=>t.status==="half").length;
-  const pending=todos.filter(t=>t.status!=="done" && t.status!=="half").length;
 
-  // Today's progress is based on today's todo list.
-  // Done = 100%, half = 50%, pending = 0%.
-  const score=total ? Math.round(((done + half*0.5)/total)*100) : 0;
+ const d=day();
 
-  const bar=document.getElementById("progressBar");
-  const pct=document.getElementById("progressPercent");
-  const text=document.getElementById("progressText");
-  const detail=document.getElementById("progressDetail");
-  if(bar)bar.style.width=score+"%";
-  if(pct)pct.textContent=score+"%";
-  if(text)text.textContent=score+"% 달성";
-  if(detail)detail.textContent=`완료 ${done} · 반만 완료 ${half} · 미완료 ${pending}`;
+ const todos=d.todos||[];
+
+ const total=todos.length;
+
+ const done=
+  todos.filter(
+   t=>t.status==="done"
+  ).length;
+
+ const half=
+  todos.filter(
+   t=>t.status==="half"
+  ).length;
+
+ const pending=
+  todos.filter(
+   t=>t.status!=="done" &&
+   t.status!=="half"
+  ).length;
+
+ const score=total
+  ?Math.round(
+   ((done+half*0.5)/total)*100
+  )
+  :0;
+
+ const bar=
+  document.getElementById("progressBar");
+
+ const pct=
+  document.getElementById("progressPercent");
+
+ const text=
+  document.getElementById("progressText");
+
+ const detail=
+  document.getElementById("progressDetail");
+
+ if(bar)
+  bar.style.width=score+"%";
+
+ if(pct)
+  pct.textContent=score+"%";
+
+ if(text)
+  text.textContent=score+"% 달성";
+
+ if(detail)
+  detail.textContent=
+   `완료 ${done} · 반만 완료 ${half} · 미완료 ${pending}`;
+
 }
+
+
+/* =========================
+   오늘 화면
+========================= */
 
 function renderToday(){
+
  updateTodayProgress();
- let d=day(),locked=!canEdit();
- document.getElementById("todayDate").textContent=korean(viewDate)+(locked?" 🔒":"");
- document.getElementById("pastNotice").style.display=locked?"block":"none";
- document.getElementById("todoInput").disabled=locked;
- document.getElementById("todoAddInlineBtn").disabled=locked;
- document.getElementById("diaryText").disabled=locked;
- document.getElementById("saveDiaryBtn").disabled=locked;
- document.getElementById("diaryText").value=d.text||"";
+
+ let d=day();
+
+ let locked=!canEdit();
+
+ document.getElementById(
+  "todayDate"
+ ).textContent=
+  korean(viewDate)+(locked?" 🔒":"");
+
+ document.getElementById(
+  "pastNotice"
+ ).style.display=
+  locked?"block":"none";
+
+
+ document.getElementById(
+  "todoInput"
+ ).disabled=locked;
+
+ document.getElementById(
+  "todoAddInlineBtn"
+ ).disabled=locked;
+
+ document.getElementById(
+  "diaryText"
+ ).disabled=locked;
+
+ document.getElementById(
+  "saveDiaryBtn"
+ ).disabled=locked;
+
+
+ document.getElementById(
+  "diaryText"
+ ).value=d.text||"";
+
 
  let todos=d.todos||[];
- document.getElementById("todoList").innerHTML=todos.length?
-  todos.map((t,i)=>`<div class="todo ${t.status==="done"?"done":""}">
-   <button type="button" class="status" ${locked?"disabled":""} onclick="cycleTodo(${i})">${t.status==="done"?"☑️":t.status==="half"?"🔺":"☐"}</button>
-   <div style="flex:1"><span class="text">${escape(t.text)}</span></div>
-   ${locked?"":`<button type="button" class="btn light" onclick="deleteTodo(${i})">삭제</button>`}
-  </div>`).join(""):`<div class="empty">오늘의 할 일을 추가해보세요.</div>`;
+
+ document.getElementById(
+  "todoList"
+ ).innerHTML=
+  todos.length ?
+
+  todos.map((t,i)=>`
+
+   <div class="todo ${
+    t.status==="done"?"done":""
+   }">
+
+    <button
+     type="button"
+     class="status"
+     ${locked?"disabled":""}
+     onclick="cycleTodo(${i})"
+    >
+     ${
+      t.status==="done"
+       ?"☑️"
+       :t.status==="half"
+       ?"🔺"
+       :"☐"
+     }
+    </button>
+
+    <div style="flex:1">
+     <span class="text">
+      ${escape(t.text)}
+     </span>
+    </div>
+
+    ${
+     locked
+     ?""
+     :`
+      <button
+       type="button"
+       class="btn light"
+       onclick="deleteTodo(${i})"
+      >
+       삭제
+      </button>
+     `
+    }
+
+   </div>
+
+  `).join("")
+
+  :
+
+  `<div class="empty">
+   오늘의 할 일을 추가해보세요.
+  </div>`;
+
 
  let html="";
+
  for(let h=6;h<24;h++){
-  let t=String(h).padStart(2,"0")+":00";
-  html+=`<div class="hour"><div class="hour-time">${t}</div><input ${locked?"disabled":""} value="${escape(d.schedule?.[t]||"")}" placeholder="계획 입력" onchange="saveSchedule('${t}',this.value)"></div>`;
+
+  let t=
+   String(h).padStart(2,"0")+":00";
+
+  html+=`
+
+   <div class="hour">
+
+    <div class="hour-time">
+     ${t}
+    </div>
+
+    <input
+     ${locked?"disabled":""}
+     value="${escape(d.schedule?.[t]||"")}"
+     placeholder="계획 입력"
+     onchange="saveSchedule('${t}',this.value)"
+    >
+
+   </div>
+
+  `;
+
  }
- document.getElementById("schedule").innerHTML=html;
-}
-function addTodoFromInput(){
- if(!canEdit())return;
- const input=document.getElementById("todoInput");
- const text=input.value.trim();
- if(!text)return;
- let d=day();
- d.todos=d.todos||[];
- d.todos.push({id:Date.now()+Math.random(),time:"",text:text,status:"pending"});
- saveDay(d);
- input.value="";
- renderToday();
- setTimeout(()=>document.getElementById("todoInput")?.focus(),0);
-}
-document.addEventListener("keydown",e=>{
- if(e.key==="Enter" && document.activeElement?.id==="todoInput"){
-  e.preventDefault();
-  addTodoFromInput();
- }
-});
-function cycleTodo(i){
- if(!canEdit())return;
- let d=day(),t=d.todos[i];t.status=t.status==="pending"?"half":t.status==="half"?"done":"pending";saveDay(d);renderToday();
-}
-function deleteTodo(i){
- if(!canEdit())return;
- let d=day();d.todos.splice(i,1);saveDay(d);renderToday();
-}
-function saveSchedule(t,v){
- if(!canEdit())return;
- let d=day();d.schedule=d.schedule||{};
- if(v.trim())d.schedule[t]=v.trim();else delete d.schedule[t];
- saveDay(d);
-}
-function saveDiary(){
- if(!canEdit())return;
- let d=day();d.text=document.getElementById("diaryText").value;saveDay(d);
- document.getElementById("diaryStatus").textContent="✓ 저장되었습니다";
- setTimeout(()=>document.getElementById("diaryStatus").textContent="",1800);
-}
-function previousDate(){viewDate.setDate(viewDate.getDate()-1);renderToday()}
-function nextDate(){viewDate.setDate(viewDate.getDate()+1);renderToday()}
-function returnToday(){viewDate=new Date();viewDate.setHours(0,0,0,0);renderToday()}
-function showYesterday(){let y=new Date();y.setHours(0,0,0,0);y.setDate(y.getDate()-1);viewDate=y;showPage("today")}
-function carryHalf(){
- let t=new Date();t.setHours(0,0,0,0),k=todayKey(),stamp=localStorage.getItem("myDiaryCarryV2");
- if(stamp===k)return;
- let p=new Date(t);p.setDate(p.getDate()-1);
- let old=data.days[key(p)];
- if(old?.todos?.length){
-  let half=old.todos.filter(x=>x.status==="half").map(x=>({id:Date.now()+Math.random(),time:x.time,text:x.text,status:"pending"}));
-  if(half.length){
-   data.days[k]=data.days[k]||{todos:[],schedule:{},text:""};
-   data.days[k].todos=[...(data.days[k].todos||[]),...half];
-  }
- }
- localStorage.setItem("myDiaryCarryV2",k);saveLocal();
+
+ document.getElementById(
+  "schedule"
+ ).innerHTML=html;
+
 }
 
+
+/* =========================
+   할 일
+========================= */
+
+function addTodoFromInput(){
+
+ if(!canEdit())
+  return;
+
+ const input=
+  document.getElementById("todoInput");
+
+ const text=
+  input.value.trim();
+
+ if(!text)
+  return;
+
+ let d=day();
+
+ d.todos=d.todos||[];
+
+ d.todos.push({
+  id:Date.now()+Math.random(),
+  time:"",
+  text:text,
+  status:"pending"
+ });
+
+ saveDay(d);
+
+ input.value="";
+
+ renderToday();
+
+ setTimeout(
+  ()=>{
+   document.getElementById(
+    "todoInput"
+   )?.focus();
+  },
+  0
+ );
+
+}
+
+
+document.addEventListener(
+ "keydown",
+ e=>{
+
+  if(
+   e.key==="Enter" &&
+   document.activeElement?.id==="todoInput"
+  ){
+
+   e.preventDefault();
+
+   addTodoFromInput();
+
+  }
+
+ }
+);
+
+
+function cycleTodo(i){
+
+ if(!canEdit())
+  return;
+
+ let d=day();
+
+ let t=d.todos[i];
+
+ t.status=
+  t.status==="pending"
+   ?"half"
+   :t.status==="half"
+   ?"done"
+   :"pending";
+
+ saveDay(d);
+
+ renderToday();
+
+}
+
+
+function deleteTodo(i){
+
+ if(!canEdit())
+  return;
+
+ let d=day();
+
+ d.todos.splice(i,1);
+
+ saveDay(d);
+
+ renderToday();
+
+}
+
+
+/* =========================
+   시간표
+========================= */
+
+function saveSchedule(t,v){
+
+ if(!canEdit())
+  return;
+
+ let d=day();
+
+ d.schedule=d.schedule||{};
+
+ if(v.trim())
+  d.schedule[t]=v.trim();
+ else
+  delete d.schedule[t];
+
+ saveDay(d);
+
+}
+
+
+/* =========================
+   오늘 기록
+========================= */
+
+function saveDiary(){
+
+ if(!canEdit())
+  return;
+
+ let d=day();
+
+ d.text=
+  document.getElementById(
+   "diaryText"
+  ).value;
+
+ saveDay(d);
+
+ document.getElementById(
+  "diaryStatus"
+ ).textContent=
+  "✓ 저장되었습니다";
+
+ setTimeout(
+  ()=>{
+   document.getElementById(
+    "diaryStatus"
+   ).textContent="";
+  },
+  1800
+ );
+
+}
+
+
+/* =========================
+   날짜 이동
+========================= */
+
+function previousDate(){
+
+ viewDate.setDate(
+  viewDate.getDate()-1
+ );
+
+ renderToday();
+
+}
+
+
+function nextDate(){
+
+ viewDate.setDate(
+  viewDate.getDate()+1
+ );
+
+ renderToday();
+
+}
+
+
+function returnToday(){
+
+ viewDate=new Date();
+
+ viewDate.setHours(0,0,0,0);
+
+ renderToday();
+
+}
+
+
+function showYesterday(){
+
+ let y=new Date();
+
+ y.setHours(0,0,0,0);
+
+ y.setDate(
+  y.getDate()-1
+ );
+
+ viewDate=y;
+
+ showPage("today");
+
+}
+
+
+/* =========================
+   반완료 다음날 이동
+========================= */
+
+function carryHalf(){
+
+ let t=new Date();
+
+ t.setHours(0,0,0,0);
+
+ let k=todayKey();
+
+ let stamp=
+  localStorage.getItem(
+   "myDiaryCarryV2"
+  );
+
+ if(stamp===k)
+  return;
+
+ let p=new Date(t);
+
+ p.setDate(
+  p.getDate()-1
+ );
+
+ let old=
+  data.days[key(p)];
+
+ if(old?.todos?.length){
+
+  let half=
+   old.todos
+    .filter(
+     x=>x.status==="half"
+    )
+    .map(
+     x=>({
+      id:Date.now()+Math.random(),
+      time:x.time,
+      text:x.text,
+      status:"pending"
+     })
+    );
+
+  if(half.length){
+
+   data.days[k]=
+    data.days[k]||{
+     todos:[],
+     schedule:{},
+     text:""
+    };
+
+   data.days[k].todos=[
+    ...(data.days[k].todos||[]),
+    ...half
+   ];
+
+  }
+
+ }
+
+ localStorage.setItem(
+  "myDiaryCarryV2",
+  k
+ );
+
+ saveLocal();
+
+}
+
+
+/* =========================
+   1년 계획
+========================= */
 
 function renderYear(){
- document.getElementById("yearPlan").value=data.yearPlan||"";
- document.getElementById("months").innerHTML=Array.from({length:12},(_,i)=>`<div class="month-card"><b>${i+1}월</b><textarea data-month="${i+1}" placeholder="${i+1}월 계획">${escape(data.months[i+1]||"")}</textarea></div>`).join("");
- document.querySelectorAll("[data-month]").forEach(x=>x.onchange=()=>{data.months[x.dataset.month]=x.value;save()});
-}
-function saveYearPlan(){data.yearPlan=document.getElementById("yearPlan").value;save();alert("저장했습니다.")}
 
-const subjects=["🇰🇷 국어노트","🔢 수학노트","🔤 영어노트","🔬 과학노트","🌏 사회노트"];
+ document.getElementById(
+  "yearPlan"
+ ).value=data.yearPlan||"";
+
+ document.getElementById(
+  "months"
+ ).innerHTML=
+  Array.from(
+   {length:12},
+   (_,i)=>`
+
+    <div class="month-card">
+
+     <b>
+      ${i+1}월
+     </b>
+
+     <textarea
+      data-month="${i+1}"
+      placeholder="${i+1}월 계획"
+     >${escape(
+      data.months[i+1]||""
+     )}</textarea>
+
+    </div>
+
+   `
+  ).join("");
+
+
+ document.querySelectorAll(
+  "[data-month]"
+ ).forEach(
+  x=>{
+   x.onchange=()=>{
+
+    data.months[x.dataset.month]=
+     x.value;
+
+    save();
+
+   };
+  }
+ );
+
+}
+
+
+function saveYearPlan(){
+
+ data.yearPlan=
+  document.getElementById(
+   "yearPlan"
+  ).value;
+
+ save();
+
+ alert("저장했습니다.");
+
+}
+
+
+/* =========================
+   정리노트
+========================= */
+
+const subjects=[
+ "🇰🇷 국어노트",
+ "🔢 수학노트",
+ "🔤 영어노트",
+ "🔬 과학노트",
+ "🌏 사회노트"
+];
+
+
 function renderSubjects(){
- subjectListEl.style.display="block";subjectViewEl.style.display="none";writerEl.style.display="none";fullNoteEl.style.display="none";
- const subjectsEl=document.getElementById("subjects");
- subjectsEl.innerHTML=subjects.map(s=>`<button type="button" class="subject" onclick="openSubject('${s}')">${s}</button>`).join("");
+
+ subjectListEl.style.display="block";
+
+ subjectViewEl.style.display="none";
+
+ writerEl.style.display="none";
+
+ fullNoteEl.style.display="none";
+
+
+ const subjectsEl=
+  document.getElementById(
+   "subjects"
+  );
+
+ subjectsEl.innerHTML=
+  subjects.map(
+   s=>`
+
+    <button
+     type="button"
+     class="subject"
+     onclick="openSubject('${s}')"
+    >
+     ${s}
+    </button>
+
+   `
+  ).join("");
+
 }
-function openSubject(s){currentSubject=s;subjectListEl.style.display="none";subjectViewEl.style.display="block";subjectTitleEl.textContent=s;renderNotes()}
-function closeSubject(){currentSubject="";renderSubjects()}
+
+
+function openSubject(s){
+
+ currentSubject=s;
+
+ subjectListEl.style.display="none";
+
+ subjectViewEl.style.display="block";
+
+ subjectTitleEl.textContent=s;
+
+ renderNotes();
+
+}
+
+
+function closeSubject(){
+
+ currentSubject="";
+
+ renderSubjects();
+
+}
+
+
 function renderNotes(){
- let ns=data.notes[currentSubject]||[];
- savedNotesEl.innerHTML=`<div class="card"><button type="button" class="btn" onclick="openWriter()">✏️ 작성하기</button></div>`+
- (ns.length?ns.map(n=>`<div class="card note"><b>${escape(n.major)} · ${escape(n.minor)}</b><div class="small">${escape(n.createdAt)}</div><div class="preview">${escape((n.content||"").replace(/\s+/g," "))}</div><div class="actions"><button type="button" class="btn light" onclick='openFull(${JSON.stringify(n)})'>내용 보기</button><button type="button" class="btn light" onclick='editNote(${JSON.stringify(n)})'>✏️ 수정</button><button type="button" class="btn danger" onclick="deleteNote(${n.id})">삭제</button></div></div>`).join(""):`<div class="card empty">아직 작성한 노트가 없습니다.</div>`);
+
+ let ns=
+  data.notes[currentSubject]||[];
+
+ savedNotesEl.innerHTML=
+
+  `<div class="card">
+
+   <button
+    type="button"
+    class="btn"
+    onclick="openWriter()"
+   >
+    ✏️ 작성하기
+   </button>
+
+  </div>`
+
+ +
+
+  (
+
+   ns.length
+
+   ?
+
+   ns.map(
+    n=>`
+
+     <div class="card note">
+
+      <b>
+       ${escape(n.major)}
+       ·
+       ${escape(n.minor)}
+      </b>
+
+      <div class="small">
+       ${escape(n.createdAt)}
+      </div>
+
+      <div class="preview">
+       ${escape(
+        (n.content||"")
+        .replace(/\s+/g," ")
+       )}
+      </div>
+
+      <div class="actions">
+
+       <button
+        type="button"
+        class="btn light"
+        onclick='openFull(${JSON.stringify(n)})'
+       >
+        내용 보기
+       </button>
+
+       <button
+        type="button"
+        class="btn light"
+        onclick='editNote(${JSON.stringify(n)})'
+       >
+        ✏️ 수정
+       </button>
+
+       <button
+        type="button"
+        class="btn danger"
+        onclick="deleteNote(${n.id})"
+       >
+        삭제
+       </button>
+
+      </div>
+
+     </div>
+
+    `
+   ).join("")
+
+   :
+
+   `<div class="card empty">
+    아직 작성한 노트가 없습니다.
+   </div>`
+
+  );
+
 }
-function openWriter(){subjectViewEl.style.display="none";writerEl.style.display="block";writerTitleEl.textContent=currentSubject+" 작성";editingId=null;clearWriter()}
-function clearWriter(){majorEl.value="";minorEl.value="";contentEl.value="";saveNoteBtnEl.textContent="💾 저장"}
-function closeWriter(){writerEl.style.display="none";subjectViewEl.style.display="block";renderNotes()}
+
+
+function openWriter(){
+
+ subjectViewEl.style.display="none";
+
+ writerEl.style.display="block";
+
+ writerTitleEl.textContent=
+  currentSubject+" 작성";
+
+ editingId=null;
+
+ clearWriter();
+
+}
+
+
+function clearWriter(){
+
+ majorEl.value="";
+
+ minorEl.value="";
+
+ contentEl.value="";
+
+ saveNoteBtnEl.textContent=
+  "💾 저장";
+
+}
+
+
+function closeWriter(){
+
+ writerEl.style.display="none";
+
+ subjectViewEl.style.display="block";
+
+ renderNotes();
+
+}
+
+
 function saveNote(){
- if(!majorEl.value.trim()||!minorEl.value.trim()||!contentEl.value.trim()){alert("모든 항목을 입력해주세요.");return}
- data.notes[currentSubject]=data.notes[currentSubject]||[];
- if(editingId){let n=data.notes[currentSubject].find(x=>x.id===editingId);Object.assign(n,{major:majorEl.value.trim(),minor:minorEl.value.trim(),content:contentEl.value.trim()})}
- else data.notes[currentSubject].push({id:Date.now(),major:majorEl.value.trim(),minor:minorEl.value.trim(),content:contentEl.value.trim(),createdAt:korean(new Date())});
- save();editingId=null;closeWriter();
+
+ if(
+  !majorEl.value.trim() ||
+  !minorEl.value.trim() ||
+  !contentEl.value.trim()
+ ){
+
+  alert(
+   "모든 항목을 입력해주세요."
+  );
+
+  return;
+
+ }
+
+ data.notes[currentSubject]=
+  data.notes[currentSubject]||[];
+
+
+ if(editingId){
+
+  let n=
+   data.notes[currentSubject]
+    .find(
+     x=>x.id===editingId
+    );
+
+  if(n){
+
+   Object.assign(
+    n,
+    {
+     major:majorEl.value.trim(),
+     minor:minorEl.value.trim(),
+     content:contentEl.value.trim()
+    }
+   );
+
+  }
+
+ }else{
+
+  data.notes[currentSubject].push({
+   id:Date.now(),
+   major:majorEl.value.trim(),
+   minor:minorEl.value.trim(),
+   content:contentEl.value.trim(),
+   createdAt:korean(new Date()),
+   date:key(new Date())
+  });
+
+ }
+
+ save();
+
+ editingId=null;
+
+ closeWriter();
+
 }
-function editNote(n){openWriter();editingId=n.id;majorEl.value=n.major;minorEl.value=n.minor;contentEl.value=n.content;saveNoteBtnEl.textContent="💾 수정 저장"}
-function deleteNote(id){if(confirm("이 노트를 삭제할까요?")){data.notes[currentSubject]=(data.notes[currentSubject]||[]).filter(n=>n.id!==id);save();renderNotes()}}
-function openFull(n){subjectViewEl.style.display="none";fullNoteEl.style.display="block";fullTitleEl.textContent=n.major+" · "+n.minor;fullDateEl.textContent=n.createdAt;fullContentEl.textContent=n.content}
-function closeFullNote(){fullNoteEl.style.display="none";subjectViewEl.style.display="block";renderNotes()}
+
+
+function editNote(n){
+
+ openWriter();
+
+ editingId=n.id;
+
+ majorEl.value=n.major;
+
+ minorEl.value=n.minor;
+
+ contentEl.value=n.content;
+
+ saveNoteBtnEl.textContent=
+  "💾 수정 저장";
+
+}
+
+
+function deleteNote(id){
+
+ if(
+  confirm(
+   "이 노트를 삭제할까요?"
+  )
+ ){
+
+  data.notes[currentSubject]=
+   (data.notes[currentSubject]||[])
+   .filter(
+    n=>n.id!==id
+   );
+
+  save();
+
+  renderNotes();
+
+ }
+
+}
+
+
+function openFull(n){
+
+ subjectViewEl.style.display="none";
+
+ fullNoteEl.style.display="block";
+
+ fullTitleEl.textContent=
+  n.major+" · "+n.minor;
+
+ fullDateEl.textContent=
+  n.createdAt;
+
+ fullContentEl.textContent=
+  n.content;
+
+}
+
+
+function closeFullNote(){
+
+ fullNoteEl.style.display="none";
+
+ subjectViewEl.style.display="block";
+
+ renderNotes();
+
+}
+
+
+/* =========================
+   목표
+========================= */
 
 function renderGoals(){
- goalListEl.innerHTML=data.goals.length?data.goals.map((g,i)=>`<div class="todo ${g.done?"done":""}"><button type="button" class="status" onclick="toggleGoal(${i})">${g.done?"☑️":"☐"}</button><span class="text" style="flex:1">${escape(g.text)}</span><button type="button" class="btn light" onclick="deleteGoal(${i})">삭제</button></div>`).join(""):`<div class="empty">목표를 추가해보세요.</div>`;
+
+ goalListEl.innerHTML=
+  data.goals.length
+
+  ?
+
+  data.goals.map(
+   (g,i)=>`
+
+    <div class="todo ${
+     g.done?"done":""
+    }">
+
+     <button
+      type="button"
+      class="status"
+      onclick="toggleGoal(${i})"
+     >
+      ${g.done?"☑️":"☐"}
+     </button>
+
+     <span
+      class="text"
+      style="flex:1"
+     >
+      ${escape(g.text)}
+     </span>
+
+     <button
+      type="button"
+      class="btn light"
+      onclick="deleteGoal(${i})"
+     >
+      삭제
+     </button>
+
+    </div>
+
+   `
+  ).join("")
+
+  :
+
+  `<div class="empty">
+   목표를 추가해보세요.
+  </div>`;
+
 }
-function addGoal(){let v=goalInputEl.value.trim();if(!v)return;data.goals.push({id:Date.now(),text:v,done:false});goalInputEl.value="";save();renderGoals()}
-function toggleGoal(i){data.goals[i].done=!data.goals[i].done;save();renderGoals()}
-function deleteGoal(i){data.goals.splice(i,1);save();renderGoals()}
+
+
+function addGoal(){
+
+ let v=
+  goalInputEl.value.trim();
+
+ if(!v)
+  return;
+
+ data.goals.push({
+  id:Date.now(),
+  text:v,
+  done:false
+ });
+
+ goalInputEl.value="";
+
+ save();
+
+ renderGoals();
+
+}
+
+
+function toggleGoal(i){
+
+ data.goals[i].done=
+  !data.goals[i].done;
+
+ save();
+
+ renderGoals();
+
+}
+
+
+function deleteGoal(i){
+
+ data.goals.splice(i,1);
+
+ save();
+
+ renderGoals();
+
+}
+
+
+/* =========================
+   페이지 이동
+========================= */
 
 function showPage(id){
- document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
- document.getElementById(id).classList.add("active");
- document.querySelectorAll("[data-page]").forEach(x=>x.classList.toggle("active",x.dataset.page===id));
- document.getElementById("pageTitle").textContent={today:"📔 오늘",year:"📅 1년 계획",notes:"📚 정리노트",goals:"🎯 목표"}[id];
- if(id==="today")renderToday();if(id==="year")renderYear();if(id==="notes")renderSubjects();if(id==="goals")renderGoals();
-}
-document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
 
-/* 클라우드 */
-function setCloud(on,text){
- document.getElementById("cloudDot").className="cloud-dot"+(on?" on":"");
- document.getElementById("cloudText").textContent=text;
-}
-function scheduleCloudSave(){
- if(!currentUser)return;
- clearTimeout(cloudTimer);cloudTimer=setTimeout(cloudSave,800);
-}
-async function cloudSave(){
- if(!currentUser)return;
- const {error}=await sb.from("diary_data").upsert({
-  user_id:currentUser.id,app_version:APP_VERSION,data:data,updated_at:new Date().toISOString()
- },{onConflict:"user_id"});
- if(error){console.error(error);setCloud(false,"클라우드 저장 실패")}
- else setCloud(true,"클라우드 저장됨");
-}
-async function backup(reason){
- if(!currentUser)return;
- const {error}=await sb.from("diary_backups").insert({user_id:currentUser.id,app_version:APP_VERSION,reason,data:data});
- if(error)console.error(error);
-}
-async function loadCloud(){
- if(!currentUser)return;
- const {data:row,error}=await sb.from("diary_data").select("*").eq("user_id",currentUser.id).maybeSingle();
- if(error){console.error(error);setCloud(false,"클라우드 오류");return}
- if(row?.data){
-  data=Object.assign(blankData(),row.data);
-  data.days=data.days||{};data.notes=data.notes||{};data.goals=data.goals||[];data.months=data.months||{};data.yearPlan=data.yearPlan||"";data.loginStreak=data.loginStreak||{count:0,lastVisit:""};
-  saveLocal();setCloud(true,"클라우드 불러옴");
- }else{
-  await backup("최초 로그인 전 로컬 기록 백업");
-  await cloudSave();
- }
-}
-function updateAccountButton(){accountBtnEl.textContent=currentUser?(currentUser.email||"계정"):"로그인"}
-function openAuth(){
- modalEl.innerHTML=`<h2>🔐 로그인 / 회원가입</h2>
- <div class="auth-tabs"><button type="button" id="loginTab" class="active">로그인</button><button type="button" id="signupTab">회원가입</button></div>
- <div id="authMsg" class="auth-msg"></div>
- <label>이메일</label><input id="authEmail" type="email" placeholder="이메일"><br><br>
- <label>비밀번호</label><input id="authPw" type="password" placeholder="6자 이상"><br><br>
- <button type="button" class="btn" id="authGo">로그인</button> <button type="button" class="btn light" onclick="closeModal()">닫기</button>`;
- let mode="login";
- const msg=t=>{document.getElementById("authMsg").textContent=t;document.getElementById("authMsg").style.display="block"};
- document.getElementById("loginTab").onclick=()=>{mode="login";document.getElementById("loginTab").classList.add("active");document.getElementById("signupTab").classList.remove("active");document.getElementById("authGo").textContent="로그인"};
- document.getElementById("signupTab").onclick=()=>{mode="signup";document.getElementById("signupTab").classList.add("active");document.getElementById("loginTab").classList.remove("active");document.getElementById("authGo").textContent="회원가입"};
- document.getElementById("authGo").onclick=async()=>{
-  let email=document.getElementById("authEmail").value.trim(),password=document.getElementById("authPw").value;
-  if(!email||password.length<6){msg("이메일과 6자 이상의 비밀번호를 입력해주세요.");return}
-  document.getElementById("authGo").disabled=true;
-  let r=mode==="login"?await sb.auth.signInWithPassword({email,password}):await sb.auth.signUp({email,password});
-  document.getElementById("authGo").disabled=false;
-  if(r.error){msg(r.error.message);return}
-  if(mode==="signup"){msg("회원가입이 완료되었습니다. 이메일 확인이 필요한 경우 메일을 확인한 뒤 로그인해주세요.");return}
-  closeModal();currentUser=r.data.user;updateAccountButton();await loadCloud();renderAll();
+ currentPage=id;
+
+ document.querySelectorAll(
+  ".page"
+ ).forEach(
+  x=>x.classList.remove("active")
+ );
+
+ const target=
+  document.getElementById(id);
+
+ if(target)
+  target.classList.add("active");
+
+
+ document.querySelectorAll(
+  "[data-page]"
+ ).forEach(
+  x=>x.classList.toggle(
+   "active",
+   x.dataset.page===id
+  )
+ );
+
+
+ const titles={
+  today:"오늘",
+  stats:"나의 기록",
+  year:"1년 계획",
+  notes:"정리노트",
+  goals:"목표"
  };
- openModal();
+
+ document.title =
+  id==="today"
+   ? "나의 다이어리앱 | 하루 계획과 목표 관리"
+   : `나의 다이어리앱 | ${titles[id]||"다이어리"}`;
+
+
+ document.getElementById(
+  "pageTitle"
+ ).textContent=
+  titles[id]||"📔 오늘";
+
+
+ if(id==="today")
+  renderToday();
+
+ if(id==="stats")
+  renderStats();
+
+ if(id==="year")
+  renderYear();
+
+ if(id==="notes")
+  renderSubjects();
+
+ if(id==="goals")
+  renderGoals();
+
 }
+
+
+document.querySelectorAll(
+ "[data-page]"
+ ).forEach(
+  b=>{
+
+   b.onclick=()=>{
+    showPage(
+     b.dataset.page
+    );
+   };
+
+  }
+);
+
+
+/* =========================
+   클라우드
+========================= */
+
+function setCloud(on,text){
+
+ cloudDotEl.className=
+  "cloud-dot"+(on?" on":"");
+
+ cloudTextEl.textContent=text;
+
+}
+
+
+function scheduleCloudSave(){
+
+ if(!currentUser)
+  return;
+
+ clearTimeout(cloudTimer);
+
+ cloudTimer=
+  setTimeout(
+   cloudSave,
+   800
+  );
+
+}
+
+
+async function cloudSave(){
+
+ if(!currentUser)
+  return;
+
+ const {error}=
+  await sb
+   .from("diary_data")
+   .upsert(
+    {
+     user_id:currentUser.id,
+     app_version:APP_VERSION,
+     data:data,
+     updated_at:new Date().toISOString()
+    },
+    {
+     onConflict:"user_id"
+    }
+   );
+
+ if(error){
+
+  console.error(error);
+
+  setCloud(
+   false,
+   "클라우드 저장 실패"
+  );
+
+ }else{
+
+  setCloud(
+   true,
+   "클라우드 저장됨"
+  );
+
+ }
+
+}
+
+
+async function backup(reason){
+
+ if(!currentUser)
+  return;
+
+ const {error}=
+  await sb
+   .from("diary_backups")
+   .insert({
+    user_id:currentUser.id,
+    app_version:APP_VERSION,
+    reason,
+    data:data
+   });
+
+ if(error)
+  console.error(error);
+
+}
+
+
+async function loadCloud(){
+
+ if(!currentUser)
+  return;
+
+ const {data:row,error}=
+  await sb
+   .from("diary_data")
+   .select("*")
+   .eq("user_id",currentUser.id)
+   .maybeSingle();
+
+
+ if(error){
+
+  console.error(error);
+
+  setCloud(
+   false,
+   "클라우드 오류"
+  );
+
+  return;
+
+ }
+
+
+ if(row?.data){
+
+  data=
+   Object.assign(
+    blankData(),
+    row.data
+   );
+
+  data.days=data.days||{};
+
+  data.notes=data.notes||{};
+
+  data.goals=data.goals||[];
+
+  data.months=data.months||{};
+
+  data.yearPlan=
+   data.yearPlan||"";
+
+  data.loginStreak=
+   data.loginStreak||{
+    count:0,
+    lastVisit:""
+   };
+
+  saveLocal();
+
+  setCloud(
+   true,
+   "클라우드 불러옴"
+  );
+
+ }else{
+
+  await backup(
+   "최초 로그인 전 로컬 기록 백업"
+  );
+
+  await cloudSave();
+
+ }
+
+}
+
+
+function updateAccountButton(){
+
+ accountBtnEl.textContent=
+  currentUser
+   ?(currentUser.email||"계정")
+   :"로그인";
+
+}
+
+
+/* =========================
+   로그인
+========================= */
+
+function openAuth(){
+
+ modalEl.innerHTML=`
+
+  <h2>
+   🔐 로그인 / 회원가입
+  </h2>
+
+  <div class="auth-tabs">
+
+   <button
+    type="button"
+    id="loginTab"
+    class="active"
+   >
+    로그인
+   </button>
+
+   <button
+    type="button"
+    id="signupTab"
+   >
+    회원가입
+   </button>
+
+  </div>
+
+  <div
+   id="authMsg"
+   class="auth-msg"
+  ></div>
+
+  <label>
+   이메일
+  </label>
+
+  <input
+   id="authEmail"
+   type="email"
+   placeholder="이메일"
+  >
+
+  <br><br>
+
+  <label>
+   비밀번호
+  </label>
+
+  <input
+   id="authPw"
+   type="password"
+   placeholder="6자 이상"
+  >
+
+  <br><br>
+
+  <button
+   type="button"
+   class="btn"
+   id="authGo"
+  >
+   로그인
+  </button>
+
+  <button
+   type="button"
+   class="btn light"
+   onclick="closeModal()"
+  >
+   닫기
+  </button>
+
+ `;
+
+
+ let mode="login";
+
+
+ const msg=t=>{
+
+  document.getElementById(
+   "authMsg"
+  ).textContent=t;
+
+  document.getElementById(
+   "authMsg"
+  ).style.display="block";
+
+ };
+
+
+ document.getElementById(
+  "loginTab"
+ ).onclick=()=>{
+
+  mode="login";
+
+  document.getElementById(
+   "loginTab"
+  ).classList.add("active");
+
+  document.getElementById(
+   "signupTab"
+  ).classList.remove("active");
+
+  document.getElementById(
+   "authGo"
+  ).textContent="로그인";
+
+ };
+
+
+ document.getElementById(
+  "signupTab"
+ ).onclick=()=>{
+
+  mode="signup";
+
+  document.getElementById(
+   "signupTab"
+  ).classList.add("active");
+
+  document.getElementById(
+   "loginTab"
+  ).classList.remove("active");
+
+  document.getElementById(
+   "authGo"
+  ).textContent="회원가입";
+
+ };
+
+
+ document.getElementById(
+  "authGo"
+ ).onclick=async()=>{
+
+  let email=
+   document.getElementById(
+    "authEmail"
+   ).value.trim();
+
+  let password=
+   document.getElementById(
+    "authPw"
+   ).value;
+
+
+  if(
+   !email ||
+   password.length<6
+  ){
+
+   msg(
+    "이메일과 6자 이상의 비밀번호를 입력해주세요."
+   );
+
+   return;
+
+  }
+
+
+  document.getElementById(
+   "authGo"
+  ).disabled=true;
+
+
+  let r=
+   mode==="login"
+
+   ?
+
+   await sb.auth.signInWithPassword({
+    email,
+    password
+   })
+
+   :
+
+   await sb.auth.signUp({
+    email,
+    password
+   });
+
+
+  document.getElementById(
+   "authGo"
+  ).disabled=false;
+
+
+  if(r.error){
+
+   msg(
+    r.error.message
+   );
+
+   return;
+
+  }
+
+
+  if(mode==="signup"){
+
+   msg(
+    "회원가입이 완료되었습니다. 이메일 확인이 필요한 경우 메일을 확인한 뒤 로그인해주세요."
+   );
+
+   return;
+
+  }
+
+
+  closeModal();
+
+  currentUser=r.data.user;
+
+  updateAccountButton();
+
+  await loadCloud();
+
+  renderAll();
+
+ };
+
+ openModal();
+
+}
+
+
+/* =========================
+   계정
+========================= */
+
 function openAccount(){
- if(!currentUser){openAuth();return}
- modalEl.innerHTML=`<h2>☁️ 내 계정</h2><p>${escape(currentUser.email||"")}</p>
- <button type="button" class="btn" onclick="cloudSave().then(()=>alert('저장했습니다.'))">☁️ 지금 저장</button>
- <button type="button" class="btn light" onclick="openBackups()">💾 백업 보기</button>
- <button type="button" class="btn danger" onclick="logout()">로그아웃</button>
- <button type="button" class="btn light" onclick="closeModal()">닫기</button>`;
+
+ if(!currentUser){
+
+  openAuth();
+
+  return;
+
+ }
+
+
+ modalEl.innerHTML=`
+
+  <h2>
+   ☁️ 내 계정
+  </h2>
+
+  <p>
+   ${escape(
+    currentUser.email||""
+   )}
+  </p>
+
+  <button
+   type="button"
+   class="btn"
+   onclick="cloudSave().then(()=>alert('저장했습니다.'))"
+  >
+   ☁️ 지금 저장
+  </button>
+
+  <button
+   type="button"
+   class="btn light"
+   onclick="openBackups()"
+  >
+   💾 백업 보기
+  </button>
+
+  <button
+   type="button"
+   class="btn danger"
+   onclick="logout()"
+  >
+   로그아웃
+  </button>
+
+  <button
+   type="button"
+   class="btn light"
+   onclick="closeModal()"
+  >
+   닫기
+  </button>
+
+ `;
+
  openModal();
+
 }
-async function logout(){await sb.auth.signOut();currentUser=null;updateAccountButton();setCloud(false,"오프라인");closeModal();renderAll()}
+
+
+async function logout(){
+
+ await sb.auth.signOut();
+
+ currentUser=null;
+
+ updateAccountButton();
+
+ setCloud(
+  false,
+  "오프라인"
+ );
+
+ closeModal();
+
+ renderAll();
+
+}
+
+
 async function openBackups(){
- if(!currentUser)return;
- modalEl.innerHTML=`<h2>💾 백업</h2><p class="small">백업을 선택하면 현재 기록을 먼저 백업한 뒤 복구합니다.</p><div id="backupList">불러오는 중...</div><button type="button" class="btn light" onclick="closeModal()">닫기</button>`;
- const {data:rows,error}=await sb.from("diary_backups").select("id,app_version,reason,created_at").eq("user_id",currentUser.id).order("created_at",{ascending:false}).limit(20);
- if(error){document.getElementById("backupList").textContent="백업을 불러오지 못했습니다.";return}
- if(!rows.length){document.getElementById("backupList").innerHTML='<div class="empty">아직 백업이 없습니다.</div>';return}
- document.getElementById("backupList").innerHTML=rows.map(x=>`<div class="backup"><b>${new Date(x.created_at).toLocaleString("ko-KR")}</b><br><span class="small">${escape(x.reason)} · 앱 ${escape(x.app_version)}</span><button type="button" class="btn light" style="float:right" onclick="restoreBackup('${x.id}')">복구</button><div style="clear:both"></div></div>`).join("");
+
+ if(!currentUser)
+  return;
+
+ modalEl.innerHTML=`
+
+  <h2>
+   💾 백업
+  </h2>
+
+  <p class="small">
+   백업을 선택하면 현재 기록을 먼저 백업한 뒤 복구합니다.
+  </p>
+
+  <div id="backupList">
+   불러오는 중...
+  </div>
+
+  <button
+   type="button"
+   class="btn light"
+   onclick="closeModal()"
+  >
+   닫기
+  </button>
+
+ `;
+
+
+ const {data:rows,error}=
+  await sb
+   .from("diary_backups")
+   .select(
+    "id,app_version,reason,created_at"
+   )
+   .eq(
+    "user_id",
+    currentUser.id
+   )
+   .order(
+    "created_at",
+    {
+     ascending:false
+    }
+   )
+   .limit(20);
+
+
+ if(error){
+
+  document.getElementById(
+   "backupList"
+  ).textContent=
+   "백업을 불러오지 못했습니다.";
+
+  return;
+
+ }
+
+
+ if(!rows.length){
+
+  document.getElementById(
+   "backupList"
+  ).innerHTML=
+   '<div class="empty">아직 백업이 없습니다.</div>';
+
+  return;
+
+ }
+
+
+ document.getElementById(
+  "backupList"
+ ).innerHTML=
+  rows.map(
+   x=>`
+
+    <div class="backup">
+
+     <b>
+      ${new Date(
+       x.created_at
+      ).toLocaleString("ko-KR")}
+     </b>
+
+     <br>
+
+     <span class="small">
+      ${escape(x.reason)}
+      · 앱 ${escape(x.app_version)}
+     </span>
+
+     <button
+      type="button"
+      class="btn light"
+      style="float:right"
+      onclick="restoreBackup('${x.id}')"
+     >
+      복구
+     </button>
+
+     <div style="clear:both"></div>
+
+    </div>
+
+   `
+  ).join("");
+
 }
+
+
 async function restoreBackup(id){
- if(!confirm("현재 기록을 먼저 백업하고 이 백업으로 복구할까요?"))return;
- const {data:row,error}=await sb.from("diary_backups").select("*").eq("id",id).eq("user_id",currentUser.id).single();
- if(error||!row){alert("백업을 불러오지 못했습니다.");return}
- await backup("복구 직전 자동 백업");
- data=Object.assign(blankData(),row.data);
- data.days=data.days||{};data.notes=data.notes||{};data.goals=data.goals||[];data.months=data.months||{};data.yearPlan=data.yearPlan||"";data.loginStreak=data.loginStreak||{count:0,lastVisit:""};
- saveLocal();await cloudSave();closeModal();renderAll();alert("복구했습니다.");
+
+ if(
+  !confirm(
+   "현재 기록을 먼저 백업하고 이 백업으로 복구할까요?"
+  )
+ )
+  return;
+
+
+ const {data:row,error}=
+  await sb
+   .from("diary_backups")
+   .select("*")
+   .eq("id",id)
+   .eq("user_id",currentUser.id)
+   .single();
+
+
+ if(error||!row){
+
+  alert(
+   "백업을 불러오지 못했습니다."
+  );
+
+  return;
+
+ }
+
+
+ await backup(
+  "복구 직전 자동 백업"
+ );
+
+
+ data=
+  Object.assign(
+   blankData(),
+   row.data
+  );
+
+ data.days=data.days||{};
+ data.notes=data.notes||{};
+ data.goals=data.goals||[];
+ data.months=data.months||{};
+ data.yearPlan=data.yearPlan||"";
+
+ saveLocal();
+
+ await cloudSave();
+
+ closeModal();
+
+ renderAll();
+
+ alert(
+  "복구했습니다."
+ );
+
 }
-function openModal(){modalBgEl.style.display="flex"}
-function closeModal(){modalBgEl.style.display="none"}
-modalBgEl.onclick=e=>{if(e.target===modalBgEl)closeModal()}
-accountBtnEl.onclick=openAccount;
+
+
+/* =========================
+   로그인 모달
+========================= */
+
+function openModal(){
+
+ modalBgEl.style.display="flex";
+
+}
+
+
+function closeModal(){
+
+ modalBgEl.style.display="none";
+
+}
+
+
+modalBgEl.onclick=e=>{
+
+ if(e.target===modalBgEl)
+  closeModal();
+
+};
+
+
+accountBtnEl.onclick=
+ openAccount;
+
+
+/* =========================
+   기존 데이터 변환
+========================= */
 
 function migrateOld(){
- const old=localStorage.getItem("local_diaryData");
- if(old&&!Object.keys(data.days).length){try{let o=JSON.parse(old);for(const [k,v] of Object.entries(o))data.days[k]={todos:v.todos||[],schedule:v.schedule||{},text:v.text||""}}catch(e){}}
- const yp=localStorage.getItem("local_yearPlans");
- if(yp&&!data.yearPlan){try{let o=JSON.parse(yp),y=new Date().getFullYear();data.yearPlan=o[y]||""}catch(e){}}
- const yg=localStorage.getItem("local_yearGoals");
- if(yg&&!data.goals.length){try{data.goals=JSON.parse(yg)}catch(e){}}
- const sn=localStorage.getItem("local_subjectNotes");
- if(sn&&!Object.keys(data.notes).length){try{let o=JSON.parse(sn);for(const [s,v] of Object.entries(o)){if(v)data.notes[s]=[{id:Date.now()+Math.random(),major:"기존 노트",minor:"기존 기록",content:v,createdAt:"이전 기록"}]}}catch(e){}}
+
+ const old=
+  localStorage.getItem(
+   "local_diaryData"
+  );
+
+
+ if(
+  old &&
+  !Object.keys(data.days).length
+ ){
+
+  try{
+
+   let o=JSON.parse(old);
+
+   for(
+    const [k,v]
+    of Object.entries(o)
+   ){
+
+    data.days[k]={
+     todos:v.todos||[],
+     schedule:v.schedule||{},
+     text:v.text||""
+    };
+
+   }
+
+  }catch(e){}
+
+ }
+
+
+ const yp=
+  localStorage.getItem(
+   "local_yearPlans"
+  );
+
+
+ if(
+  yp &&
+  !data.yearPlan
+ ){
+
+  try{
+
+   let o=JSON.parse(yp);
+
+   let y=
+    new Date().getFullYear();
+
+   data.yearPlan=
+    o[y]||"";
+
+  }catch(e){}
+
+ }
+
+
+ const yg=
+  localStorage.getItem(
+   "local_yearGoals"
+  );
+
+
+ if(
+  yg &&
+  !data.goals.length
+ ){
+
+  try{
+
+   data.goals=
+    JSON.parse(yg);
+
+  }catch(e){}
+
+ }
+
+
+ const sn=
+  localStorage.getItem(
+   "local_subjectNotes"
+  );
+
+
+ if(
+  sn &&
+  !Object.keys(data.notes).length
+ ){
+
+  try{
+
+   let o=JSON.parse(sn);
+
+   for(
+    const [s,v]
+    of Object.entries(o)
+   ){
+
+    if(v){
+
+     data.notes[s]=[
+      {
+       id:Date.now()+Math.random(),
+       major:"기존 노트",
+       minor:"기존 기록",
+       content:v,
+       createdAt:"이전 기록",
+       date:key(new Date())
+      }
+     ];
+
+    }
+
+   }
+
+  }catch(e){}
+
+ }
+
+
  saveLocal();
+
 }
 
 
+/* =========================
+   통계
+========================= */
 
 let statsPeriod="week";
+
+
 function statsPeriodRange(period){
-  const now=new Date(); now.setHours(0,0,0,0);
-  if(period==="week"){
-    const day=now.getDay(), start=new Date(now);
-    start.setDate(now.getDate()-(day===0?6:day-1));
-    const end=new Date(start); end.setDate(start.getDate()+6);
-    return [start,end];
-  }
-  if(period==="month") return [new Date(now.getFullYear(),now.getMonth(),1),new Date(now.getFullYear(),now.getMonth()+1,0)];
-  if(period==="year") return [new Date(now.getFullYear(),0,1),new Date(now.getFullYear(),11,31)];
-  return [null,null];
+
+ const now=new Date();
+
+ now.setHours(
+  0,0,0,0
+ );
+
+
+ if(period==="week"){
+
+  const day=now.getDay();
+
+  const start=new Date(now);
+
+  start.setDate(
+   now.getDate()-
+   (day===0?6:day-1)
+  );
+
+  const end=new Date(start);
+
+  end.setDate(
+   start.getDate()+6
+  );
+
+  return [start,end];
+
+ }
+
+
+ if(period==="month"){
+
+  return [
+   new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    1
+   ),
+   new Date(
+    now.getFullYear(),
+    now.getMonth()+1,
+    0
+   )
+  ];
+
+ }
+
+
+ if(period==="year"){
+
+  return [
+   new Date(
+    now.getFullYear(),
+    0,
+    1
+   ),
+   new Date(
+    now.getFullYear(),
+    11,
+    31
+   )
+  ];
+
+ }
+
+
+ return [null,null];
+
 }
+
+
 function renderStats(){
-  const days=data.days||{}, [from,to]=statsPeriodRange(statsPeriod);
-  let total=0,done=0,half=0,pending=0,writtenDays=0;
-  const hourCounts=Array(24).fill(0);
-  Object.entries(days).forEach(([key,d])=>{
-    const dt=new Date(key+"T00:00:00");
-    if(Number.isNaN(dt.getTime()) || (from&&(dt<from||dt>to))) return;
-    d=d||{}; const todos=Array.isArray(d.todos)?d.todos:[], hours=d.hours||{};
-    if(String(d.diary||"").trim()||todos.length||Object.values(hours).some(v=>String(v||"").trim())) writtenDays++;
-    todos.forEach(t=>{total++; if(t.status==="done")done++; else if(t.status==="half")half++; else pending++;});
-    Object.entries(hours).forEach(([h,v])=>{const n=Number(h);if(n>=0&&n<24&&String(v||"").trim())hourCounts[n]++;});
-  });
-  const rate=total?Math.round((done+half*.5)/total*100):0, max=Math.max(...hourCounts), top=max?hourCounts.indexOf(max):-1;
-  const notes=data.notes||{}; let noteTotal=0;
-  const subjectData=subjects.map(s=>{const arr=Array.isArray(notes[s])?notes[s]:[]; const n=statsPeriod==="all"?arr.length:arr.filter(x=>{const v=x.date||x.createdAt||x.created_at;if(!v)return false;const d=new Date(String(v).length===10?v+"T00:00:00":v);return from&&to&&!Number.isNaN(d.getTime())&&d>=from&&d<=to}).length;noteTotal+=n;return[s,n]});
-  const goals=Array.isArray(data.goals)?data.goals:[], goalDone=goals.filter(g=>g&&(g.done===true||g.completed===true||g.status==="done")).length;
-  document.getElementById("statsCompletionRate").textContent=rate+"%";
-  document.getElementById("statsCompletionBar").style.width=rate+"%";
-  document.getElementById("statsCompletionText").textContent=`완료 ${done}개 / 전체 ${total}개`;
-  document.getElementById("statsDone").textContent=done; document.getElementById("statsHalf").textContent=half; document.getElementById("statsPending").textContent=pending;
-  document.getElementById("statsWrittenDays").textContent=writtenDays;
-  document.getElementById("statsTopHour").textContent=top>=0?`${String(top).padStart(2,"0")}:00~${String((top+1)%24).padStart(2,"0")}:00`:"-";
-  document.getElementById("statsTopHourCount").textContent=`작성 ${max||0}회`;
-  document.getElementById("statsNotes").textContent=noteTotal;
-  document.getElementById("statsGoals").textContent=goals.length; document.getElementById("statsGoalText").textContent=`달성 ${goalDone}개`;
-  document.getElementById("statsHours").innerHTML=max?hourCounts.map((c,h)=>`<div class="stats-hour-row"><div class="stats-hour-label">${String(h).padStart(2,"0")}:00</div><div class="stats-hour-track"><div class="stats-hour-fill" style="width:${Math.round(c/max*100)}%"></div></div><div class="stats-hour-count">${c}회</div></div>`).join(""):'<div class="stats-empty">아직 작성된 시간표가 없어요.</div>';
-  document.getElementById("statsSubjects").innerHTML=subjectData.map(([s,n])=>`<div class="stats-subject"><span>${escProfile(s)}</span><b>${n}개</b></div>`).join("");
+
+ const days=data.days||{};
+
+ const [from,to]=
+  statsPeriodRange(
+   statsPeriod
+  );
+
+
+ let total=0;
+ let done=0;
+ let half=0;
+ let pending=0;
+ let writtenDays=0;
+
+ const hourCounts=
+  Array(24).fill(0);
+
+
+ Object.entries(days).forEach(
+  ([dayKey,d])=>{
+
+   const dt=
+    new Date(
+     dayKey+"T00:00:00"
+    );
+
+
+   if(
+    Number.isNaN(
+     dt.getTime()
+    )
+   )
+    return;
+
+
+   if(
+    from &&
+    to &&
+    (dt<from || dt>to)
+   )
+    return;
+
+
+   d=d||{};
+
+
+   const todos=
+    Array.isArray(d.todos)
+     ?d.todos
+     :[];
+
+
+   const schedule=
+    d.schedule &&
+    typeof d.schedule==="object"
+     ?d.schedule
+     :{};
+
+
+   const hasDiary=
+    String(
+     d.text||""
+    ).trim().length>0;
+
+
+   const hasSchedule=
+    Object.values(
+     schedule
+    ).some(
+     v=>String(v||"").trim()
+    );
+
+
+   if(
+    hasDiary ||
+    todos.length ||
+    hasSchedule
+   )
+    writtenDays++;
+
+
+   todos.forEach(
+    t=>{
+
+     total++;
+
+     if(t.status==="done")
+      done++;
+
+     else if(t.status==="half")
+      half++;
+
+     else
+      pending++;
+
+    }
+   );
+
+
+   Object.entries(
+    schedule
+   ).forEach(
+    ([h,v])=>{
+
+     const n=Number(h);
+
+     if(
+      n>=0 &&
+      n<24 &&
+      String(v||"").trim()
+     ){
+
+      hourCounts[n]++;
+
+     }
+
+    }
+   );
+
+  }
+ );
+
+
+ const rate=
+  total
+   ?Math.round(
+    (
+     done+
+     half*.5
+    )/total*100
+   )
+   :0;
+
+
+ const max=
+  Math.max(
+   ...hourCounts
+  );
+
+
+ const top=
+  max
+   ?hourCounts.indexOf(max)
+   :-1;
+
+
+ const notes=
+  data.notes||{};
+
+
+ let noteTotal=0;
+
+
+ const subjectData=
+  subjects.map(
+   s=>{
+
+    const arr=
+     Array.isArray(notes[s])
+      ?notes[s]
+      :[];
+
+
+    let n=0;
+
+
+    if(statsPeriod==="all"){
+
+     n=arr.length;
+
+    }else{
+
+     n=
+      arr.filter(
+       x=>{
+
+        const v=
+         x.date||
+         x.createdAt||
+         x.created_at;
+
+
+        if(!v)
+         return false;
+
+
+        const d=
+         new Date(
+          String(v).length===10
+           ?v+"T00:00:00"
+           :v
+         );
+
+
+        return(
+         !Number.isNaN(
+          d.getTime()
+         ) &&
+         from &&
+         to &&
+         d>=from &&
+         d<=to
+        );
+
+       }
+      ).length;
+
+    }
+
+
+    noteTotal+=n;
+
+    return [s,n];
+
+   }
+  );
+
+
+ const goals=
+  Array.isArray(data.goals)
+   ?data.goals
+   :[];
+
+
+ const goalDone=
+  goals.filter(
+   g=>
+    g &&
+    (
+     g.done===true ||
+     g.completed===true ||
+     g.status==="done"
+    )
+  ).length;
+
+
+ document.getElementById(
+  "statsCompletionRate"
+ ).textContent=
+  rate+"%";
+
+
+ document.getElementById(
+  "statsCompletionBar"
+ ).style.width=
+  rate+"%";
+
+
+ document.getElementById(
+  "statsCompletionText"
+ ).textContent=
+  `완료 ${done}개 / 전체 ${total}개`;
+
+
+ document.getElementById(
+  "statsDone"
+ ).textContent=
+  done;
+
+
+ document.getElementById(
+  "statsHalf"
+ ).textContent=
+  half;
+
+
+ document.getElementById(
+  "statsPending"
+ ).textContent=
+  pending;
+
+
+ document.getElementById(
+  "statsWrittenDays"
+ ).textContent=
+  writtenDays;
+
+
+ document.getElementById(
+  "statsTopHour"
+ ).textContent=
+  top>=0
+   ?`${String(top).padStart(2,"0")}:00~${String((top+1)%24).padStart(2,"0")}:00`
+   :"-";
+
+
+ document.getElementById(
+  "statsTopHourCount"
+ ).textContent=
+  `작성 ${max||0}회`;
+
+
+ document.getElementById(
+  "statsNotes"
+ ).textContent=
+  noteTotal;
+
+
+ document.getElementById(
+  "statsGoals"
+ ).textContent=
+  goals.length;
+
+
+ document.getElementById(
+  "statsGoalText"
+ ).textContent=
+  `달성 ${goalDone}개`;
+
+
+ document.getElementById(
+  "statsHours"
+ ).innerHTML=
+
+  max
+
+  ?
+
+  hourCounts.map(
+   (c,h)=>`
+
+    <div class="stats-hour-row">
+
+     <div class="stats-hour-label">
+      ${String(h).padStart(2,"0")}:00
+     </div>
+
+     <div class="stats-hour-track">
+
+      <div
+       class="stats-hour-fill"
+       style="width:${Math.round(c/max*100)}%"
+      ></div>
+
+     </div>
+
+     <div class="stats-hour-count">
+      ${c}회
+     </div>
+
+    </div>
+
+   `
+  ).join("")
+
+  :
+
+  `<div class="stats-empty">
+   아직 작성된 시간표가 없어요.
+  </div>`;
+
+
+ document.getElementById(
+  "statsSubjects"
+ ).innerHTML=
+  subjectData.map(
+   ([s,n])=>`
+
+    <div class="stats-subject">
+
+     <span>
+      ${profileEsc(s)}
+     </span>
+
+     <b>
+      ${n}개
+     </b>
+
+    </div>
+
+   `
+  ).join("");
+
 }
+
+
 function initStats(){
-  document.querySelectorAll("[data-stats-period]").forEach(b=>b.addEventListener("click",()=>{statsPeriod=b.dataset.statsPeriod;document.querySelectorAll("[data-stats-period]").forEach(x=>x.classList.toggle("active",x===b));renderStats();}));
+
+ document.querySelectorAll(
+  "[data-stats-period]"
+ ).forEach(
+  b=>{
+
+   b.addEventListener(
+    "click",
+    ()=>{
+
+     statsPeriod=
+      b.dataset.statsPeriod;
+
+
+     document.querySelectorAll(
+      "[data-stats-period]"
+     ).forEach(
+      x=>
+       x.classList.toggle(
+        "active",
+        x===b
+       )
+     );
+
+
+     renderStats();
+
+    }
+   );
+
+  }
+ );
+
 }
+
+
+/* =========================
+   전체 렌더링
+========================= */
 
 function renderAll(){
-renderToday();renderYear();renderSubjects();renderGoals();showPage(currentPage)}
-let currentPage="today";
+
+ renderToday();
+
+ renderYear();
+
+ renderSubjects();
+
+ renderGoals();
+
+ showPage(
+  currentPage
+ );
+
+}
+
+
+/* =========================
+   초기 실행
+========================= */
 
 migrateOld();
+
 carryHalf();
+
 renderAll();
 
+
+/* =========================
+   Supabase 세션
+========================= */
+
 (async()=>{
- const {data:sessionData}=await sb.auth.getSession();
+
+ const {
+  data:sessionData
+ }=
+  await sb.auth.getSession();
+
+
  if(sessionData.session){
-  currentUser=sessionData.session.user;
+
+  currentUser=
+   sessionData.session.user;
+
   updateAccountButton();
-  setCloud(true,"로그인됨");
+
+  setCloud(
+   true,
+   "로그인됨"
+  );
+
   await loadCloud();
+
   renderAll();
+
  }
- sb.auth.onAuthStateChange(async(event,session)=>{
-  if(session&&!currentUser){currentUser=session.user;updateAccountButton();await loadCloud();renderAll()}
-  if(!session){currentUser=null;updateAccountButton();setCloud(false,"오프라인");renderAll()}
- });
+
+
+ sb.auth.onAuthStateChange(
+  async(event,session)=>{
+
+   if(
+    session &&
+    !currentUser
+   ){
+
+    currentUser=
+     session.user;
+
+    updateAccountButton();
+
+    await loadCloud();
+
+    renderAll();
+
+   }
+
+
+   if(!session){
+
+    currentUser=null;
+
+    updateAccountButton();
+
+    setCloud(
+     false,
+     "오프라인"
+    );
+
+    renderAll();
+
+   }
+
+  }
+ );
+
 })();
 
-let lastDate=key(new Date());
-setInterval(()=>{
- let k=key(new Date());
- if(k!==lastDate){
-  lastDate=k;viewDate=new Date();viewDate.setHours(0,0,0,0);carryHalf();renderToday();
- }
-},1000);
+
+/* =========================
+   날짜 자동 변경
+========================= */
+
+let lastDate=
+ key(new Date());
+
+
+setInterval(
+ ()=>{
+
+  let k=
+   key(new Date());
+
+
+  if(k!==lastDate){
+
+   lastDate=k;
+
+   viewDate=
+    new Date();
+
+   viewDate.setHours(
+    0,0,0,0
+   );
+
+   carryHalf();
+
+   renderToday();
+
+  }
+
+ },
+ 1000
+);
+
 </script>
 
+
+<!-- =========================
+     프로필
+========================= -->
+
 <script>
-function profileEsc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
+
+function profileEsc(v){
+
+ return String(v??"").replace(
+  /[&<>"']/g,
+  m=>({
+   "&":"&amp;",
+   "<":"&lt;",
+   ">":"&gt;",
+   '"':"&quot;",
+   "'":"&#39;"
+  }[m])
+ );
+
+}
+
+
 function openProfile(){
- const modal=document.getElementById("profileModal");
- if(!modal)return;
+
+ const modal=
+  document.getElementById(
+   "profileModal"
+  );
+
+ if(!modal)
+  return;
+
  renderProfile();
- modal.classList.remove("hidden");
+
+ modal.classList.remove(
+  "hidden"
+ );
+
 }
-function closeProfile(){const modal=document.getElementById("profileModal");if(modal)modal.classList.add("hidden");}
+
+
+function closeProfile(){
+
+ const modal=
+  document.getElementById(
+   "profileModal"
+  );
+
+ if(modal)
+  modal.classList.add(
+   "hidden"
+  );
+
+}
+
+
 function renderProfile(){
- const days=data.days||{}, notes=data.notes||{}, goals=Array.isArray(data.goals)?data.goals:[];
- let writtenDays=0,totalTodos=0,doneTodos=0,halfTodos=0,pendingTodos=0,scheduleCount=0;
- Object.values(days).forEach(d=>{
-  if(!d)return;
-  const todos=Array.isArray(d.todos)?d.todos:[];
-  const schedule=d.schedule&&typeof d.schedule==="object"?d.schedule:{};
-  const hasDiary=String(d.text||"").trim().length>0;
-  if(hasDiary||todos.length||Object.values(schedule).some(v=>String(v||"").trim()))writtenDays++;
-  todos.forEach(t=>{totalTodos++;if(t.status==="done")doneTodos++;else if(t.status==="half")halfTodos++;else pendingTodos++;});
-  scheduleCount+=Object.values(schedule).filter(v=>String(v||"").trim()).length;
- });
+
+ const days=
+  data.days||{};
+
+ const notes=
+  data.notes||{};
+
+ const goals=
+  Array.isArray(data.goals)
+   ?data.goals
+   :[];
+
+
+ let writtenDays=0;
+
+ let totalTodos=0;
+
+ let doneTodos=0;
+
+ let halfTodos=0;
+
+ let pendingTodos=0;
+
+ let scheduleCount=0;
+
+
+ Object.values(days).forEach(
+  d=>{
+
+   if(!d)
+    return;
+
+
+   const todos=
+    Array.isArray(d.todos)
+     ?d.todos
+     :[];
+
+
+   const schedule=
+    d.schedule &&
+    typeof d.schedule==="object"
+     ?d.schedule
+     :{};
+
+
+   const hasDiary=
+    String(
+     d.text||""
+    ).trim().length>0;
+
+
+   const hasSchedule=
+    Object.values(
+     schedule
+    ).some(
+     v=>String(v||"").trim()
+    );
+
+
+   if(
+    hasDiary ||
+    todos.length ||
+    hasSchedule
+   )
+    writtenDays++;
+
+
+   todos.forEach(
+    t=>{
+
+     totalTodos++;
+
+     if(t.status==="done")
+      doneTodos++;
+
+     else if(t.status==="half")
+      halfTodos++;
+
+     else
+      pendingTodos++;
+
+    }
+   );
+
+
+   scheduleCount+=
+    Object.values(
+     schedule
+    ).filter(
+     v=>String(v||"").trim()
+    ).length;
+
+  }
+ );
+
+
  let noteTotal=0;
- const noteRows=subjects.map(s=>{const n=Array.isArray(notes[s])?notes[s].length:0;noteTotal+=n;return `<div class="profile-row"><span>${profileEsc(s)}</span><b>${n}개</b></div>`;}).join("");
- const completedGoals=goals.filter(g=>g&&(g.done===true||g.completed===true||g.status==="done")).length;
- const goalRate=goals.length?Math.round(completedGoals/goals.length*100):0;
- const todoRate=totalTodos?Math.round((doneTodos+halfTodos*.5)/totalTodos*100):0;
- document.getElementById("profileContent").innerHTML=`
-  <div style="margin-top:14px"><div class="profile-badge">📊 나의 통합 리포트</div>
-   <h2 style="margin:10px 0 2px">${currentUser?profileEsc(currentUser.email):"나의 다이어리"}</h2>
-   <div class="small">${currentUser?"로그인 계정":"이 기기에서 사용하는 기록"}</div></div>
-  <div class="profile-summary">
-   <div class="profile-stat"><div>📔 기록한 날</div><div class="num">${writtenDays}일</div></div>
-   <div class="profile-stat"><div>📋 전체 할 일</div><div class="num">${totalTodos}개</div></div>
-   <div class="profile-stat"><div>🎯 전체 목표</div><div class="num">${goals.length}개</div></div>
-   <div class="profile-stat"><div>📚 정리노트</div><div class="num">${noteTotal}개</div></div>
-   <div class="profile-stat"><div>⏰ 시간표 작성</div><div class="num">${scheduleCount}개</div></div>
+
+
+ const noteRows=
+  subjects.map(
+   s=>{
+
+    const n=
+     Array.isArray(notes[s])
+      ?notes[s].length
+      :0;
+
+    noteTotal+=n;
+
+    return `
+
+     <div class="profile-row">
+
+      <span>
+       ${profileEsc(s)}
+      </span>
+
+      <b>
+       ${n}개
+      </b>
+
+     </div>
+
+    `;
+
+   }
+  ).join("");
+
+
+ const completedGoals=
+  goals.filter(
+   g=>
+    g &&
+    (
+     g.done===true ||
+     g.completed===true ||
+     g.status==="done"
+    )
+  ).length;
+
+
+ const goalRate=
+  goals.length
+   ?Math.round(
+    completedGoals/
+    goals.length*
+    100
+   )
+   :0;
+
+
+ const todoRate=
+  totalTodos
+   ?Math.round(
+    (
+     doneTodos+
+     halfTodos*.5
+    )/
+    totalTodos*
+    100
+   )
+   :0;
+
+
+ document.getElementById(
+  "profileContent"
+ ).innerHTML=`
+
+  <div style="margin-top:14px">
+
+   <div class="profile-badge">
+    📊 나의 통합 리포트
+   </div>
+
+   <h2 style="margin:10px 0 2px">
+
+    ${
+     currentUser
+      ?profileEsc(
+       currentUser.email
+      )
+      :"나의 다이어리"
+    }
+
+   </h2>
+
+   <div class="small">
+
+    ${
+     currentUser
+      ?"로그인 계정"
+      :"이 기기에서 사용하는 기록"
+    }
+
+   </div>
+
   </div>
-  <div class="profile-section"><h3>📋 할 일 통계</h3><div style="display:flex;justify-content:space-between;margin-bottom:7px"><span>진행률</span><b>${todoRate}%</b></div><div class="profile-bar"><div style="width:${todoRate}%"></div></div><div style="display:flex;justify-content:space-between;margin-top:8px;font-size:13px"><span>☑️ ${doneTodos} 완료</span><span>🔺 ${halfTodos} 반완료</span><span>☐ ${pendingTodos} 미완료</span></div></div>
-  <div class="profile-section"><h3>🎯 목표 달성</h3><div style="display:flex;justify-content:space-between;margin-bottom:7px"><span>${completedGoals}/${goals.length} 달성</span><b>${goalRate}%</b></div><div class="profile-bar"><div style="width:${goalRate}%"></div></div></div>
-  <div class="profile-section"><h3>📚 과목별 정리노트</h3><div class="profile-subjects">${noteRows||'<div class="small">아직 정리노트가 없습니다.</div>'}</div></div>`;
+
+
+  <div class="profile-summary">
+
+   <div class="profile-stat">
+
+    <div>
+     📔 기록한 날
+    </div>
+
+    <div class="num">
+     ${writtenDays}일
+    </div>
+
+   </div>
+
+
+   <div class="profile-stat">
+
+    <div>
+     📋 전체 할 일
+    </div>
+
+    <div class="num">
+     ${totalTodos}개
+    </div>
+
+   </div>
+
+
+   <div class="profile-stat">
+
+    <div>
+     🎯 전체 목표
+    </div>
+
+    <div class="num">
+     ${goals.length}개
+    </div>
+
+   </div>
+
+
+   <div class="profile-stat">
+
+    <div>
+     📚 정리노트
+    </div>
+
+    <div class="num">
+     ${noteTotal}개
+    </div>
+
+   </div>
+
+
+   <div class="profile-stat">
+
+    <div>
+     ⏰ 시간표 작성
+    </div>
+
+    <div class="num">
+     ${scheduleCount}개
+    </div>
+
+   </div>
+
+  </div>
+
+
+  <div class="profile-section">
+
+   <h3>
+    📋 할 일 통계
+   </h3>
+
+   <div
+    style="display:flex;justify-content:space-between;margin-bottom:7px"
+   >
+
+    <span>
+     진행률
+    </span>
+
+    <b>
+     ${todoRate}%
+    </b>
+
+   </div>
+
+   <div class="profile-bar">
+
+    <div
+     style="width:${todoRate}%"
+    ></div>
+
+   </div>
+
+   <div
+    style="display:flex;justify-content:space-between;margin-top:8px;font-size:13px"
+   >
+
+    <span>
+     ☑️ ${doneTodos} 완료
+    </span>
+
+    <span>
+     🔺 ${halfTodos} 반완료
+    </span>
+
+    <span>
+     ☐ ${pendingTodos} 미완료
+    </span>
+
+   </div>
+
+  </div>
+
+
+  <div class="profile-section">
+
+   <h3>
+    🎯 목표 달성
+   </h3>
+
+   <div
+    style="display:flex;justify-content:space-between;margin-bottom:7px"
+   >
+
+    <span>
+     ${completedGoals}/${goals.length} 달성
+    </span>
+
+    <b>
+     ${goalRate}%
+    </b>
+
+   </div>
+
+   <div class="profile-bar">
+
+    <div
+     style="width:${goalRate}%"
+    ></div>
+
+   </div>
+
+  </div>
+
+
+  <div class="profile-section">
+
+   <h3>
+    📚 과목별 정리노트
+   </h3>
+
+   <div class="profile-subjects">
+
+    ${
+     noteRows ||
+     '<div class="small">아직 정리노트가 없습니다.</div>'
+    }
+
+   </div>
+
+  </div>
+
+ `;
+
 }
-document.addEventListener("DOMContentLoaded",()=>{initStats();
- const modal=document.getElementById("profileModal");
- if(modal)modal.addEventListener("click",e=>{if(e.target===modal)closeProfile();});
-});
+
+
+document.addEventListener(
+ "DOMContentLoaded",
+ ()=>{
+
+  initStats();
+
+
+  const modal=
+   document.getElementById(
+    "profileModal"
+   );
+
+
+  if(modal){
+
+   modal.addEventListener(
+    "click",
+    e=>{
+
+     if(e.target===modal)
+      closeProfile();
+
+    }
+   );
+
+  }
+
+ }
+);
+
 </script>
 
+
+<!-- =========================
+     서비스 워커
+========================= -->
+
 <script>
+
 if("serviceWorker" in navigator){
- window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(console.error));
+
+ window.addEventListener(
+  "load",
+  ()=>{
+   navigator.serviceWorker
+    .register("./sw.js")
+    .catch(console.error);
+  }
+ );
+
 }
+
 </script>
+
 </body>
 </html>
