@@ -1987,7 +1987,10 @@ function saveLocal(){
 function save(){
 
  saveLocal();
- scheduleCloudSave();
+
+ if(currentUser){
+  scheduleCloudSave();
+ }
 
 }
 
@@ -3316,25 +3319,60 @@ async function cloudSave(){
   return false;
 
  const userId=currentUser.id;
+ const payload={
+  user_id:userId,
+  app_version:APP_VERSION,
+  data:data,
+  updated_at:new Date().toISOString()
+ };
 
- const {error}=
+ /*
+    user_id에 UNIQUE 제약이 없는 Supabase 테이블에서도
+    저장되도록 upsert(onConflict)를 사용하지 않습니다.
+    먼저 해당 계정의 기록이 있는지 확인한 뒤
+    있으면 UPDATE, 없으면 INSERT 합니다.
+ */
+ const {data:existing,error:findError}=
   await sb
    .from("diary_data")
-   .upsert(
-    {
-     user_id:userId,
-     app_version:APP_VERSION,
-     data:data,
-     updated_at:new Date().toISOString()
-    },
-    {
-     onConflict:"user_id"
-    }
-   );
+   .select("user_id")
+   .eq("user_id",userId)
+   .limit(1);
+
+ if(findError){
+  console.error("클라우드 조회 실패:",findError);
+  setCloud(false,"클라우드 저장 실패");
+  return false;
+ }
+
+ let error=null;
+
+ if(existing && existing.length>0){
+
+  const result=await sb
+   .from("diary_data")
+   .update({
+    app_version:APP_VERSION,
+    data:data,
+    updated_at:new Date().toISOString()
+   })
+   .eq("user_id",userId);
+
+  error=result.error;
+
+ }else{
+
+  const result=await sb
+   .from("diary_data")
+   .insert(payload);
+
+  error=result.error;
+
+ }
 
  if(error){
 
-  console.error(error);
+  console.error("클라우드 저장 실패:",error);
 
   setCloud(
    false,
@@ -3381,12 +3419,15 @@ async function loadCloud(){
  if(!currentUser)
   return;
 
- const {data:row,error}=
+ const {data:rows,error}=
   await sb
    .from("diary_data")
    .select("*")
    .eq("user_id",currentUser.id)
-   .maybeSingle();
+   .order("updated_at",{ascending:false})
+   .limit(1);
+
+ const row=rows?.[0]||null;
 
 
  if(error){
