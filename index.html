@@ -3313,14 +3313,16 @@ function scheduleCloudSave(){
 async function cloudSave(){
 
  if(!currentUser)
-  return;
+  return false;
+
+ const userId=currentUser.id;
 
  const {error}=
   await sb
    .from("diary_data")
    .upsert(
     {
-     user_id:currentUser.id,
+     user_id:userId,
      app_version:APP_VERSION,
      data:data,
      updated_at:new Date().toISOString()
@@ -3339,14 +3341,16 @@ async function cloudSave(){
    "클라우드 저장 실패"
   );
 
- }else{
-
-  setCloud(
-   true,
-   "클라우드 저장됨"
-  );
+  return false;
 
  }
+
+ setCloud(
+  true,
+  "클라우드 저장됨"
+ );
+
+ return true;
 
 }
 
@@ -3775,20 +3779,53 @@ function openAccount(){
 
 async function logout(){
 
- /* 진행 중인 로컬→클라우드 저장 예약을 취소 */
+ /*
+    로그아웃 전에 예약된 저장을 취소하고
+    현재 기록을 즉시 클라우드에 먼저 저장합니다.
+    저장에 실패하면 로그아웃하지 않습니다.
+ */
  clearTimeout(cloudTimer);
 
- await sb.auth.signOut();
+ if(currentUser){
+
+  const saved=await cloudSave();
+
+  if(!saved){
+
+   alert("기록을 클라우드에 저장하지 못했습니다. 인터넷 연결을 확인한 뒤 다시 시도해주세요.");
+   return;
+
+  }
+
+ }
+
+ const {error}=await sb.auth.signOut();
+
+ if(error){
+
+  console.error(error);
+  alert("로그아웃에 실패했습니다. 잠시 후 다시 시도해주세요.");
+  return;
+
+ }
 
  currentUser=null;
 
  /*
-    로그아웃 후에는 이전 계정의 데이터를
-    화면/로컬 저장소에 남겨두지 않습니다.
-    다음 계정은 자신의 클라우드 데이터만 불러옵니다.
+    로그아웃 후에는 이 브라우저에 이전 계정의
+    다이어리 기록을 남기지 않습니다.
+    다시 로그인하면 해당 계정의 클라우드 기록을 불러옵니다.
  */
+ [
+  KEY,
+  "myDiaryData_v6",
+  "myDiaryData_v5",
+  "local_diaryData"
+ ].forEach(k=>{
+  localStorage.removeItem(k);
+ });
+
  data=blankData();
- saveLocal();
 
  updateAccountButton();
 
