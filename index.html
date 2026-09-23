@@ -3418,6 +3418,15 @@ async function loadCloud(){
   data.yearPlan=
    data.yearPlan||"";
 
+  data.study=data.study||blankData().study;
+
+  data.study.exams=data.study.exams||[];
+  data.study.examPlans=data.study.examPlans||[];
+  data.study.logs=data.study.logs||[];
+  data.study.homework=data.study.homework||[];
+  data.study.timetable=data.study.timetable||{};
+  data.study.examMode=!!data.study.examMode;
+
   data.loginStreak=
    data.loginStreak||{
     count:0,
@@ -3433,11 +3442,20 @@ async function loadCloud(){
 
  }else{
 
-  await backup(
-   "최초 로그인 전 로컬 기록 백업"
-  );
+  /*
+     중요: 새 계정에는 현재 컴퓨터의 로컬 데이터를
+     자동으로 복사하지 않습니다.
+     계정마다 완전히 새 다이어리로 시작합니다.
+  */
+  data=blankData();
+  saveLocal();
 
   await cloudSave();
+
+  setCloud(
+   true,
+   "새 계정 시작"
+  );
 
  }
 
@@ -3497,6 +3515,7 @@ function openAuth(){
   <input
    id="authEmail"
    type="email"
+   autocomplete="username"
    placeholder="이메일"
   >
 
@@ -3509,6 +3528,7 @@ function openAuth(){
   <input
    id="authPw"
    type="password"
+   autocomplete="current-password"
    placeholder="6자 이상"
   >
 
@@ -3755,9 +3775,20 @@ function openAccount(){
 
 async function logout(){
 
+ /* 진행 중인 로컬→클라우드 저장 예약을 취소 */
+ clearTimeout(cloudTimer);
+
  await sb.auth.signOut();
 
  currentUser=null;
+
+ /*
+    로그아웃 후에는 이전 계정의 데이터를
+    화면/로컬 저장소에 남겨두지 않습니다.
+    다음 계정은 자신의 클라우드 데이터만 불러옵니다.
+ */
+ data=blankData();
+ saveLocal();
 
  updateAccountButton();
 
